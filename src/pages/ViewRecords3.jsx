@@ -56,7 +56,7 @@ const ViewRecords = () => {
                             <ul className='flex justify-between font-semibold'>
                                 <li className='text-lg py-2'>{index+1}. {item.multiplication}</li>
                                 <div className='flex items-center gap-2'>
-                                <button onClick={() => navigate('/edit-3inch')}>Edit</button>
+                                <button onClick={() => navigate(`/edit-3inch/${index}`)}>Edit</button>
                                 </div>
                             </ul>
                         )
