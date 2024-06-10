@@ -36,7 +36,7 @@ const MeasurementType = () => {
                           </button>
                         </NavLink>
 
-                        <NavLink to={"/step2inch"} className="login-btn">
+                        <NavLink to={"/step3inch"} className="login-btn">
                           <button type="button" className="login" >
                             Step over 3 Inch
                           </button>

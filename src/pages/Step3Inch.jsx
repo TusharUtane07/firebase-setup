@@ -5,7 +5,7 @@ import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const Step1Inch = () => {
+const Step3Inch = () => {
     const [displayValue, setDisplayValue] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [newQuantity, setNewQuantity] = useState("");
@@ -83,7 +83,7 @@ const Step1Inch = () => {
                 try {
                     await updateDoc(docRef, {
                         results: arrayUnion(newResult),
-						inch: "1 Inch Measurements Data",
+						inch: "3 Inch Measurements Data",
                         lastValue: newLastValue,
                         secondLastValue: newSecondLastValue,
                         thirdLastValue: newThirdLastValue,
@@ -186,6 +186,19 @@ const Step1Inch = () => {
         setDisplayValue(thirdLastValue);
     };
 
+	const isXAdded = () => {
+		return displayValue.includes('X');
+	  };
+
+	const isButtonDisabled = (value) => {
+		if (isXAdded()) {
+		  if (value !== '3' && value !== '6' && value !== '9') {
+			return true;
+		  }
+		}
+		return false;
+	  };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -287,9 +300,9 @@ const Step1Inch = () => {
 					</button>
 				</div>
 				<div>
-					<button onClick={() => handleButtonClick("1")}>1</button>
-					<button onClick={() => handleButtonClick("2")}>2</button>
-					<button onClick={() => handleButtonClick("3")}>3</button>
+					<button onClick={() => handleButtonClick("1") } disabled={isButtonDisabled("1")}>1</button>
+					<button onClick={() => handleButtonClick("2") } disabled={isButtonDisabled("2")}>2</button>
+					<button onClick={() => handleButtonClick("3")} disabled={isButtonDisabled("3")}>3</button>
 					<button
 						className="side-button"
 						style={{ fontSize: "3rem", fontWeight: "100 " }}
@@ -298,9 +311,9 @@ const Step1Inch = () => {
 					</button>
 				</div>
 				<div>
-					<button onClick={() => handleButtonClick("4")}>4</button>
-					<button onClick={() => handleButtonClick("5")}>5</button>
-					<button onClick={() => handleButtonClick("6")}>6</button>
+					<button onClick={() => handleButtonClick("4")} disabled={isButtonDisabled("4")}>4</button>
+					<button onClick={() => handleButtonClick("5")} disabled={isButtonDisabled("5")}>5</button>
+					<button onClick={() => handleButtonClick("6")} disabled={isButtonDisabled("6")}>6</button>
 					<button
 						className="side-button"
 						style={{ fontSize: "1.3rem" }}
@@ -309,9 +322,9 @@ const Step1Inch = () => {
 					</button>
 				</div>
 				<div>
-					<button onClick={() => handleButtonClick("7")}>7</button>
-					<button onClick={() => handleButtonClick("8")}>8</button>
-					<button onClick={() => handleButtonClick("9")}>9</button>
+					<button onClick={() => handleButtonClick("7") } disabled={isButtonDisabled("7")}>7</button>
+					<button onClick={() => handleButtonClick("8")} disabled={isButtonDisabled("8")}>8</button>
+					<button onClick={() => handleButtonClick("9")} disabled={isButtonDisabled("9")}>9</button>
 					<button
 						className="side-button"
 						style={{ height: "200%", position: "relative" }}
@@ -363,4 +376,4 @@ const Step1Inch = () => {
 	);
 };
 
-export default Step1Inch;
+export default Step3Inch;
