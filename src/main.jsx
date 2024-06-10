@@ -19,6 +19,7 @@ import ViewRecords3 from "./pages/ViewRecords3.jsx";
 import EditPage1Inch from "./pages/EditPage1Inch.jsx";
 import FinalResult3 from "./pages/FinalResult3.jsx";
 import EditPage3Inch from "./pages/EditPage3Inch.jsx";
+import WelcomePage from "./pages/WelcomePage.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
+				element: <WelcomePage />,
+			},
+			{
+				path: "details",
 				element: <Details />,
 			},
 			{
