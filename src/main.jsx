@@ -8,12 +8,14 @@ import Signup from "./pages/Signup.jsx";
 import FinalResult from "./pages/FinalResult.jsx";
 import MeasurementType from "./pages/MeasurementType.jsx";
 import Details from "./pages/Details.jsx";
-import Step2Inch from "./pages/Step2Inch.jsx";
+import Step3Inch from "./pages/Step3Inch.jsx";
 import Step1Inch from "./pages/Step1Inch.jsx";
 import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ViewRecords from "./pages/ViewRecords.jsx";
+import EditPage1Inch from "./pages/EditPage1Inch.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -21,7 +23,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
-				element: <App />,
+				element: <Details />,
 			},
 			{
 				path: "login",
@@ -44,12 +46,20 @@ const router = createBrowserRouter([
 				element: <Step1Inch />,
 			},
 			{
-				path: "step2inch",
-				element: <Step2Inch />,
+				path: "step3inch",
+				element: <Step3Inch />,
 			},
 			{
 				path: "final-result",
 				element: <FinalResult />,
+			},
+			{
+				path: "view-records",
+				element: <ViewRecords />,
+			},
+			{
+				path: "edit-1inch",
+				element: <EditPage1Inch />,
 			},
 		],
 	},
