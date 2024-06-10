@@ -1,0 +1,28 @@
+
+.bottom-cal div button{
+    font-size: 1.3rem;
+}
+.bottom-cal{
+    width: 100%;
+}
+.bottom-cal div{
+    display: flex;
+    width: 100%;
+    height: 20%;
+}
+.bottom-cal div button{
+    width: 25%;
+    border: 1px solid black;
+    background-color:rgb(224,224,230)
+}
+.botton-top-cal-check button{
+    background-color: rgb(201,201,204);
+}
+.side-button{
+    background-color: rgb(252,151,25) !important;
+
+}
+.side-button-rash{
+    background-color: rgb(201,201,204) !important;
+
+}

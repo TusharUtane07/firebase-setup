@@ -13,6 +13,7 @@ import Step1Inch from "./pages/Step1Inch.jsx";
 import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const router = createBrowserRouter([
 	{

@@ -32,39 +32,81 @@ const Details = () => {
     };
 
     return (
-        <div className='mt-10 w-full text-center'>
-            <div className='flex flex-col gap-3'>
-                <input 
-                    className='border-2 border-black outline-none mx-4 py-2 px-3 rounded-lg' 
-                    type="text" 
-                    placeholder='Client Name' 
-                    value={clientName} 
-                    onChange={(e) => setClientName(e.target.value)} 
-                />
-                <input 
-                    className='border-2 border-black outline-none mx-4 py-2 px-3 rounded-lg' 
-                    type="text" 
-                    placeholder='Vehicle Number' 
-                    value={vehicleNumber} 
-                    onChange={(e) => setVehicleNumber(e.target.value)} 
-                />
-                <input 
-                    className='border-2 border-black outline-none mx-4 py-2 px-3 rounded-lg' 
-                    type="text" 
-                    placeholder='Lot Number' 
-                    value={lotNumberValue} 
-                    onChange={(e) => setLotNumberValue(e.target.value)} 
-                />
-                <input 
-                    className='border-2 border-black outline-none mx-4 py-2 px-3 rounded-lg' 
-                    type="number" 
-                    placeholder='Quantity Number' 
-                    value={quantityNumber} 
-                    onChange={(e) => setQuantityNumber(e.target.value)} 
-                />
+        <div style={
+            {
+              height:"100vh",
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              fontFamily:"initial"
+            }
+          }>
+          {/* background */}
+          <div className="ls-bg">
+            <img className="ls-bg-inner" src="assets/images/bg.png" alt="" />
+          </div>
+          <main className="overflow-hidden" style={{width:"90%"}}>
+            <div className="wrapper">
+              <div className="main-inner">
+                {/* logo */}
+           
+                <div className="row h-100 align-content-center">
+      
+                  <div className="col-md-6 tab-100">
+                    {/* form */}
+                    <div className="form">
+                      <h2 className="login-form form-title" style={{fontFamily:"emoji"}}>Raghu Marbles</h2>
+                      <form id="step1" className="login-form" method="post" style={{marginTop:"-0.6rem"}}>
+                        <label>Client Name</label>
+                      <input class="form-control form-control" type="text" placeholder=""
+                                          value={clientName} 
+                                          onChange={(e) => setClientName(e.target.value)} 
+                      />
+                      <label className='mt-3'>Vechile Number</label>
+      
+                      <input class="form-control form-control" type="text" placeholder=""
+                                          value={vehicleNumber} 
+                                          onChange={(e) => setVehicleNumber(e.target.value)} 
+                      />
+                      <label className='mt-3'>Lot Number</label>
+      
+                      <input class="form-control form-control" type="text" placeholder=""
+                                          value={lotNumberValue} 
+                                          onChange={(e) => setLotNumberValue(e.target.value)} 
+                      />
+                      <label className='mt-3'>Quantity Number</label>
+      
+                      <input class="form-control form-control" type="text" placeholder=""
+                                          value={quantityNumber} 
+                                          onChange={(e) => setQuantityNumber(e.target.value)} 
+                      />
+      
+                        <div className="d-flex justify-content-between flex-wrap" style={{marginTop:"2rem"}}>
+                      
+                      
+                        </div>
+                        <div className="login-btn">
+                          <button type="button" className="login" onClick={handleSubmit}>
+                            Start Measuring
+                          </button>
+                        </div>
+                      </form>
+             
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button className='mt-10' onClick={handleSubmit}>Start Measuring</button>
+          </main>
+          <div id="error"></div>
+          {/* Bootstrap-5 */}
+          {/* Jquery */}
+          {/* My js */}
         </div>
+
+
+
+
     )
 }
 

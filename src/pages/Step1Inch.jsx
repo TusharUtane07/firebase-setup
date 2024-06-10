@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
+import "../style/cal.css"
 
 const Step1Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
@@ -10,9 +11,10 @@ const Step1Inch = () => {
 	const placeholderText = "Enter your values";
 
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
+	const [vehicleNumber, setVehicleNumber] = useState("");
 
 	const [clientName, setClientName] = useState("");
-	const [vehicleNumber, setVehicleNumber] = useState("");
+	const [messasurement, setMessasurement] = useState("");
 	const [quantityNumber, setQuantityNumber] = useState("");
 	const [pieceNumber, setPieceNumber] = useState(0);
 
@@ -56,18 +58,30 @@ const Step1Inch = () => {
   
 
 	const handleNext = async () => {
-		if (pieceNumber < quantityNumber) {
+		if (pieceNumber+1 < quantityNumber) {
 			const parts = displayValue.split("X").map((part) => part.trim());
 			if (parts.length === 2) {
 				const firstNumber = parseFloat(parts[0]);
 				const secondNumber = parseFloat(parts[1]);
+				const docSnap =  await getDoc(
+					doc(database, "Data", "lot number: " + lotNumberValue)
+				);
+				const data = docSnap.data();
+				const currentResults = data.results || [];
+				currentResults.push({
+					firstNumber: firstNumber,
+					secondNumber: secondNumber,
+					multiplication: `${firstNumber}X${secondNumber}`,
+					measurement:messasurement
+				});
+
 				if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
 					const result = (firstNumber * secondNumber) / 144;
-          
+
 					const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
 					try {
 						await updateDoc(docRef, {
-							results: arrayUnion(`${firstNumber}X${secondNumber}`), 
+							results: currentResults,
 						});
 						console.log("Result added to Firestore array");
 					} catch (error) {
@@ -98,7 +112,58 @@ const Step1Inch = () => {
 			setShowModal(true);
 		}
 	};
-	const handleFinalize = () => {
+	const handleFinalize = async() => {
+    if (true) {
+			const parts = displayValue.split("X").map((part) => part.trim());
+			if (parts.length === 2) {
+				const firstNumber = parseFloat(parts[0]);
+				const secondNumber = parseFloat(parts[1]);
+				const docSnap =  await getDoc(
+					doc(database, "Data", "lot number: " + lotNumberValue)
+				);
+				const data = docSnap.data();
+				const currentResults = data.results || [];
+				currentResults.push({
+					firstNumber: firstNumber,
+					secondNumber: secondNumber,
+					multiplication: `${firstNumber}X${secondNumber}`,
+					measurement:messasurement
+				});
+
+				if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
+					const result = (firstNumber * secondNumber) / 144;
+
+					const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+					try {
+						await updateDoc(docRef, {
+							results: currentResults,
+						});
+						console.log("Result added to Firestore array");
+					} catch (error) {
+						console.error("Error updating document:", error);
+					}
+					setPieceNumber(pieceNumber + 1);
+          getDocument();
+          if (valuesArray && valuesArray.length >= 3) {
+            const lastIndex = valuesArray.length - 1;
+            const secondLastIndex = valuesArray.length - 2;
+            const thirdLastIndex = valuesArray.length - 3;
+          
+            setLastValue(valuesArray[lastIndex]);
+            setSecondLastValue(valuesArray[secondLastIndex]);
+            setThirdLastValue(valuesArray[thirdLastIndex]);
+          }
+          
+					setDisplayValue("");
+				} else {
+					console.log("Invalid numbers entered.");
+					setDisplayValue("");
+				}
+			} else {
+				console.log("Please enter values in the format 'number X number'.");
+				setDisplayValue("");
+			}
+		} 
 		alert(`Finalized value: ${displayValue}`);
 	};
 
@@ -144,61 +209,105 @@ const Step1Inch = () => {
 	};
 
 	return (
-		<div className="mx-5 mt-20">
-			<div className="flex justify-between">
-				<p className="border-2 border-black py-2 px-6 font-bold">
+
+
+<div style={{
+  height:"100vh",
+  display:"flex",
+  flexDirection:"column"
+}}>
+  <div style={{
+    height:"30%",
+  }}>
+   <div className="flex" style={{
+    display:"flex",
+        justifyContent:"space-between",
+        alignItems:"center",
+        background:"#EDF0F9",
+        height:"50%",
+        padding:"0rem 1rem",
+        paddingTop:"0.5rem"
+      }}>
+        <div>
+        <p style={{
+          margin:"0rem"
+        }}>Lot Number</p>
+				<p className="border-2 border-black py-2 px-6 font-bold text-center">
 					{lotNumberValue ? lotNumberValue : "Lot Number"}
 				</p>
-				<p className="border-2 border-black py-2 px-6 font-bold">
-					{quantityNumber ? quantityNumber : "Quality Name"}
+        </div>
+        <div>
+        <p style={{
+          margin:"0rem"
+        }}>Total Quantity</p>
+				<p className="border-2 border-black py-2 px-6 font-bold text-center">
+					{quantityNumber ? quantityNumber : "Null"}
 				</p>
-			</div>
-			<div className="mt-6">
-				<p className="border-2 border-black text-4xl px-4 py-2 text-center">
-					{displayValue || placeholderText}
-				</p>
-			</div>
-			<div className="mt-6 flex justify-between">
-				<button
-					className="font-bold text-xl"
-					onClick={() => handleButtonClick("X")}>
-					X
-				</button>
-				<button className="font-bold text-xl">{pieceNumber}</button>
-			</div>
-			<div className="mt-6 flex justify-evenly gap-3">
-				<div className="mt-6 flex justify-evenly gap-3">
-					<button onClick={handleLastValue}>Last Value Typed</button>
-					<button onClick={handleSecondLastValue}>Second Last Typed</button>
-					<button onClick={handleThirdLastValue}>Third Last Typed</button>
-				</div>
-			</div>
-			<div className="mt-10 grid grid-cols-3 mx-6 gap-x-5 gap-y-4">
-				{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-					<button
-						key={number}
-						onClick={() => handleButtonClick(number.toString())}>
-						{number}
-					</button>
-				))}
-			</div>
-			<div className="mt-6 flex justify-evenly">
-				<button className="px-6" onClick={handleCorrect}>
-					Correct
-				</button>
-				<button className="px-10" onClick={() => handleButtonClick("0")}>
-					0
-				</button>
-				<button className="px-6" onClick={handleNext}>
-					Next
-				</button>
-			</div>
-			<div className="mt-6 text-xl text-center flex justify-evenly">
-				<button onClick={handleClear}>Clear</button>
-				<button onClick={handleFinalize}>Finalize</button>
-			</div>
+        </div>
 
-			{showModal && (
+        <div>
+        <p style={{
+          margin:"0rem"
+        }}>Current Peice</p>
+				<p className="border-2 border-black py-2 px-6 font-bold text-center">
+					{pieceNumber ? pieceNumber+1 : 1}
+				</p>
+        </div>
+
+   
+			</div>
+		<p className="border-2 border-black text-xl px-4 py-2 text-center" style={{
+      height:"50%",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center"
+    }}>
+			{displayValue || placeholderText}
+		</p>
+  </div>
+  <div className="bottom-cal" style={{
+    height:"70%"
+  }}>
+<div className="botton-top-cal-check" >
+  <button className="side-button-rash" onClick={handleLastValue} >LV</button>
+  <button className="side-button-rash" onClick={handleSecondLastValue}>SV</button>
+  <button className="side-button-rash" onClick={handleThirdLastValue}>TV</button>
+  <button className="side-button" onClick={handleClear}>AC</button>
+</div>
+<div>
+  <button onClick={() => handleButtonClick("1")}>1</button>
+  <button onClick={() => handleButtonClick("2")}>2</button>
+  <button onClick={() => handleButtonClick("3")}>3</button>
+  <button className="side-button" style={{fontSize:"3rem", fontWeight:"100 "}} onClick={()=>handleButtonClick("X")}>x</button>
+</div>
+<div>
+  <button onClick={() => handleButtonClick("4")}>4</button>
+  <button onClick={() => handleButtonClick("5")}>5</button>
+  <button onClick={() => handleButtonClick("6")}>6</button>
+  <button className="side-button" style={{fontSize:"1.3rem"}}
+   onClick={handleFinalize}
+  >Final</button>
+
+</div>
+<div>
+  <button onClick={() => handleButtonClick("7")}>7</button>
+  <button onClick={() => handleButtonClick("8")}>8</button>
+  <button onClick={() => handleButtonClick("9")}>9</button>
+  <button className="side-button" style={{height:"200%", position:"relative"}} onClick={handleNext}>Next</button>
+</div>
+<div>
+  <button 
+  onClick={() => handleButtonClick("0")}
+  style={{
+    width:"50%"
+  }}>0</button>
+  <button onClick={handleCorrect}>&lt;</button>
+</div>
+  </div>
+
+
+       
+  {showModal && (
 				<div className="fixed inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
 					<div className="bg-white p-5 rounded mx-5">
 						<h2 className="text-xl mb-4">Piece Limit Exceeded</h2>
@@ -226,7 +335,26 @@ const Step1Inch = () => {
 					</div>
 				</div>
 			)}
-		</div>
+</div>
+
+
+
+
+
+             
+
+
+
+
+
+
+
+
+
+
+
+
+	
 	);
 };
 

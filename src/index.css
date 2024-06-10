@@ -8,3 +8,17 @@ button{
     padding: 5px 12px 5px 12px;
     border-radius: 5px;
 }
+.buttons-calculation{
+    background: rgb(234,232,244);
+    height: 4rem;
+    width: 4rem;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+.button-cal-org{
+    background: rgb(239,45,0);
+    border: 2px solid black;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 0.2rem;
+}
