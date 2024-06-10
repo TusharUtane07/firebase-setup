@@ -5,7 +5,7 @@ import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
-const EditPage1Inch = () => {
+const EditPage3Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
 	const [showModal, setShowModal] = useState(false);
 	const [newQuantity, setNewQuantity] = useState("");
@@ -81,7 +81,7 @@ const EditPage1Inch = () => {
 				if (!isNaN(index) && index >= 0 && index < data?.results?.length) {
 					data.results[index].multiplication = displayValue;
 					await updateDoc(docRef, data);
-					navigate('/view-records')
+					navigate('/view-records3')
 				} else {
 					console.error("Invalid index or values array is empty.");
 				}
@@ -163,7 +163,7 @@ const EditPage1Inch = () => {
 						<option value="mm">MM</option>
 						<option value="cm">CM</option>
 					</select>
-					<NavLink to={"/view-records"}>
+					<NavLink to={"/view-records3"}>
 						<button className="text-black">View</button>
 					</NavLink>
 				</div>
@@ -212,7 +212,7 @@ const EditPage1Inch = () => {
 					<button
 						className="side-button"
 						style={{ fontSize: "1.3rem" }}
-						onClick={() => navigate("/final-result")}>
+						onClick={() => navigate("/final-result3")}>
 						Final
 					</button>
 				</div>
@@ -242,4 +242,4 @@ const EditPage1Inch = () => {
 	);
 };
 
-export default EditPage1Inch;
+export default EditPage3Inch;

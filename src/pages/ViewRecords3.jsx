@@ -34,7 +34,7 @@ const ViewRecords = () => {
         <div>
             <div className="flex items-center gap-6 justify-start mb-7">
 				<div>
-					<IoIosArrowRoundBack size={50} onClick={() => navigate('/step1inch')}/>
+					<IoIosArrowRoundBack size={50} onClick={() => navigate('/step3inch')}/>
 				</div>
 				<div className="">
 					<p className="font-bold text-3xl text-center my-3">Data Records</p>
@@ -56,7 +56,7 @@ const ViewRecords = () => {
                             <ul className='flex justify-between font-semibold'>
                                 <li className='text-lg py-2'>{index+1}. {item.multiplication}</li>
                                 <div className='flex items-center gap-2'>
-                                <button onClick={() => navigate(`/edit-1inch/${index}`)}>Edit</button>
+                                <button onClick={() => navigate('/edit-3inch')}>Edit</button>
                                 </div>
                             </ul>
                         )
