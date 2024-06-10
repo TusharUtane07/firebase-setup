@@ -74,7 +74,9 @@ const Step1Inch = () => {
 					multiplication: `${firstNumber}X${secondNumber}`,
 					measurement:messasurement
 				});
-
+				setLastValue(`${firstNumber}X${secondNumber}`);
+				setSecondLastValue(lastValue);
+				setThirdLastValue(secondLastValue);
 				if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
 					const result = (firstNumber * secondNumber) / 144;
 
@@ -89,15 +91,7 @@ const Step1Inch = () => {
 					}
 					setPieceNumber(pieceNumber + 1);
           getDocument();
-          if (valuesArray && valuesArray.length >= 3) {
-            const lastIndex = valuesArray.length - 1;
-            const secondLastIndex = valuesArray.length - 2;
-            const thirdLastIndex = valuesArray.length - 3;
           
-            setLastValue(valuesArray[lastIndex]);
-            setSecondLastValue(valuesArray[secondLastIndex]);
-            setThirdLastValue(valuesArray[thirdLastIndex]);
-          }
           
 					setDisplayValue("");
 				} else {
@@ -144,15 +138,6 @@ const Step1Inch = () => {
 					}
 					setPieceNumber(pieceNumber + 1);
           getDocument();
-          if (valuesArray && valuesArray.length >= 3) {
-            const lastIndex = valuesArray.length - 1;
-            const secondLastIndex = valuesArray.length - 2;
-            const thirdLastIndex = valuesArray.length - 3;
-          
-            setLastValue(valuesArray[lastIndex]);
-            setSecondLastValue(valuesArray[secondLastIndex]);
-            setThirdLastValue(valuesArray[thirdLastIndex]);
-          }
           
 					setDisplayValue("");
 				} else {
@@ -269,9 +254,9 @@ const Step1Inch = () => {
     height:"70%"
   }}>
 <div className="botton-top-cal-check" >
-  <button className="side-button-rash" onClick={handleLastValue} >LV</button>
-  <button className="side-button-rash" onClick={handleSecondLastValue}>SV</button>
-  <button className="side-button-rash" onClick={handleThirdLastValue}>TV</button>
+  <button className="side-button-rash" onClick={handleLastValue} >{lastValue || "LV"}</button>
+  <button className="side-button-rash" onClick={handleSecondLastValue}>{secondLastValue || "SV"}</button>
+  <button className="side-button-rash" onClick={handleThirdLastValue}>{thirdLastValue || "TV"}</button>
   <button className="side-button" onClick={handleClear}>AC</button>
 </div>
 <div>
@@ -336,20 +321,6 @@ const Step1Inch = () => {
 				</div>
 			)}
 </div>
-
-
-
-
-
-             
-
-
-
-
-
-
-
-
 
 
 
