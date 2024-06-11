@@ -196,6 +196,12 @@ const Step1Inch = () => {
 				display: "flex",
 				flexDirection: "column",
 			}}>
+				              <button className='' onClick={() => navigate(`/`)}
+                        style={{
+                            background:"#4E97F3",
+                            color:"white"
+                        }}
+                        > Home Screen</button>
 			<div
 				style={{
 					height: "30%",
@@ -246,20 +252,23 @@ const Step1Inch = () => {
 						</p>
 					</div>
 				</div>
-				<div className="bg-[#EDF0F9] text-xl pl-5 px-4 flex justify-between items-center">
+				<div className="bg-[#EDF0F9] text-xl pl-5 px-4 flex justify-between items-center" style={{
+					paddingBottom:"1rem"
+				}}>
 					<select name="measurement" id="measurement" className="bg-[#edf0f9] outline-none border-2 border-black mb-3">
 						<option value="mm">MM</option>
 						<option value="cm">CM</option>
+						<option value="cm">M</option>
 					</select>
 					<NavLink to={"/view-records"}>
-					<button className="text-black">View</button>
+					<button className="check-view-button">View Records</button>
 					</NavLink>
 				</div>
 
 				<p
 					className="border-2 border-black text-xl px-4 py-2 text-center"
 					style={{
-						height: "50%",
+						height: "27%",
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",

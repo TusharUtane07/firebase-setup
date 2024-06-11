@@ -19,10 +19,20 @@
     background-color: rgb(201,201,204);
 }
 .side-button{
-    background-color: rgb(252,151,25) !important;
+    background-color:#4E97F3 !important;
+    color: white;
 
 }
 .side-button-rash{
-    background-color: rgb(201,201,204) !important;
+    background-color: rgb(38, 113, 166) !important;
+    color: white;
 
+}
+.check-view-button{
+    background: rgb(78, 151, 243);
+    color: white;
+    border: 2px solid black;
+    border-radius: 22px;
+    color: white !important;
+    font-size: 0.8rem;
 }

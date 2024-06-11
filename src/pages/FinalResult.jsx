@@ -32,23 +32,24 @@ const FinalResult = () => {
 
     return (
         <div>
-            <div className="flex items-center gap-6 justify-start mb-7">
+            <div className="flex items-center gap-6 justify-start mb-7" style={{
+                fontSize:"1rem"
+            }}>
                 <div>
                     <IoIosArrowRoundBack size={50} onClick={() => navigate('/step1inch')}/>
                 </div>
                 <div className="">
-                    <p className="font-bold text-3xl text-center my-3">Data Records</p>
+                    <p className="font-bold text-2xl text-center my-3">Final Data Records</p>
                 </div>
             </div>
             
-            <div className="font-bold mx-4">
-                <p>Client Name: {data?.clientName}</p>
-                <p>Vehicle Number: {data?.vehicleNumber}</p>
-                <p>Quantity Number: {data?.quantityNumber}</p>
-                <p>Lot Number: {data?.lotNumberValue}</p>
+            <div className="mx-4">
+                <p><span className="font-bold">Client Name:</span> {data?.clientName}</p>
+                <p><span className="font-bold">Vehicle Number:</span> {data?.vehicleNumber}</p>
+                <p><span className="font-bold">Quantity Number:</span> {data?.quantityNumber}</p>
+                <p><span className="font-bold">Lot Number:</span> {data?.lotNumberValue}</p>
             </div>
             <div className="mx-4">
-                <p className="font-bold">Values: </p>
                 <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                     <thead className="bg-gray-200">
                         <tr>
@@ -75,9 +76,23 @@ const FinalResult = () => {
                     })}
                 </table>
             </div>
-            <button className='absolute bottom-6 left-2/4 ' onClick={() => navigate('/')}>
-                <IoHome/> 
+            <div
+            style={{
+                width:"100vw",
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"center"
+            }}
+            >
+            <button className='absolute bottom-6 btn-primary' onClick={() => navigate('/')} style={{
+                background:"#4E97F3",
+                color:"white",
+                width:"70%",
+                alignSelf:"center"
+            }}>
+                    Save as pdf
             </button>
+            </div>
         </div>
     );
 };

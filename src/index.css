@@ -25,3 +25,9 @@ button{
 .custom-header-title{
     margin: 0rem !important;
 }
+.check-decoration-no{
+    text-decoration: none !important;
+}
+a{
+    text-decoration: none !important;
+}

@@ -49,119 +49,237 @@ const Details = () => {
 	};
 
 	return (
-		<div
-			style={{
-				height: "100vh",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				fontFamily: "initial",
-			}}>
-			{/* background */}
-			<div className="ls-bg">
-				<img className="ls-bg-inner" src="assets/images/bg.png" alt="" />
-			</div>
-			<main className="overflow-hidden" style={{ width: "90%" }}>
-				<div className="wrapper">
-					<div className="main-inner">
-						{/* logo */}
-						<div className="row h-100 align-content-center">
-							<div className="col-md-6 tab-100">
-								{/* form */}
-								<div className="form">
-									<h2
-										className="login-form form-title"
-										style={{ fontFamily: "emoji" }}>
-										Raghu Marbles
-									</h2>
-									<form
-										id="step1"
-										className="login-form"
-										method="post"
-										style={{ marginTop: "-0.6rem" }}>
-										<div>
-											<label>Client Name</label>
-											<input
-												className="form-control form-control"
-												type="text"
-												placeholder=""
-												value={clientName}
-												onChange={(e) => setClientName(e.target.value)}
-											/>
-											{errors.clientName && (
-												<span className="" style={{ color: "red" }}>
-													{errors.clientName}
-												</span>
-											)}
-										</div>
-										<div>
-											<label className="mt-3">Vehicle Number</label>
-											<input
-												className="form-control form-control"
-												type="text"
-												placeholder=""
+
+
+<>
+  {/* splash-screen end */}
+  <main>
+    {/* signin-email start */}
+    <section className="auth signin-email">
+      <div className="page-title">
+       
+      </div>
+      <div className="heading">
+        <h2>Lot Details</h2>
+        <p>Please Enter the Lot Details Accordingly</p>
+      </div>
+      <div className="auth-form">
+        <form action="#">
+          <div className="d-flex flex-column gap-4">
+            <div>
+              <label htmlFor="fname">Client Name</label>
+              <input
+                type="text"
+                id="fname"
+                placeholder="Enter your Client name"
+                className="input-field d-block"
+				value={clientName}
+				onChange={(e) => setClientName(e.target.value)}
+              />
+			  {errors.clientName && (
+											<span className="" style={{ color: "red" }}>
+												{errors.clientName}
+											</span>
+										)}
+            </div>
+            <div>
+              <label htmlFor="lname">Vehicle Number</label>
+              <input
+                type="text"
+                id="lname"
+                placeholder="Enter the Vechile number"
+                className="input-field d-block"
+
 												value={vehicleNumber}
 												onChange={(e) => setVehicleNumber(e.target.value)}
-											/>
-											{errors.vehicleNumber && (
-												<span style={{ color: "red" }}>
-													{errors.vehicleNumber}
-												</span>
-											)}
-										</div>
-										<div>
-											<label className="mt-3">Lot Number</label>
-											<input
-												className="form-control form-control"
-												type="text"
-												placeholder=""
-												value={lotNumberValue}
+              />
+			  {errors.vehicleNumber && (
+							<span style={{ color: "red" }}>
+								{errors.vehicleNumber}
+							</span>
+						)}
+            </div>
+            <div>
+              <label htmlFor="remail2">Lot Number</label>
+              <input
+                type="text"
+                id="remail2"
+                placeholder="Enter your Lot number"
+                className="input-field d-block"
+																value={lotNumberValue}
 												onChange={(e) => setLotNumberValue(e.target.value)}
-											/>
-											{errors.lotNumberValue && (
-												<span style={{ color: "red" }}>
-													{errors.lotNumberValue}
-												</span>
-											)}
-										</div>
-										<div>
-											<label className="mt-3">Quantity Number</label>
-											<input
-												className="form-control form-control"
-												type="number"
-												placeholder=""
-												value={quantityNumber}
-												onChange={(e) => setQuantityNumber(e.target.value)}
-											/>
-											{errors.quantityNumber && (
-												<span style={{ color: "red" }}>
-													{errors.quantityNumber}
-												</span>
-											)}
-										</div>
-										<div
-											className="d-flex justify-content-between flex-wrap"
-											style={{ marginTop: "2rem" }}></div>
-										<div className="login-btn">
-											<button
-												type="button"
-												className="login"
-												onClick={handleSubmit}>
-												Start Measuring
-											</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</main>
-			<div id="error"></div>
-			{/* Bootstrap-5 */}
-			{/* Jquery */}
-			{/* My js */}
-		</div>
+              />
+			  {errors.lotNumberValue && (
+									<span style={{ color: "red" }}>
+										{errors.lotNumberValue}
+									</span>
+								)}
+            </div>
+     
+            <div>
+              <label htmlFor="remail2">Quantity Number</label>
+              <input
+                type="number"
+                id="remail2"
+                placeholder="Enter the Quantity Number"
+                className="input-field d-block"
+				value={quantityNumber}
+				onChange={(e) => setQuantityNumber(e.target.value)}
+              />
+			  {errors.quantityNumber && (
+										<span style={{ color: "red" }}>
+											{errors.quantityNumber}
+										</span>
+									)}
+            </div>
+     
+
+          </div>
+          <a onClick={handleSubmit} className="btn-primary">
+		  Proceed
+          </a>
+        </form>
+
+      </div>
+    </section>
+    {/* signin-email end */}
+  </main>
+  {/* jquery */}
+  {/* bootstrap */}
+  {/* jquery ui */}
+  {/* mixitup */}
+  {/* gasp */}
+  {/* draggable */}
+  {/* swiper */}
+  {/* datepicker */}
+  {/* google-map api */}
+  {/* script */}
+</>
+
+
+
+
+
+
+
+
+
+
+
+
+		// <div
+		// 	style={{
+		// 		height: "100vh",
+		// 		display: "flex",
+		// 		alignItems: "center",
+		// 		justifyContent: "center",
+		// 		fontFamily: "initial",
+		// 	}}>
+		// 	{/* background */}
+		// 	<div className="ls-bg">
+		// 		<img className="ls-bg-inner" src="assets/images/bg.png" alt="" />
+		// 	</div>
+		// 	<main className="overflow-hidden" style={{ width: "90%" }}>
+		// 		<div className="wrapper">
+		// 			<div className="main-inner">
+		// 				{/* logo */}
+		// 				<div className="row h-100 align-content-center">
+		// 					<div className="col-md-6 tab-100">
+		// 						{/* form */}
+		// 						<div className="form">
+		// 							<h2
+		// 								className="login-form form-title"
+		// 								style={{ fontFamily: "emoji" }}>
+		// 								Raghu Marbles
+		// 							</h2>
+		// 							<form
+		// 								id="step1"
+		// 								className="login-form"
+		// 								method="post"
+		// 								style={{ marginTop: "-0.6rem" }}>
+		// 								<div>
+		// 									<label>Client Name</label>
+		// 									<input
+		// 										className="form-control form-control"
+		// 										type="text"
+		// 										placeholder=""
+		// 										value={clientName}
+		// 										onChange={(e) => setClientName(e.target.value)}
+		// 									/>
+		// 									{errors.clientName && (
+		// 										<span className="" style={{ color: "red" }}>
+		// 											{errors.clientName}
+		// 										</span>
+		// 									)}
+		// 								</div>
+		// 								<div>
+		// 									<label className="mt-3">Vehicle Number</label>
+		// 									<input
+		// 										className="form-control form-control"
+		// 										type="text"
+		// 										placeholder=""
+		// 										value={vehicleNumber}
+		// 										onChange={(e) => setVehicleNumber(e.target.value)}
+		// 									/>
+		// 									{errors.vehicleNumber && (
+		// 										<span style={{ color: "red" }}>
+		// 											{errors.vehicleNumber}
+		// 										</span>
+		// 									)}
+		// 								</div>
+		// 								<div>
+		// 									<label className="mt-3">Lot Number</label>
+		// 									<input
+		// 										className="form-control form-control"
+		// 										type="text"
+		// 										placeholder=""
+		// 										value={lotNumberValue}
+		// 										onChange={(e) => setLotNumberValue(e.target.value)}
+		// 									/>
+		// 									{errors.lotNumberValue && (
+		// 										<span style={{ color: "red" }}>
+		// 											{errors.lotNumberValue}
+		// 										</span>
+		// 									)}
+		// 								</div>
+		// 								<div>
+		// 									<label className="mt-3">Quantity Number</label>
+		// 									<input
+		// 										className="form-control form-control"
+		// 										type="number"
+		// 										placeholder=""
+		// 										value={quantityNumber}
+		// 										onChange={(e) => setQuantityNumber(e.target.value)}
+		// 									/>
+		// 									{errors.quantityNumber && (
+		// 										<span style={{ color: "red" }}>
+		// 											{errors.quantityNumber}
+		// 										</span>
+		// 									)}
+		// 								</div>
+		// 								<div
+		// 									className="d-flex justify-content-between flex-wrap"
+		// 									style={{ marginTop: "2rem" }}></div>
+		// 								<div className="login-btn">
+		// 									<button
+		// 										type="button"
+		// 										className="login"
+		// 										onClick={handleSubmit}>
+		// 										Start Measuring
+		// 									</button>
+		// 								</div>
+		// 							</form>
+		// 						</div>
+		// 					</div>
+		// 				</div>
+		// 			</div>
+		// 		</div>
+		// 	</main>
+		// 	<div id="error"></div>
+		// 	{/* Bootstrap-5 */}
+		// 	{/* Jquery */}
+		// 	{/* My js */}
+		// </div>
 	);
 };
 
