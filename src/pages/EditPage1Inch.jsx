@@ -93,6 +93,30 @@ const EditPage1Inch = () => {
 		}
 	};
 	
+	const handleFinalize = async () => {
+		try {
+			const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+			
+			const docSnapshot = await getDoc(docRef);
+			
+			if (docSnapshot.exists()) {
+				const data = docSnapshot.data();
+				const index = parseInt(id);
+				if (!isNaN(index) && index >= 0 && index < data?.results?.length) {
+					data.results[index].multiplication = displayValue;
+					await updateDoc(docRef, data);
+					navigate('/final-result')
+				} else {
+					console.error("Invalid index or values array is empty.");
+				}
+			} else {
+				console.log("No such document!");
+			}
+		} catch (error) {
+			console.error("Error updating document:", error);
+		}
+	}
+	
 
 	const handleClear = () => {
 		setDisplayValue("");
@@ -212,7 +236,7 @@ const EditPage1Inch = () => {
 					<button
 						className="side-button"
 						style={{ fontSize: "1.3rem" }}
-						onClick={() => navigate("/final-result")}>
+						onClick={handleFinalize}>
 						Final
 					</button>
 				</div>
