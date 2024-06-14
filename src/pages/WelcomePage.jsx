@@ -221,9 +221,9 @@ const WelcomePage = () => {
             </div>
        
             <div className="content text-center">
-              <h2>RAGHU MARBELS</h2>
+              <h2>SIZER</h2>
               <p>
-              Your Personalized Business Calculator for Perfect Marble Slab Measurements.
+             Measure slabs every way.
               </p>
               <Link
                 to={"/details"}

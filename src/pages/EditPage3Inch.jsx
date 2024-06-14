@@ -179,13 +179,7 @@ const EditPage3Inch = () => {
 					</div>
 				</div>
 				<div className="bg-[#EDF0F9] text-xl pl-5 px-4 flex justify-between items-center">
-					<select
-						name="measurement"
-						id="measurement"
-						className="bg-[#edf0f9] outline-none border-2 border-black mb-3">
-						<option value="mm">MM</option>
-						<option value="cm">CM</option>
-					</select>
+					
 					<NavLink to={"/view-records3"}>
 						<button className="text-black">View</button>
 					</NavLink>
@@ -235,8 +229,8 @@ const EditPage3Inch = () => {
 					<button
 						className="side-button"
 						style={{ fontSize: "1.3rem" }}
-						onClick={handleFinalize}>
-						Final
+						onClick={handleNext}>
+						Next
 					</button>
 				</div>
 				<div>
@@ -246,8 +240,8 @@ const EditPage3Inch = () => {
 					<button
 						className="side-button"
 						style={{ height: "200%", position: "relative" }}
-						onClick={handleNext}>
-						Save
+						onClick={handleFinalize}>
+						Final
 					</button>
 				</div>
 				<div>

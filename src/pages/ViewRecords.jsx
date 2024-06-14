@@ -14,7 +14,7 @@ const ViewRecords = () => {
 
     const getData = async () => {
         try {
-            const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+            const docRef = doc(database, "Data", "lot: "+lotNumberValue);
             const docSnapshot = await getDoc(docRef);
             if (docSnapshot.exists()) {
                 console.log(docSnapshot.data())

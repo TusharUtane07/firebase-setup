@@ -245,7 +245,7 @@ const MeasurementType = () => {
     <section className="auth signin">
       <div className="heading">
         <h2>Hi, User!</h2>
-        <p>Please Select the Calculation steps</p>
+        <p>Choose measurement type</p>
       </div>
       <div className="form-area auth-form">
         <form action="#">
@@ -253,7 +253,7 @@ const MeasurementType = () => {
  
           </div>
           <NavLink to={"/step1inch"} className="btn-primary">
-            1 Step Calculation
+            Regular
           </NavLink>
         </form>
         <div className="divider d-flex align-items-center justify-content-center gap-12">
@@ -271,7 +271,7 @@ const MeasurementType = () => {
             }}
             data-bs-target="#loginSuccess"
           >
-            3 Step Calculation
+            0, 3, 6, 9
           </NavLink>
 
         </div>

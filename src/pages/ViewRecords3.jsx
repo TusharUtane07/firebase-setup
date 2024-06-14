@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { IoHome } from 'react-icons/io5';
 
-const ViewRecords = () => {
+const ViewRecords3 = () => {
     const [data, setData] = useState(null);
     const [toogleView, setToggleView] = useState("detailed")
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const ViewRecords = () => {
 
     const getData = async () => {
         try {
-            const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+            const docRef = doc(database, "Data", "lot: "+lotNumberValue);
             const docSnapshot = await getDoc(docRef);
             if (docSnapshot.exists()) {
                 console.log(docSnapshot.data())
@@ -48,7 +48,7 @@ const ViewRecords = () => {
       <h2 className="main-title" style={{
         fontSize:"1.4rem"
       }}>Current Records</h2>
-      <button className='form-control' onClick={() => navigate(`/step3inch`)}> &lt; Return Back</button>
+      <button className='form-control' onClick={() => navigate(`/step1inch`)}> &lt; Return Back</button>
 
     </div>
     {/* tab */}
@@ -112,7 +112,7 @@ const ViewRecords = () => {
                           <p>Peice Number : {index+1}</p>
                           <h3>{item.multiplication}</h3>
                         </div>
-                        <a onClick={() => navigate(`/edit-3inch/${index}`)}>Edit</a>
+                        <a onClick={() => navigate(`/edit-1inch/${index}`)}>Edit</a>
                       </div>
                     </div>
           
@@ -149,7 +149,7 @@ const ViewRecords = () => {
                             <p>Marked Calculation</p>
                             <h3>{item.multiplication}</h3>
                           </div>
-                          <a onClick={() => navigate(`/edit-3inch/${index}`)}>Edit</a>
+                          <a onClick={() => navigate(`/edit-1inch/${index}`)}>Edit</a>
                         </div>
                       </div>
             
@@ -182,4 +182,4 @@ const ViewRecords = () => {
     );
 };
 
-export default ViewRecords;
+export default ViewRecords3;

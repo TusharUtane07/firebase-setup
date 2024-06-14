@@ -31,7 +31,7 @@ const EditPage1Inch = () => {
 	const getDocument = async () => {
 		try {
 			const docSnapshot = await getDoc(
-				doc(database, "Data", "lot number: " + lotNumberValue)
+				doc(database, "Data", "lot: " + lotNumberValue)
 			);
 			if (docSnapshot.exists()) {
 				setClientName(docSnapshot?.data()?.clientName);
@@ -71,7 +71,7 @@ const EditPage1Inch = () => {
 
 	const handleNext = async () => {
 		try {
-			const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			
 			const docSnapshot = await getDoc(docRef);
 			
@@ -95,7 +95,7 @@ const EditPage1Inch = () => {
 	
 	const handleFinalize = async () => {
 		try {
-			const docRef = doc(database, "Data", "lot number: " + lotNumberValue);
+			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			
 			const docSnapshot = await getDoc(docRef);
 			
@@ -186,6 +186,9 @@ const EditPage1Inch = () => {
 						className="bg-[#edf0f9] outline-none border-2 border-black mb-3">
 						<option value="mm">MM</option>
 						<option value="cm">CM</option>
+						<option value="meter">METER</option>
+						<option value="inches">INCHES</option>
+						<option value="feet">FEET</option>
 					</select>
 					<NavLink to={"/view-records"}>
 						<button className="text-black">View</button>
@@ -236,8 +239,8 @@ const EditPage1Inch = () => {
 					<button
 						className="side-button"
 						style={{ fontSize: "1.3rem" }}
-						onClick={handleFinalize}>
-						Final
+						onClick={handleNext}>
+						Next
 					</button>
 				</div>
 				<div>
@@ -247,8 +250,8 @@ const EditPage1Inch = () => {
 					<button
 						className="side-button"
 						style={{ height: "200%", position: "relative" }}
-						onClick={handleNext}>
-						Save
+						onClick={handleFinalize}>
+						Final
 					</button>
 				</div>
 				<div>
