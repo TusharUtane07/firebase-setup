@@ -9,6 +9,7 @@ const Step1Inch = () => {
     const [displayValue, setDisplayValue] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [showMismatchModal, setShowMismatchModal] = useState(false);
+    
     const [newQuantity, setNewQuantity] = useState("");
     const placeholderText = "Enter your values";
 
@@ -61,12 +62,13 @@ const Step1Inch = () => {
     }, [lotNumberValue]);
 
     const handleButtonClick = (value) => {
-        if (value === "-" && displayValue !== "") {
-            if (!isNaN(displayValue[displayValue.length - 1])) {
-                setDisplayValue((prev) => prev + "'");
+        if (value === "X") {
+            if (!displayValue.includes("X")) {
+                setDisplayValue((prev) => (prev === "" ? "" : prev + value));
             }
+        } else {
+            setDisplayValue((prev) => prev + value);
         }
-        setDisplayValue((prev) => prev === "" ? value : prev + value);
     };
 
     const handleCorrect = () => {
@@ -74,15 +76,9 @@ const Step1Inch = () => {
     };
 
     const validateInput = (input) => {
-        const regex1 = /^(\d+(\.\d+)?'\d+(\.\d+)?X\d+(\.\d+)?'\d+(\.\d+)?"?)$/; 
-        const regex2 = /^(\d+((\d*|\d*'\d*")?X\d+((\d*|\d*'\d*")?))|(\d+(\.\d+)?'\d+(\.\d+)?X\d+((\d*|\d*'\d*")?)))$/;
-        const regex3 = /^6'-6X6'-6$/; // New regex pattern for "6'-6X6'-6"
-        
-        return regex1.test(input) || regex2.test(input) || regex3.test(input);
-    }
-    
-    
-
+        const regex = /^(\d+['\-.]?\d*X\d+['\-.]?\d*)$/;
+        return regex.test(input);
+    };
 
     const handleNext = async () => {
         if (!validateInput(displayValue)) {
@@ -220,7 +216,7 @@ const Step1Inch = () => {
         if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
             const newResult = {
                 multiplication: value,
-                measurement: "1 Inch Measurements Data", 
+                measurement: "1 Inch Measurements Data",
             };
             updateFirestoreWithResult(newResult);
             setLastValue(value);
@@ -248,6 +244,7 @@ const Step1Inch = () => {
     if (loading) {
         return <div>Loading...</div>;
     }
+
     return (
         <div
             style={{
@@ -408,7 +405,7 @@ const Step1Inch = () => {
                     <button onClick={() => handleButtonClick("9")}>9</button>
                     <button
                         className="side-button"
-                        style={{ height: "200%", position: "relative" }}
+                        style={{ height: "100%", position: "relative" }}
                         onClick={handleFinalize}
                     >
                         Final
@@ -427,7 +424,7 @@ const Step1Inch = () => {
                         measurementType === "meter") ? (
                         <button
                             onClick={() => handleButtonClick(".")}
-                            style={{ width: "25%" }}
+                            style={{ width: "50%" }}
                         >
                             .
                         </button>
@@ -437,6 +434,11 @@ const Step1Inch = () => {
                             onClick={() => handleButtonClick("-")}
                         >
                             -
+                        </button>
+                        <button
+                            onClick={() => handleButtonClick(`"`)}
+                        >
+                            "
                         </button>
                         
                         </>
