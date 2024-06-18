@@ -21,11 +21,18 @@ const Details = () => {
     quantityNumber: "Quantity Number",
   });
   const [dynamicFields, setDynamicFields] = useState([]);
+  const [lotNumberError, setLotNumberError] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
+
+    if(!lotNumberValue){
+      setLotNumberError(true) 
+      return
+    }
+    setLotNumberError(false)
     const data = {
       "clientName": clientName,
       "vehicleNumber": vehicleNumber,
@@ -129,6 +136,7 @@ const Details = () => {
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
                   />
+                  {lotNumberError && <div className="pt-2 text-center text-red-500">Lot number needs to be added.</div>}
                 </div>
                 <div>
                   <label

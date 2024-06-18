@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
+import loader from '../assets/images/loader.png'
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -62,6 +63,9 @@ const Step1Inch = () => {
     }, [lotNumberValue]);
 
     const handleButtonClick = (value) => {
+        if(value === '-'){
+            setDisplayValue((prev) => prev + "'")
+        }
         if (value === "X") {
             if (!displayValue.includes("X")) {
                 setDisplayValue((prev) => (prev === "" ? "" : prev + value));
@@ -74,11 +78,12 @@ const Step1Inch = () => {
     const handleCorrect = () => {
         setDisplayValue((prev) => prev.slice(0, -1));
     };
-
     const validateInput = (input) => {
-        const regex = /^(\d+['\-.]?\d*X\d+['\-.]?\d*)$/;
+        const regex = /^[\d"'-.]*\d+X[\d"'-.]*\d+$/;
         return regex.test(input);
     };
+    
+    
 
     const handleNext = async () => {
         if (!validateInput(displayValue)) {
@@ -242,7 +247,9 @@ const Step1Inch = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="flex items-center justify-center h-screen animate-spin">
+            <img src={loader} alt="Loading..." className="w-40 h-40" />
+        </div>;
     }
 
     return (

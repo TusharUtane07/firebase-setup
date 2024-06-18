@@ -5,9 +5,14 @@ import { database } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
+import loader from '../assets/images/loader.png'
+import { Radio, Space } from "antd-mobile";
+
 
 const FinalResult = () => {
 	const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -23,7 +28,9 @@ const FinalResult = () => {
 			}
 		} catch (error) {
 			console.error("Error getting document:", error);
-		}
+		}  finally {
+			setLoading(false)
+		  }
 	};
 
 	useEffect(() => {
@@ -43,6 +50,12 @@ const FinalResult = () => {
 		// Parse value into float
 		return parseFloat(value);
 	};
+
+	if (loading) {
+        return <div className="flex items-center justify-center h-screen animate-spin">
+            <img src={loader} alt="Loading..." className="w-40 h-40" />
+        </div>;
+    }
 
 	return (
 		<div>
@@ -133,15 +146,25 @@ const FinalResult = () => {
 					})}
 				</table>
 			</div>
-			<div
+			<div className="mt-5 flex flex-col gap-3 border-2 border-black p-4 rounded-md m-3 "
 				style={{
-					width: "100vw",
+					// width: "100vw",
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
 				}}>
+					<Radio.Group >
+            <Space direction='vertical' block className="">
+              <Radio value='1' block>
+                Export as Excel
+              </Radio>
+              <Radio value='2'>
+                Export as PDF
+              </Radio>
+            </Space>
+          </Radio.Group>
 				<button
-					className="absolute bottom-6 btn-primary"
+					className=" btn-primary"
 					onClick={() => navigate("/")}
 					style={{
 						background: "#4E97F3",

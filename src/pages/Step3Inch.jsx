@@ -4,6 +4,7 @@ import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
+import loader from '../assets/images/loader.png'
 
 const Step3Inch = () => {
     const [displayValue, setDisplayValue] = useState("");
@@ -25,6 +26,7 @@ const Step3Inch = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState();
     const [measurementType, setMesurementType] = useState("mm");
+    const [isMinusClicked, setIsMinusClicked] = useState(false);
 
     const navigate = useNavigate();
 
@@ -62,10 +64,14 @@ const Step3Inch = () => {
     }, [lotNumberValue]);
 
     const handleButtonClick = (value) => {
-        if (value === "X") {
-            if (!displayValue.includes("X")) {
-                setDisplayValue((prev) => (prev === "" ? "" : prev + value));
+        if (value === "-") {
+            setIsMinusClicked(true);
+            setDisplayValue((prev) => prev + "'-");
+        } else if (value === "X") {
+            if(!displayValue.includes("X")){
+                setDisplayValue((prev) => (prev === "" ? "" : prev + value))
             }
+            setIsMinusClicked(false);
         } else {
             setDisplayValue((prev) => prev + value);
         }
@@ -74,18 +80,19 @@ const Step3Inch = () => {
     const handleCorrect = () => {
         setDisplayValue((prev) => prev.slice(0, -1));
     };
+;
 
-    const validateInput = (input) => {
-        const regex = /^(\d+['\-.]?\d*X\d+['\-.]?\d*)$/;
-        return regex.test(input);
-    };
+const validateInput = (input) => {
+    const regex = /^[\d"'-.]*\d+X[\d"'-.]*\d+$/;
+    return regex.test(input);
+};
+
 
     const handleNext = async () => {
         if (!validateInput(displayValue)) {
             alert("Invalid format");
             return;
         }
-
         if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
             const newLastValue = displayValue;
             const newSecondLastValue = lastValue;
@@ -114,13 +121,14 @@ const Step3Inch = () => {
             setThirdLastValue(newThirdLastValue);
             setPieceNumber(pieceNumber + 1);
             setDisplayValue("");
+            setIsMinusClicked(false)
         } else {
             setShowModal(true);
         }
     };
 
     const handleFinalize = async () => {
-        if (displayValue && !validateInput(displayValue)) {
+        if (!validateInput(displayValue)) {
             alert("Invalid format");
             return;
         }
@@ -158,6 +166,7 @@ const Step3Inch = () => {
             setThirdLastValue(newThirdLastValue);
             setPieceNumber(pieceNumber + 1);
         }
+        setIsMinusClicked(false)
 
         setDisplayValue("");
         navigate("/final-result");
@@ -173,6 +182,7 @@ const Step3Inch = () => {
     };
 
     const handleClear = () => {
+        setIsMinusClicked(false)
         setDisplayValue("");
     };
 
@@ -231,18 +241,23 @@ const Step3Inch = () => {
 
     const handleLastValue = () => {
         updateLastData(lastValue);
+        setIsMinusClicked(false)
     };
 
     const handleSecondLastValue = () => {
         updateLastData(secondLastValue);
+        setIsMinusClicked(false)
     };
 
     const handleThirdLastValue = () => {
         updateLastData(thirdLastValue);
+        setIsMinusClicked(false)
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="flex items-center justify-center h-screen animate-spin">
+            <img src={loader} alt="Loading..." className="w-40 h-40" />
+        </div>;
     }
 
     return (
@@ -376,9 +391,9 @@ const Step3Inch = () => {
                     </button>
                 </div>
                 <div>
-                    <button onClick={() => handleButtonClick("1")}>1</button>
-                    <button onClick={() => handleButtonClick("2")}>2</button>
-                    <button onClick={() => handleButtonClick("3")}>3</button>
+                    <button onClick={() => handleButtonClick("1")}  disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }} >1</button>
+                    <button onClick={() => handleButtonClick("2")}  disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}>2</button>
+                    <button onClick={() => handleButtonClick("3")} style={{backgroundColor: "#ccc"}}>3</button>
                     <button
                         className="side-button"
                         style={{ fontSize: "3rem", fontWeight: "100 " }}
@@ -388,9 +403,9 @@ const Step3Inch = () => {
                     </button>
                 </div>
                 <div>
-                    <button onClick={() => handleButtonClick("4")}>4</button>
-                    <button onClick={() => handleButtonClick("5")}>5</button>
-                    <button onClick={() => handleButtonClick("6")}>6</button>
+                    <button onClick={() => handleButtonClick("4")} disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}>4</button>
+                    <button onClick={() => handleButtonClick("5")} disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}>5</button>
+                    <button onClick={() => handleButtonClick("6")} style={{backgroundColor: "#ccc"}}>6</button>
                     <button
                         className="side-button"
                         style={{ fontSize: "1.3rem" }}
@@ -400,9 +415,9 @@ const Step3Inch = () => {
                     </button>
                 </div>
                 <div>
-                    <button onClick={() => handleButtonClick("7")}>7</button>
-                    <button onClick={() => handleButtonClick("8")}>8</button>
-                    <button onClick={() => handleButtonClick("9")}>9</button>
+                    <button onClick={() => handleButtonClick("7")} disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}>7</button>
+                    <button onClick={() => handleButtonClick("8")} disabled={isMinusClicked}  style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}>8</button>
+                    <button onClick={() => handleButtonClick("9")} style={{backgroundColor: "#ccc"}}>9</button>
                     <button
                         className="side-button"
                         style={{ height: "100%", position: "relative" }}
@@ -415,24 +430,29 @@ const Step3Inch = () => {
                 <div>
                     <button
                         onClick={() => handleButtonClick("0")}
-                        style={{ width: "25%" }}
+                        style={{ width: "25%", backgroundColor: "#ccc" }}
                     >
                         0
                     </button>
                      
                         <button
                             onClick={() => handleButtonClick("-")}
+                            style={{ backgroundColor: !isMinusClicked ? "#ccc" : "#fff" }}
+                            disabled={isMinusClicked}
                         >
                             -
                         </button>
                         <button
                             onClick={() => handleButtonClick(`"`)}
+                            style={{backgroundColor: "#ccc"}}
+                            disabled={!isMinusClicked}
                         >
                             "
                         </button>
                         
                         
-                <button onClick={handleCorrect}>&lt;</button>
+                            
+                            <button onClick={handleCorrect} style={{backgroundColor: "#ccc"}}>&lt;</button>
                 </div>
             </div>
 
