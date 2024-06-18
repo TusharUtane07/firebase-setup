@@ -72,12 +72,13 @@ const EditPage1Inch = () => {
 		setDisplayValue((prev) => prev.slice(0, -1));
 	};
 
-    const validateInput = (input) => {
-        const regex = /^[\d"'-.]*\d+X[\d"'-.]*\d+$/;
-        return regex.test(input);
-    };
+    
+    const isValidInput = (input) => {
+        const pattern = /.+X.+/;
+        return pattern.test(input);
+    }
 	const handleNext = async () => {
-        if (!validateInput(displayValue)) {
+        if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
@@ -105,7 +106,7 @@ const EditPage1Inch = () => {
 	};
 	
 	const handleFinalize = async () => {
-        if (!validateInput(displayValue)) {
+        if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
