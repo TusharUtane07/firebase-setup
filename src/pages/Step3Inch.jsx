@@ -82,14 +82,15 @@ const Step3Inch = () => {
     };
 ;
 
-const validateInput = (input) => {
-    const regex = /^[\d"'-.]*\d+X[\d"'-.]*\d+$/;
-    return regex.test(input);
-};
+    
+const isValidInput = (input) => {
+    const pattern = /.+X.+/;
+    return pattern.test(input);
+}
 
 
     const handleNext = async () => {
-        if (!validateInput(displayValue)) {
+        if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
@@ -128,7 +129,7 @@ const validateInput = (input) => {
     };
 
     const handleFinalize = async () => {
-        if (!validateInput(displayValue)) {
+        if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
@@ -169,12 +170,12 @@ const validateInput = (input) => {
         setIsMinusClicked(false)
 
         setDisplayValue("");
-        navigate("/final-result");
+        navigate("/final-result3");
     };
 
     const handleMismatchContinue = () => {
         setShowMismatchModal(false);
-        navigate("/final-result");
+        navigate("/final-result3");
     };
 
     const handleMismatchCancel = () => {

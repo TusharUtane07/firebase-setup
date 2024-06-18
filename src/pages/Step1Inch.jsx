@@ -78,16 +78,16 @@ const Step1Inch = () => {
     const handleCorrect = () => {
         setDisplayValue((prev) => prev.slice(0, -1));
     };
-    const validateInput = (input) => {
-        const regex = /^[\d"'-.]*\d+X[\d"'-.]*\d+$/;
-        return regex.test(input);
-    };
     
+    const isValidInput = (input) => {
+        const pattern = /.+X.+/;
+        return pattern.test(input);
+    };
     
 
     const handleNext = async () => {
-        if (!validateInput(displayValue)) {
-            alert("Invalid format");
+        if (!isValidInput(displayValue)) {
+            alert("Invalid input format. ");
             return;
         }
 
@@ -125,11 +125,10 @@ const Step1Inch = () => {
     };
 
     const handleFinalize = async () => {
-        if (displayValue && !validateInput(displayValue)) {
-            alert("Invalid format");
+        if (!isValidInput(displayValue)) {
+            alert("Invalid input format.");
             return;
         }
-
         if (quantityNumber !== "" && pieceNumber !== Number(quantityNumber)) {
             setShowMismatchModal(true);
             return;

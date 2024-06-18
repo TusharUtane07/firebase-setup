@@ -22,29 +22,42 @@ const Details = () => {
   });
   const [dynamicFields, setDynamicFields] = useState([]);
   const [lotNumberError, setLotNumberError] = useState(false);
+  const [quantityNumberError, setQuantityNumberError] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
+    let isValid = true;
 
-    if(!lotNumberValue){
-      setLotNumberError(true) 
-      return
+    if (!lotNumberValue) {
+      setLotNumberError(true);
+      isValid = false;
+    } else {
+      setLotNumberError(false);
     }
-    setLotNumberError(false)
+
+    if (!quantityNumber) {
+      setQuantityNumberError(true);
+      isValid = false;
+    } else {
+      setQuantityNumberError(false);
+    }
+
+    if (!isValid) return;
+
     const data = {
-      "clientName": clientName,
-      "vehicleNumber": vehicleNumber,
-      "lotNumber": lotNumberValue,
-      "quantityNumber": quantityNumber,
+      clientName,
+      vehicleNumber,
+      lotNumber: lotNumberValue,
+      quantityNumber,
     };
 
     dynamicFields.forEach((field) => {
       data[field.label] = field.value;
     });
 
-    const docRef = doc(database, "Data", "lot: "+lotNumberValue);
+    const docRef = doc(database, "Data", "lot: " + lotNumberValue);
     await setDoc(docRef, data);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -143,7 +156,7 @@ const Details = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
                   >
-                    {labels.quantityNumber} 
+                    {labels.quantityNumber}
                   </label>
                   <input
                     type="number"
@@ -152,6 +165,7 @@ const Details = () => {
                     value={quantityNumber}
                     onChange={(e) => setQuantityNumber(e.target.value)}
                   />
+                  {quantityNumberError && <div className="pt-2 text-center text-red-500">Quantity number needs to be added.</div>}
                 </div>
                 {dynamicFields.map((field, index) => (
                   <div key={index}>
