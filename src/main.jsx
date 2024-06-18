@@ -15,7 +15,20 @@ import { persistor, store } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ViewRecords from "./pages/ViewRecords.jsx";
+import ViewRecords3 from "./pages/ViewRecords3.jsx";
 import EditPage1Inch from "./pages/EditPage1Inch.jsx";
+import FinalResult3 from "./pages/FinalResult3.jsx";
+import EditPage3Inch from "./pages/EditPage3Inch.jsx";
+import WelcomePage from "./pages/WelcomePage.jsx";
+import { App as CapacitorApp } from '@capacitor/app';
+
+CapacitorApp.addListener('backButton', ({canGoBack}) => {
+	if(!canGoBack){
+	  CapacitorApp.exitApp();
+	} else {
+	  window.history.back();
+	}
+  });
 
 const router = createBrowserRouter([
 	{
@@ -23,6 +36,10 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
+				element: <WelcomePage />,
+			},
+			{
+				path: "details",
 				element: <Details />,
 			},
 			{
@@ -54,12 +71,24 @@ const router = createBrowserRouter([
 				element: <FinalResult />,
 			},
 			{
+				path: "final-result3",
+				element: <FinalResult3 />,
+			},
+			{
 				path: "view-records",
 				element: <ViewRecords />,
 			},
 			{
-				path: "edit-1inch",
+				path: "view-records3",
+				element: <ViewRecords3 />,
+			},
+			{
+				path: "edit-1inch/:id",
 				element: <EditPage1Inch />,
+			},
+			{
+				path: "edit-3inch/:id",
+				element: <EditPage3Inch />,
 			},
 		],
 	},

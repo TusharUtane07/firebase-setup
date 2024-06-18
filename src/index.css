@@ -22,3 +22,12 @@ button{
     color: white;
     margin-bottom: 0.2rem;
 }
+.custom-header-title{
+    margin: 0rem !important;
+}
+.check-decoration-no{
+    text-decoration: none !important;
+}
+a{
+    text-decoration: none !important;
+}
