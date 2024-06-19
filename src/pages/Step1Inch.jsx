@@ -125,10 +125,12 @@ const Step1Inch = () => {
     };
 
     const handleFinalize = async () => {
-        if (!isValidInput(displayValue)) {
-            alert("Invalid input format.");
-            return;
-        }
+        if (displayValue) {
+			if (!isValidInput(displayValue)) {
+				alert("Invalid format");
+				return;
+			}
+		}
         if (quantityNumber !== "" && pieceNumber !== Number(quantityNumber)) {
             setShowMismatchModal(true);
             return;

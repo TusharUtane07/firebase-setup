@@ -106,10 +106,12 @@ const EditPage1Inch = () => {
 	};
 	
 	const handleFinalize = async () => {
-        if (!isValidInput(displayValue)) {
-            alert("Invalid format");
-            return;
-        }
+        if (displayValue) {
+			if (!isValidInput(displayValue)) {
+				alert("Invalid format");
+				return;
+			}
+		}
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			

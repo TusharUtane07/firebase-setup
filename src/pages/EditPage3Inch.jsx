@@ -107,10 +107,12 @@ const EditPage3Inch = () => {
 	};
 	
 	const handleFinalize = async () => {
-        if (!isValidInput(displayValue)) {
-            alert("Invalid format");
-            return;
-        }
+        if (displayValue) {
+			if (!isValidInput(displayValue)) {
+				alert("Invalid format");
+				return;
+			}
+		}
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			
@@ -122,7 +124,7 @@ const EditPage3Inch = () => {
 				if (!isNaN(index) && index >= 0 && index < data?.results?.length) {
 					data.results[index].multiplication = displayValue;
 					await updateDoc(docRef, data);
-					navigate('/final-result')
+					navigate('/final-result3')
 				} else {
 					console.error("Invalid index or values array is empty.");
 				}
