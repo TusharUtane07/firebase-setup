@@ -4,6 +4,7 @@ import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { FaAngleLeft, FaHome } from "react-icons/fa";
 
 const EditPage3Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
@@ -26,6 +27,7 @@ const EditPage3Inch = () => {
 	const [secondLastValue, setSecondLastValue] = useState("");
 	const [thirdLastValue, setThirdLastValue] = useState("");
 
+	const [isMinusClicked, setIsMinusClicked] = useState(false);
 	const [valuesArray, setValuesArray] = useState();
 
 	const { id } = useParams();
@@ -64,8 +66,18 @@ const EditPage3Inch = () => {
 		getDocument();
 	}, [lotNumberValue]);
 
-	const handleButtonClick = (value) => {
-		setDisplayValue((prev) => (prev === "" ? value : prev + value));
+    const handleButtonClick = (value) => {
+		if (value === "-") {
+			setIsMinusClicked(true);
+			setDisplayValue((prev) => prev + "'-");
+		} else if (value === "X") {
+			if (!displayValue.includes("X")) {
+				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
+			}
+			setIsMinusClicked(false);
+		} else {
+			setDisplayValue((prev) => prev + value);
+		}
 	};
 
 	const handleCorrect = () => {
@@ -94,7 +106,7 @@ const EditPage3Inch = () => {
 				if (!isNaN(index) && index >= 0 && index < data?.results?.length) {
 					data.results[index].multiplication = displayValue;
 					await updateDoc(docRef, data);
-					navigate('/view-records')
+					navigate('/view-records3')
 				} else {
 					console.error("Invalid index or values array is empty.");
 				}
@@ -141,251 +153,156 @@ const EditPage3Inch = () => {
 		setDisplayValue("");
 	};
 
+
 	return (
-        <div
-            style={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-            }}
-        >
-            <button
-                className=""
-                onClick={() => navigate(`/`)}
-                style={{
-                    background: "#4E97F3",
-                    color: "white",
-                }}
-            >
-                {" "}
-                Home Screen
-            </button>
-            <div
-                style={{
-                    height: "30%",
-                }}
-            >
-                <div
-                    className="flex"
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        background: "#EDF0F9",
-                        height: "50%",
-                        padding: "0rem 1rem",
-                        paddingTop: "0.5rem",
-                    }}
-                >
-                    <div>
-                        <p
-                            style={{
-                                margin: "0rem",
-                            }}
-                        >
-                            Lot Number
-                        </p>
-                        <p className="border-2 border-black py-2 px-6 font-bold text-center">
-                            {lotNumberValue ? lotNumberValue : "Lot Number"}
-                        </p>
-                    </div>
-                    <div>
-                        <p
-                            style={{
-                                margin: "0rem",
-                            }}
-                        >
-                            Total Quantity
-                        </p>
-                        <p className="border-2 border-black py-2 px-6 font-bold text-center">
-                            {quantityNumber ? quantityNumber : "Null"}
-                        </p>
-                    </div>
+		<div className="bg-gray-900 h-screen text-white">
+			<div className="flex w-12 ml-2 rounded-md p-2 bg-blue-600">
+				<NavLink to={"/"} className="text-white">
+					<FaHome size={30} />
+				</NavLink>
+			</div>
+			<div className=" my-2 p-2 flex justify-between ">
+				<div className="text-center px-3 border-2  rounded-md border-white">
+					Lot <br /> {lotNumberValue ? lotNumberValue : "Lot Number"}
+				</div>
+				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white">
+					Quantity <br /> {quantityNumber ? quantityNumber : "Null"}
+				</div>
+				<div className="text-center px-3 border-2 rounded-md  border-white">
+					Piece Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
+				</div>
+			</div>
+			<div className=" px-4 my-2 flex items-center  justify-between">
+				<NavLink to={"/view-records3"}>
+					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
+						View Records
+					</button>
+				</NavLink>
+			</div>
+			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
+				{displayValue || placeholderText}
+			</div>
+			<div className="grid grid-cols-4  ">
+				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button >{lastValue || "LV"}</button>
+				</div>
+				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button>
+						{" "}
+						{secondLastValue || "SV"}
+					</button>
+				</div>
+				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button >
+						{" "}
+						{thirdLastValue || "TV"}
+					</button>
+				</div>
+				<div className="border-2 border-white bg-blue-500 h-20 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button onClick={handleClear} > AC</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("1")} disabled={isMinusClicked}> 1</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("2")} disabled={isMinusClicked}> 2</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button onClick={() => handleButtonClick("3")}> 3</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button onClick={() => handleButtonClick("X")} disabled={isMinusClicked}> X</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("4")} disabled={isMinusClicked}> 4</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("5")} disabled={isMinusClicked}> 5</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button onClick={() => handleButtonClick("6")}> 6</button>
+				</div>
+				<div className="border-2 border-white h-20 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button onClick={handleCorrect}>
+						<FaAngleLeft />
+					</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("7")} disabled={isMinusClicked}> 7</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("8")} disabled={isMinusClicked}> 8</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button onClick={() => handleButtonClick("9")}> 9</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button onClick={handleNext}> NEXT</button>
+				</div>
+				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button onClick={() => handleButtonClick("0")}> 0</button>
+				</div>
 
-                    <div>
-                        <p
-                            style={{
-                                margin: "0rem",
-                            }}
-                        >
-                            Current Piece
-                        </p>
-                        <p className="border-2 border-black py-2 px-6 font-bold text-center">
-                            {pieceNumber ? pieceNumber + 1 : 1}
-                        </p>
-                    </div>
-                </div>
-                <div
-                    className="bg-[#EDF0F9] text-xl pl-5 px-4 flex justify-between items-center"
-                    style={{
-                        paddingBottom: "1rem",
-                    }}
-                >
-                    
-                    <NavLink to={"/view-records3"}>
-                        <button className="check-view-button">View Records</button>
-                    </NavLink>
-                </div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button onClick={() => handleButtonClick("-")} disabled={isMinusClicked}>-</button>
+				</div>
+				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center `} >
+					<button onClick={() => handleButtonClick(`"`)}>"</button>
+				</div>
 
-                <p
-                    className="border-2 border-black text-xl px-4 py-2 text-center"
-                    style={{
-                        height: "27%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayValue || placeholderText}
-                </p>
-            </div>
-            <div
-                className="bottom-cal"
-                style={{
-                    height: "70%",
-                }}
-            >
-                <div className="botton-top-cal-check">
-                    <button className="side-button-rash" disabled >
-                        {lastValue || "LV"}
-                    </button>
-                    <button className="side-button-rash" disabled >
-                        {secondLastValue || "SV"}
-                    </button>
-                    <button className="side-button-rash" disabled >
-                        {thirdLastValue || "TV"}
-                    </button>
-                    <button className="side-button" onClick={handleClear}>
-                        AC
-                    </button>
-                </div>
-                <div>
-                    <button onClick={() => handleButtonClick("1")}>1</button>
-                    <button onClick={() => handleButtonClick("2")}>2</button>
-                    <button onClick={() => handleButtonClick("3")}>3</button>
-                    <button
-                        className="side-button"
-                        style={{ fontSize: "3rem", fontWeight: "100 " }}
-                        onClick={() => handleButtonClick("X")}
-                    >
-                        x
-                    </button>
-                </div>
-                <div>
-                    <button onClick={() => handleButtonClick("4")}>4</button>
-                    <button onClick={() => handleButtonClick("5")}>5</button>
-                    <button onClick={() => handleButtonClick("6")}>6</button>
-                    <button
-                        className="side-button"
-                        style={{ fontSize: "1.3rem" }}
-                        onClick={handleNext}
-                    >
-                        Next
-                    </button>
-                </div>
-                <div>
-                    <button onClick={() => handleButtonClick("7")}>7</button>
-                    <button onClick={() => handleButtonClick("8")}>8</button>
-                    <button onClick={() => handleButtonClick("9")}>9</button>
-                    <button
-                        className="side-button"
-                        style={{ height: "100%", position: "relative" }}
-                        onClick={handleFinalize}
-                    >
-                        Final
-                    </button>
-
-                </div>
-                <div>
-                    <button
-                        onClick={() => handleButtonClick("0")}
-                        style={{ width: "25%" }}
-                    >
-                        0
-                    </button>
-                    
-                        
-                        <button
-                            onClick={() => handleButtonClick("-")}
-                        >
-                            -
-                        </button>
-                        <button
-                            onClick={() => handleButtonClick(`"`)}
-                        >
-                            "
-                        </button>
-                        
-                       
-                <button onClick={handleCorrect}>&lt;</button>
-                </div>
-            </div>
-
-            {showModal && (
-                <div className="fixed inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-5 rounded mx-5">
-                        <h2 className="text-xl mb-4">Piece Limit Exceeded</h2>
-                        <p>
-                            Current piece limit is maxed. Enter the number to increase the
-                            quantity:
-                        </p>
-                        <input
-                            type="number"
-                            value={newQuantity}
-                            onChange={(e) => setNewQuantity(e.target.value)}
-                            placeholder="Enter Quantity "
-                            className="border p-2 mt-2 border-black w-full rounded-lg"
-                        />
-                        <div className="mt-4 flex justify-end">
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="mr-2 px-4 py-2 rounded"
-                            >
-                                Cancel
-                            </button>
-                            <button onClick={handleIncreaseQuantity} className="rounded">
-                                Increase
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-             {showMismatchModal && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-                >
-                    <div
-                        className="bg-white p-4 rounded"
-                    >
-                        <h2
-                            className="text-lg font-bold"
-                        >
-                            Quantity Mismatch
-                        </h2>
-                        <p>
-                            The piece number and quantity number do not match.
-                        </p>
-                        <div
-                            className="flex justify-between mt-4"
-                        >
-                            <button
-                                onClick={handleMismatchContinue}
-                                className="border-2 border-black py-2 px-4 font-bold text-center"
-                            >
-                                Continue
-                            </button>
-                            <button
-                                onClick={handleMismatchCancel}
-                                className="border-2 border-black py-2 px-4 font-bold text-center"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+				<div className="border-2  border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button onClick={handleFinalize}> FINAL</button>
+				</div>
+			</div>
+			{showModal && (
+				<div className="fixed text-black  inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
+					<div className="bg-white p-5 rounded mx-5">
+						<h2 className="text-xl mb-4">Piece Limit Exceeded</h2>
+						<p>
+							Current piece limit is maxed. Enter the number to increase the
+							quantity:
+						</p>
+						<input
+							type="number"
+							value={newQuantity}
+							onChange={(e) => setNewQuantity(e.target.value)}
+							placeholder="Enter Quantity "
+							className="border p-2 mt-2 border-black w-full rounded-lg"
+						/>
+						<div className="mt-4 flex justify-end">
+							<button
+								onClick={() => setShowModal(false)}
+								className="mr-2 px-4 py-2 rounded">
+								Cancel
+							</button>
+							<button onClick={handleIncreaseQuantity} className="rounded">
+								Increase
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+			{showMismatchModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+					<div className="bg-white text-black p-4 rounded">
+						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
+						<p>The piece number and quantity number do not match.</p>
+						<div className="flex justify-between mt-4">
+							<button
+								onClick={handleMismatchContinue}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								Continue
+							</button>
+							<button
+								onClick={handleMismatchCancel}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+		</div>
+	);
 };
-
 export default EditPage3Inch;
