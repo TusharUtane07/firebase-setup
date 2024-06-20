@@ -257,23 +257,37 @@ const Step1Inch = () => {
 
 	return (
 		<div className="bg-gray-900 h-screen text-white">
+            <div style={{
+                width:"100%",
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"center",
+                paddingTop:"1rem"
+            }}>
 			<div className=" w-12 ml-2 rounded-md p-2 bg-blue-600">
 				<NavLink to={"/"} className="text-white">
 					<FaHome size={30} />
 				</NavLink>
 			</div>
+            </div>
 			<div className=" my-2 p-2 flex justify-between ">
-				<div className="text-center px-3 border-2  rounded-md border-white">
+				<div className="text-center px-3 border-2  rounded-md border-white" style={{
+                    width:"30%"
+                }}>
 					Lot <br /> {lotNumberValue ? lotNumberValue : "Lot Number"}
 				</div>
-				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white">
+				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white" style={{
+                    width:"30%"
+                }}>
 					Quantity <br /> {quantityNumber ? quantityNumber : "Null"}
 				</div>
-				<div className="text-center px-3 border-2 rounded-md  border-white">
-					Piece Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
+				<div className="text-center px-3 border-2 rounded-md  border-white" style={{
+                    width:"30%"
+                }}>
+					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-4 my-2 flex items-center  justify-between">
+			<div className=" px-2 my-2 flex items-center  justify-between">
 				<select
 					name="measurement"
 					id="measurement"
@@ -292,7 +306,11 @@ const Step1Inch = () => {
 					</button>
 				</NavLink>
 			</div>
-			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
+			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
+            style={{
+                border:"0rem"
+            }}
+            >
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">

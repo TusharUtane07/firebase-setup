@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import backImg from "../img/bg-img/19.png"
 import imgDot from  "../img/core-img/dot.png"
+import logo from  "../img/core-img/logo.png"
 const WelcomePage = () => {
   return (
 <>
@@ -13,18 +14,22 @@ const WelcomePage = () => {
   <div className="hero-block-wrapper bg-primary">
     {/* Styles */}
     <div className="hero-block-styles">
-      <div
-        className="hb-styles1"
-        style={{ backgroundImage: `url(${imgDot})` }}
+      <img src={logo} 
+      style={{
+        filter: "invert(100%) brightness(200%)",
+        position:"absolute",
+        top:"1rem",
+        height:"5rem",
+        left:"1rem"
+
+      }}
       />
       <div className="hb-styles2" />
       <div className="hb-styles3" />
     </div>
     <div className="custom-container">
       {/* Skip Page */}
-      <div class="skip-page">
-        <Link to={"/details"}>Next</Link>
-      </div>
+   
       {/* Hero Block Content */}
       <div className="hero-block-content">
         <img className="mb-4" src={backImg} alt="" />

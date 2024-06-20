@@ -8,11 +8,9 @@ import { IoHome } from "react-icons/io5";
 // import loader from "../assets/images/loader.png";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
-
-import { downloadExcel } from './excelUtils'; // adjust the path as necessary
 import { camelCaseToReadable } from "../utils/commonFunctions";
 
-const FinalResult3 = () => {
+const FinalResult = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
@@ -34,9 +32,9 @@ const FinalResult3 = () => {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			const docSnapshot = await getDoc(docRef);
 			if (docSnapshot.exists()) {
-				setData(docSnapshot.data());
-				const fields = Object.keys(data).filter(key => !excludedFields.includes(key));
-				const selectOptions = fields.map(field => ({ label: field, value: field }));
+				setData(docSnapshot?.data());
+				const fields = Object?.keys(data)?.filter(key => !excludedFields.includes(key));
+				const selectOptions = fields?.map(field => ({ label: camelCaseToReadable(field), value: field }));
 				setOptions(selectOptions);
 			} else {
 				console.log("No such document!");
@@ -75,19 +73,19 @@ const FinalResult3 = () => {
 	// }
 
 	const handleExport = () => {
-        downloadExcel(data?.results, 'SampleData');
+		console.log(exportType);
 	};
 
 
 	// const options = [];
 	const handleChange = (value) => {
-		setSelectedFields(['quantityNumber', ...value]);
+		setSelectedFields(['quantityNumber','clientName', ...value]);
 	}
 
 	return (
 		<div className="h-screen">
 			<div
-				className="flex items-center gap-6 justify-start mb-7"
+				className="flex items-center gap-6 justify-start mb-2"
 				style={{
 					fontSize: "1rem",
 				}}>
@@ -106,10 +104,11 @@ const FinalResult3 = () => {
 
 
 			
-			<div className="">
+			<div className="" >
 				<Space
-					style={{ width: '100%' }}
+					style={{ width: '100%', padding:"1rem" }}
 					direction="vertical"
+					
 				>
 					<Select
 						mode="multiple"
@@ -122,16 +121,28 @@ const FinalResult3 = () => {
 					/>
 				</Space>
 
-
-			</div>
-
-			<div className="mx-4 my-4">
+		
+			<div className="mx-4 my-4" style={{
+				marginTop:"0rem !important"
+			}}>
 				{data &&
 					Object.entries(data)?.map(([key, value]) => {
 						if (excludedFields?.includes(key)) return null;
 						if (selectedFields?.includes(key)) {
-							return <p className="capitalize" key={key}>{`${key}: ${value}`}</p>;
-						}
+							return    <a class="affan-element-item" style={{
+								display:"flex",
+								alignItems:"center",
+								justifyContent:"space-between"
+							}}>
+								<p style={{
+									color:"black"
+								}}>
+							{camelCaseToReadable(key)}
+							</p>
+							<p>
+							{value}
+							</p>
+						  </a>						}
 						return null;
 					})}
 			</div>
@@ -216,10 +227,10 @@ const FinalResult3 = () => {
 					}}>
 					Export
 				</button>
-				
 			</div>
+		</div>
 		</div>
 	);
 };
 
-export default FinalResult3;
+export default FinalResult;

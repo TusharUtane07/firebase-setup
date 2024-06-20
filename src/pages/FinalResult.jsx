@@ -8,6 +8,7 @@ import { IoHome } from "react-icons/io5";
 // import loader from "../assets/images/loader.png";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
+import { camelCaseToReadable } from "../utils/commonFunctions";
 
 const FinalResult = () => {
 	const [data, setData] = useState(null);
@@ -33,7 +34,7 @@ const FinalResult = () => {
 			if (docSnapshot.exists()) {
 				setData(docSnapshot?.data());
 				const fields = Object?.keys(data)?.filter(key => !excludedFields.includes(key));
-				const selectOptions = fields?.map(field => ({ label: field, value: field }));
+				const selectOptions = fields?.map(field => ({ label: camelCaseToReadable(field), value: field }));
 				setOptions(selectOptions);
 			} else {
 				console.log("No such document!");
@@ -84,7 +85,7 @@ const FinalResult = () => {
 	return (
 		<div className="h-screen">
 			<div
-				className="flex items-center gap-6 justify-start mb-7"
+				className="flex items-center gap-6 justify-start mb-2"
 				style={{
 					fontSize: "1rem",
 				}}>
@@ -103,10 +104,11 @@ const FinalResult = () => {
 
 
 			
-			<div className="">
+			<div className="" >
 				<Space
-					style={{ width: '100%' }}
+					style={{ width: '100%', padding:"1rem" }}
 					direction="vertical"
+					
 				>
 					<Select
 						mode="multiple"
@@ -119,33 +121,28 @@ const FinalResult = () => {
 					/>
 				</Space>
 
-			<div className="mx-4">
-				{data && Object.entries(data).map(([key, value]) => {
-					if (excludedFields.includes(key)) return null;
-					return    <a class="affan-element-item" style={{
-						display:"flex",
-						alignItems:"center",
-						justifyContent:"space-between"
-					}}>
-						<p>
-					{camelCaseToReadable(key)}
-					</p>
-					<p>
-					${value}
-					</p>
-				  </a>
-					// return <p key={key}>{`${camelCaseToReadable(key)}: ${value}`}</p>;
-				})}
-
-			</div>
-
-			<div className="mx-4 my-4">
+		
+			<div className="mx-4 my-4" style={{
+				marginTop:"0rem !important"
+			}}>
 				{data &&
 					Object.entries(data)?.map(([key, value]) => {
 						if (excludedFields?.includes(key)) return null;
 						if (selectedFields?.includes(key)) {
-							return <p className="capitalize" key={key}>{`${key}: ${value}`}</p>;
-						}
+							return    <a class="affan-element-item" style={{
+								display:"flex",
+								alignItems:"center",
+								justifyContent:"space-between"
+							}}>
+								<p style={{
+									color:"black"
+								}}>
+							{camelCaseToReadable(key)}
+							</p>
+							<p>
+							{value}
+							</p>
+						  </a>						}
 						return null;
 					})}
 			</div>
@@ -205,7 +202,7 @@ const FinalResult = () => {
 				</div>
 			</div>
 			<div
-				className="mt-5 flex flex-col gap-3 border-2 border-black p-4 rounded-md m-3"
+				className="mt-5 flex flex-col gap-3 border-2 p-4 m-3"
 				style={{
 					display: "flex",
 					alignItems: "center",
@@ -231,6 +228,7 @@ const FinalResult = () => {
 					Export
 				</button>
 			</div>
+		</div>
 		</div>
 	);
 };
