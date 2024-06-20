@@ -91,7 +91,19 @@ const FinalResult3 = () => {
 			<div className="mx-4">
 				{data && Object.entries(data).map(([key, value]) => {
 					if (excludedFields.includes(key)) return null;
-					return <p key={key}>{`${camelCaseToReadable(key)}: ${value}`}</p>;
+					return    <a class="affan-element-item" style={{
+						display:"flex",
+						alignItems:"center",
+						justifyContent:"space-between"
+					}}>
+						<p>
+					{camelCaseToReadable(key)}
+					</p>
+					<p>
+					${value}
+					</p>
+				  </a>
+					// return <p key={key}>{`${camelCaseToReadable(key)}: ${value}`}</p>;
 				})}
 			</div>
 

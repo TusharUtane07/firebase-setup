@@ -31,7 +31,11 @@ const WelcomePage = () => {
         <h2 className="display-4 text-white mb-3">
 
         <h2 class="display-4 text-white mb-3" style={{marginTop:"3rem"}}>
-               Complete Your Measurement With SIZER
+               Complete Your Measurement With <span style={{
+                color:"rgb(255,192,7)",
+                fontSize:"3rem",
+                fontFamily:"sans-serif"
+               }}>SIZER</span>
 
               </h2>        </h2>
         <p className="text-white" style={{

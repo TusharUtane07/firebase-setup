@@ -55,26 +55,21 @@ const ViewRecords = () => {
       <div className="header-content header-style-five position-relative d-flex align-items-center justify-content-between">
         {/* Back Button */}
         <div className="back-button">
-          <a href="home.html">
+          <a onClick={() => navigate(`/step1inch`)} style={{
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center"
+          }}>
             <i className="bi bi-arrow-left-short" />
+            Return to Calculation
           </a>
         </div>
         {/* Page Title */}
         <div className="page-heading">
-          <h6 className="mb-0">Chats</h6>
+          <h6 className="mb-0">View Records</h6>
         </div>
         {/* Navbar Toggler */}
-        <div
-          className="navbar--toggler"
-          id="affanNavbarToggler"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#affanOffcanvas"
-          aria-controls="affanOffcanvas"
-        >
-          <span className="d-block" />
-          <span className="d-block" />
-          <span className="d-block" />
-        </div>
+    
       </div>
     </div>
   </div>
@@ -109,14 +104,7 @@ const ViewRecords = () => {
   <div className="page-content-wrapper py-3">
     {/* Add New Contact */}
     <div className="add-new-contact-wrap">
-      <a
-        className="shadow"
-        href="#"
-        data-bs-toggle="modal"
-        data-bs-target="#addnewcontact"
-      >
-        <i className="bi bi-plus-lg" />
-      </a>
+    
     </div>
     <div className="container">
      
@@ -128,404 +116,47 @@ const ViewRecords = () => {
       {/* Chat User List */}
       <ul className="ps-0 chat-user-list">
         {/* Single Chat User */}
-        <li className="p-3 chat-unread">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user1.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Designing World</h6>
-              <div className="last-chat">
-                <p className="mb-0 text-truncate">
-                  Hello, Are you there?
-                  <span className="badge rounded-pill bg-primary">2</span>
-                </p>
+        {data?.results?.map((item, index) => {
+          return(
+            <li className="p-3 chat-unread">
+            <a className="d-flex" href="chat.html">
+              {/* Thumbnail */}
+          
+              {/* Info */}
+
+              <div className="chat-user-info">
+                <h6 className="text-truncate mb-0">{item.multiplication} {item.measurement}</h6>
+                <div className="last-chat">
+                  <p className="mb-0 text-truncate">
+                  Peice Number : {index+1}
+                  </p>
+                </div>
               </div>
+            </a>
+            {/* Options */}
+            <div className="dropstart chat-options-btn">
+              <button
+                className="btn dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-three-dots-vertical" />
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <a onClick={() => navigate(`/edit-1inch/${index}`)}>
+                    <i className="bi bi-mic-mute" />
+                    Edit
+                  </a>
+                </li>
+            
+              </ul>
             </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user2.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Mustafa Rabbi</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">How can I help you?</p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3 offline">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user3.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Affan Islam</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">
-                  I want to buy your Affan template.
-                </p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user4.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Jannatun Lima</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">
-                  Affan - PWA Mobile HTML Template
-                </p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="#" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Waves Motion</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">
-                  <i className="bi bi-file-earmark-zip" />
-                  affan-pwa-mobile.zip
-                </p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3 offline">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user1.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Samantha Sarah</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">
-                  Would you please provide a purchase link?
-                </p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user2.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Hasnain Ahmed</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">
-                  Sure, Here are the purchase link. Please click the purchase
-                  now button, then fill up your all payment info.
-                </p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {/* Single Chat User */}
-        <li className="p-3 offline">
-          <a className="d-flex" href="chat.html">
-            {/* Thumbnail */}
-            <div className="chat-user-thumbnail me-3 shadow">
-              <img className="img-circle" src="img/bg-img/user3.png" alt="" />
-              <span className="active-status" />
-            </div>
-            {/* Info */}
-            <div className="chat-user-info">
-              <h6 className="text-truncate mb-0">Shaila Afrin</h6>
-              <div className="last-chat">
-                <p className="text-truncate mb-0">You are welcome 😍 😍</p>
-              </div>
-            </div>
-          </a>
-          {/* Options */}
-          <div className="dropstart chat-options-btn">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="bi bi-three-dots-vertical" />
-            </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a href="#">
-                  <i className="bi bi-mic-mute" />
-                  Mute
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-slash-circle" />
-                  Ban
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="bi bi-trash" />
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
+          </li>
+          )
+        })}
+       
       </ul>
     </div>
   </div>
