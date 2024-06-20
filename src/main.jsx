@@ -20,6 +20,7 @@ import EditPage1Inch from "./pages/EditPage1Inch.jsx";
 import FinalResult3 from "./pages/FinalResult3.jsx";
 import EditPage3Inch from "./pages/EditPage3Inch.jsx";
 import WelcomePage from "./pages/WelcomePage.jsx";
+import * as XLSX from 'xlsx';
 import { App as CapacitorApp } from '@capacitor/app';
 
 CapacitorApp.addListener('backButton', ({canGoBack}) => {

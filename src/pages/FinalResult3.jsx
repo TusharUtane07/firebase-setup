@@ -86,7 +86,7 @@ const FinalResult3 = () => {
 			</div>
 
 			<div className="mx-4">
-				{Object.entries(data).map(([key, value]) => {
+				{data && Object.entries(data).map(([key, value]) => {
 					if (excludedFields.includes(key)) return null;
 					return <p key={key}>{`${key}: ${value}`}</p>;
 				})}

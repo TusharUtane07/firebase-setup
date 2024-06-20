@@ -8,6 +8,9 @@ import { IoHome } from "react-icons/io5";
 // import loader from "../assets/images/loader.png";
 import { Radio, Space } from "antd-mobile";
 
+import { downloadExcel } from './excelUtils'; // adjust the path as necessary
+import { camelCaseToReadable } from "../utils/commonFunctions";
+
 const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -59,7 +62,7 @@ const FinalResult3 = () => {
 	// }
 
 	const handleExport = () => {
-		console.log(exportType);
+        downloadExcel(data?.results, 'SampleData');
 	};
 
 	const excludedFields = ["results", "secondLastValue", "thirdLastValue", "lastValue", "inch"];
@@ -86,9 +89,9 @@ const FinalResult3 = () => {
 			</div>
 
 			<div className="mx-4">
-				{Object.entries(data).map(([key, value]) => {
+				{data && Object.entries(data).map(([key, value]) => {
 					if (excludedFields.includes(key)) return null;
-					return <p key={key}>{`${key}: ${value}`}</p>;
+					return <p key={key}>{`${camelCaseToReadable(key)}: ${value}`}</p>;
 				})}
 			</div>
 
@@ -174,6 +177,7 @@ const FinalResult3 = () => {
 				>
 					Export
 				</button>
+				
 			</div>
 		</div>
 	);

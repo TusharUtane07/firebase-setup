@@ -4,6 +4,7 @@ import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
+import { FaAngleLeft, FaHome } from "react-icons/fa";
 // import loader from '../assets/images/loader.png'
 
 const Step3Inch = () => {
