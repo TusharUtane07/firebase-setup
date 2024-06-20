@@ -112,7 +112,7 @@ const Details = () => {
       </div>
       {/* Register Form */}
       <div className="register-form mt-4">
-        <h5 className="mb-3 text-center mb-2">Please Enter the Lot Details Accordingly </h5>
+        <h5 className="mb-3 text-center ">Please Enter the Lot Details Accordingly </h5>
         <div >
           <div className="form-group text-start mb-3">
           <label

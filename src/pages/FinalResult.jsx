@@ -5,7 +5,7 @@ import { database } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
-// import loader from "../assets/images/loader.png";
+import loader from "../assests/loader.png";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
@@ -33,7 +33,7 @@ const FinalResult = () => {
 			const docSnapshot = await getDoc(docRef);
 			if (docSnapshot.exists()) {
 				setData(docSnapshot?.data());
-				const fields = Object?.keys(data)?.filter(key => !excludedFields.includes(key));
+				const fields = Object?.keys(docSnapshot?.data())?.filter(key => !excludedFields.includes(key));
 				const selectOptions = fields?.map(field => ({ label: camelCaseToReadable(field), value: field }));
 				setOptions(selectOptions);
 			} else {
@@ -64,13 +64,13 @@ const FinalResult = () => {
 		return parseFloat(value);
 	};
 
-	// if (loading) {
-	// 	return (
-	// 		<div className="flex items-center justify-center h-screen animate-spin">
-	// 			<img src={loader} alt="Loading..." className="w-40 h-40" />
-	// 		</div>
-	// 	);
-	// }
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center h-screen animate-spin">
+				<img src={loader} alt="Loading..." className="w-40 h-40" />
+			</div>
+		);
+	}
 
 	const handleExport = () => {
 		console.log(exportType);

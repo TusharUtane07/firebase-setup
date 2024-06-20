@@ -5,8 +5,7 @@ import { database } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { IoHome } from 'react-icons/io5';
-// import loader from '../assets/images/loader.png'
-
+import loader from "../assests/loader.png";
 const ViewRecords = () => {
     const [data, setData] = useState(null);
     const [toogleView, setToggleView] = useState("detailed")
@@ -35,11 +34,11 @@ const ViewRecords = () => {
         getData();
     }, [lotNumberValue]);
 
-  //   if (loading) {
-  //     return <div className="flex items-center justify-center h-screen animate-spin">
-  //         <img src={loader} alt="Loading..." className="w-40 h-40" />
-  //     </div>;
-  // }
+    if (loading) {
+      return <div className="flex items-center justify-center h-screen animate-spin">
+          <img src={loader} alt="Loading..." className="w-40 h-40" />
+      </div>;
+  }
 
     return (
 
@@ -119,7 +118,7 @@ const ViewRecords = () => {
         {data?.results?.map((item, index) => {
           return(
             <li className="p-3 chat-unread">
-            <a className="d-flex" href="chat.html">
+            {/* <a className="d-flex" href="chat.html"> */}
               {/* Thumbnail */}
           
               {/* Info */}
@@ -132,7 +131,7 @@ const ViewRecords = () => {
                   </p>
                 </div>
               </div>
-            </a>
+           
             {/* Options */}
             <div className="dropstart chat-options-btn">
               <button

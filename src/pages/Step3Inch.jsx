@@ -5,8 +5,7 @@ import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaHome } from "react-icons/fa";
-// import loader from '../assets/images/loader.png'
-
+import loader from "../assests/loader.png";
 const Step3Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
 	const [showModal, setShowModal] = useState(false);
@@ -253,14 +252,14 @@ const Step3Inch = () => {
 		setIsMinusClicked(false);
 	};
 
-    // if (loading) {
-    //     return <div className="flex items-center justify-center h-screen animate-spin">
-    //         <img src={loader} alt="Loading..." className="w-40 h-40" />
-    //     </div>;
-    // }
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen animate-spin">
+            <img src={loader} alt="Loading..." className="w-40 h-40" />
+        </div>;
+    }
 
 	return (
-		<div className="bg-gray-900 h-screen text-white">
+		<div className="bg-gray-900 text-white">
          <div style={{
                 width:"100%",
                 display:"flex",
@@ -291,85 +290,85 @@ const Step3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex items-center  justify-between">
+			<div className=" px-2 my-2 flex items-center  justify-center">
 				<NavLink to={"/view-records3"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
 			</div>
-			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
+			<div className=" rounded-md my-3 mx-1 h-20 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">
-				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button onClick={handleLastValue}>{lastValue || "LV"}</button>
 				</div>
-				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button onClick={handleSecondLastValue}>
 						{" "}
 						{secondLastValue || "SV"}
 					</button>
 				</div>
-				<div className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button onClick={handleThirdLastValue}>
 						{" "}
 						{thirdLastValue || "TV"}
 					</button>
 				</div>
-				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-20 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-16 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button  > AC</button>
 				</div>
-				<div  onClick={() => handleButtonClick("1")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("1")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 1</button>
 				</div>
-				<div  onClick={() => handleButtonClick("2")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("2")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 2</button>
 				</div>
-				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 3</button>
 				</div>
-				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-20 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
+				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-16 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button> X</button>
 				</div>
-				<div  onClick={() => handleButtonClick("4")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("4")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 4</button>
 				</div>
-				<div  onClick={() => handleButtonClick("5")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("5")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 5</button>
 				</div>
-				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 6</button>
 				</div>
-				<div onClick={handleCorrect} className="border-2 border-white h-20 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleCorrect} className="border-2 border-white h-16 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >
 						<FaAngleLeft />
 					</button>
 				</div>
-				<div  onClick={() => handleButtonClick("7")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("7")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 7</button>
 				</div>
-				<div  onClick={() => handleButtonClick("8")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("8")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}> 8</button>
 				</div>
-				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleNext} className="border-2 border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button > NEXT</button>
 				</div>
-				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 0</button>
 				</div>
 
-				<div  onClick={() => handleButtonClick("-")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<div  onClick={() => handleButtonClick("-")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
 					<button disabled={isMinusClicked}>-</button>
 				</div>
-				<div  onClick={() => handleButtonClick(`"`)} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center `} >
+				<div  onClick={() => handleButtonClick(`"`)} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center `} >
 					<button>"</button>
 				</div>
 
-				<div onClick={handleFinalize} className="border-2  border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button > FINAL</button>
 				</div>
 			</div>
@@ -402,7 +401,7 @@ const Step3Inch = () => {
 				</div>
 			)}
 			{showMismatchModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+				<div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
 					<div className="bg-white text-black p-4 rounded">
 						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
 						<p>The piece number and quantity number do not match.</p>
