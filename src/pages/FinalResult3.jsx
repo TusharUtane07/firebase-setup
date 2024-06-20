@@ -7,21 +7,34 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
 // import loader from "../assets/images/loader.png";
 import { Radio, Space } from "antd-mobile";
+import { Select } from "antd";
 
 const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
+	const [selectedFields, setSelectedFields] = useState(['quantityNumber', 'clientName', 'lotNumber']);
+	const [options, setOptions] = useState([]);
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
-
+	
+	const excludedFields = [
+		'results',
+		'secondLastValue',
+		'thirdLastValue',
+		'lastValue',
+		'inch',
+	];
 	const getData = async () => {
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			const docSnapshot = await getDoc(docRef);
 			if (docSnapshot.exists()) {
 				setData(docSnapshot.data());
+				const fields = Object.keys(data).filter(key => !excludedFields.includes(key));
+				const selectOptions = fields.map(field => ({ label: field, value: field }));
+				setOptions(selectOptions);
 			} else {
 				console.log("No such document!");
 			}
@@ -62,7 +75,11 @@ const FinalResult3 = () => {
 		console.log(exportType);
 	};
 
-	const excludedFields = ["results", "secondLastValue", "thirdLastValue", "lastValue", "inch"];
+
+	// const options = [];
+	const handleChange = (value) => {
+		setSelectedFields(['quantityNumber', ...value]);
+	}
 
 	return (
 		<div className="h-screen">
@@ -70,8 +87,7 @@ const FinalResult3 = () => {
 				className="flex items-center gap-6 justify-start mb-7"
 				style={{
 					fontSize: "1rem",
-				}}
-			>
+				}}>
 				<div>
 					<IoIosArrowRoundBack
 						size={50}
@@ -85,13 +101,34 @@ const FinalResult3 = () => {
 				</div>
 			</div>
 
-			<div className="mx-4">
-				{data && Object.entries(data).map(([key, value]) => {
-					if (excludedFields.includes(key)) return null;
-					return <p key={key}>{`${key}: ${value}`}</p>;
-				})}
+			
+			<div className="">
+				<Space
+					style={{ width: '100%' }}
+					direction="vertical"
+				>
+					<Select
+						mode="multiple"
+						allowClear
+						style={{ width: '100%' }}
+						placeholder="Please select"
+						defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
+						onChange={handleChange}
+						options={options}
+					/>
+				</Space>
 			</div>
 
+			<div className="mx-4 my-4">
+				{data &&
+					Object.entries(data)?.map(([key, value]) => {
+						if (excludedFields?.includes(key)) return null;
+						if (selectedFields?.includes(key)) {
+							return <p className="capitalize" key={key}>{`${key}: ${value}`}</p>;
+						}
+						return null;
+					})}
+			</div>
 			<div className="mx-4 overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -131,8 +168,9 @@ const FinalResult3 = () => {
 							return (
 								<tbody key={index}>
 									<tr
-										className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}
-									>
+										className={`border-b ${
+											index % 2 === 0 ? "bg-gray-50" : "bg-white"
+										} hover:bg-gray-100`}>
 										<td className="py-2 px-4">{index + 1}</td>
 										<td className="py-2 px-4">{index + 1}</td>
 										<td className="py-2 px-4">{value1}</td>
@@ -152,8 +190,7 @@ const FinalResult3 = () => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-				}}
-			>
+				}}>
 				<Radio.Group value={exportType} onChange={(e) => setExportType(e)}>
 					<Space direction="vertical" block className="">
 						<Radio value="excel" block>
@@ -170,8 +207,7 @@ const FinalResult3 = () => {
 						color: "white",
 						width: "70%",
 						alignSelf: "center",
-					}}
-				>
+					}}>
 					Export
 				</button>
 			</div>

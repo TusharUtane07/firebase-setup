@@ -303,60 +303,60 @@ const Step3Inch = () => {
 						{thirdLastValue || "TV"}
 					</button>
 				</div>
-				<div className="border-2 border-white bg-blue-500 h-20 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleClear} > AC</button>
+				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-20 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button  > AC</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("1")} disabled={isMinusClicked}> 1</button>
+				<div  onClick={() => handleButtonClick("1")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 1</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("2")} disabled={isMinusClicked}> 2</button>
+				<div  onClick={() => handleButtonClick("2")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 2</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
-					<button onClick={() => handleButtonClick("3")}> 3</button>
+				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button> 3</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button onClick={() => handleButtonClick("X")} disabled={isMinusClicked}> X</button>
+				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-20 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button> X</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("4")} disabled={isMinusClicked}> 4</button>
+				<div  onClick={() => handleButtonClick("4")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 4</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("5")} disabled={isMinusClicked}> 5</button>
+				<div  onClick={() => handleButtonClick("5")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 5</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
-					<button onClick={() => handleButtonClick("6")}> 6</button>
+				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button> 6</button>
 				</div>
-				<div className="border-2 border-white h-20 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleCorrect}>
+				<div onClick={handleCorrect} className="border-2 border-white h-20 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button >
 						<FaAngleLeft />
 					</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("7")} disabled={isMinusClicked}> 7</button>
+				<div  onClick={() => handleButtonClick("7")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 7</button>
 				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("8")} disabled={isMinusClicked}> 8</button>
+				<div  onClick={() => handleButtonClick("8")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}> 8</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
-					<button onClick={() => handleButtonClick("9")}> 9</button>
+				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button> 9</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleNext}> NEXT</button>
+				<div onClick={handleNext} className="border-2 border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button > NEXT</button>
 				</div>
-				<div className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
-					<button onClick={() => handleButtonClick("0")}> 0</button>
-				</div>
-
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button onClick={() => handleButtonClick("-")} disabled={isMinusClicked}>-</button>
-				</div>
-				<div className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center `} >
-					<button onClick={() => handleButtonClick(`"`)}>"</button>
+				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
+					<button> 0</button>
 				</div>
 
-				<div className="border-2  border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleFinalize}> FINAL</button>
+				<div  onClick={() => handleButtonClick("-")} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+					<button disabled={isMinusClicked}>-</button>
+				</div>
+				<div  onClick={() => handleButtonClick(`"`)} className={`border-2 border-white h-20 rounded-md   mx-2 my-2 flex items-center justify-center `} >
+					<button>"</button>
+				</div>
+
+				<div onClick={handleFinalize} className="border-2  border-white h-20 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button > FINAL</button>
 				</div>
 			</div>
 			{showModal && (
