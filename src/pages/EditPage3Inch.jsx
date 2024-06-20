@@ -155,7 +155,7 @@ const EditPage3Inch = () => {
 
 
 	return (
-		<div className="bg-gray-900 text-white">
+		<div className="bg-gray-900 min-h-screen text-white">
          <div style={{
                 width:"100%",
                 display:"flex",
@@ -193,7 +193,7 @@ const EditPage3Inch = () => {
 					</button>
 				</NavLink>
 			</div>
-			<div className=" rounded-md my-3 mx-1 h-20 text-4xl uppercase text-end flex justify-center items-center pr-3">
+			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">

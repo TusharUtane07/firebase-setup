@@ -142,7 +142,7 @@ const EditPage1Inch = () => {
 	};
 
 	return (
-		<div className="bg-gray-900 p-1 text-white">
+		<div className="bg-gray-900 min-h-screen p-1 text-white">
 		<div style={{
 			width:"100%",
 			display:"flex",
@@ -192,7 +192,7 @@ const EditPage1Inch = () => {
 				</button>
 			</NavLink>
 		</div>
-		<div className="border-2 rounded-md my-3 mx-1 border-white h-20 text-4xl uppercase text-end flex justify-center items-center pr-3"
+		<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
 		style={{
 			border:"0rem"
 		}}

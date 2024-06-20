@@ -256,7 +256,7 @@ const Step1Inch = () => {
         }
 
 	return (
-		<div className="bg-gray-900 p-1 text-white">
+		<div className="bg-gray-900 min-h-screen p-1 text-white">
             <div style={{
                 width:"100%",
                 display:"flex",
@@ -306,14 +306,14 @@ const Step1Inch = () => {
 					</button>
 				</NavLink>
 			</div>
-			<div className="border-2 rounded-md my-3 mx-1 border-white h-20 text-4xl uppercase text-end flex justify-center items-center pr-3"
+			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
             style={{
                 border:"0rem"
             }}
             >
 				{displayValue || placeholderText}
 			</div>
-			<div className="grid grid-cols-4  ">
+			<div className="grid grid-cols-4 pb-2 ">
 				<div onClick={handleLastValue} className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >{lastValue || "LV"}</button>
 				</div>

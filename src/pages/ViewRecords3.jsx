@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { IoHome } from 'react-icons/io5';
 import loader from "../assests/loader.png";
+import { BsPencilSquare } from 'react-icons/bs';
 const ViewRecords3 = () => {
     const [data, setData] = useState(null);
     const [toogleView, setToggleView] = useState("detailed")
@@ -133,23 +134,10 @@ const ViewRecords3 = () => {
             
             {/* Options */}
             <div className="dropstart chat-options-btn">
-              <button
-                className="btn dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="bi bi-three-dots-vertical" />
-              </button>
-              <ul className="dropdown-menu">
-                <li>
-                  <a onClick={() => navigate(`/edit-3inch/${index}`)}>
-                    <i className="bi bi-mic-mute" />
-                    Edit
+            <a onClick={() => navigate(`/edit-3inch/${index}`)}>
+                  <BsPencilSquare />
+                  
                   </a>
-                </li>
-            
-              </ul>
             </div>
           </li>
           )
