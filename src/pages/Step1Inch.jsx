@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
-// import loader from "../assets/images/loader.png";
+import loader from "../assests/loader.png";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaHome } from "react-icons/fa";
@@ -247,16 +247,16 @@ const Step1Inch = () => {
 		updateLastData(thirdLastValue);
 	};
 
-        // if (loading) {
-        // 	return (
-        // 		<div className="flex items-center justify-center h-screen animate-spin">
-        // 			<img src={loader} alt="Loading..." className="w-40 h-40" />
-        // 		</div>
-        // 	);
-        // }
+        if (loading) {
+        	return (
+        		<div className="flex items-center justify-center h-screen animate-spin">
+        			<img src={loader} alt="Loading..." className="w-40 h-40" />
+        		</div>
+        	);
+        }
 
 	return (
-		<div className="bg-gray-900 h-screen text-white">
+		<div className="bg-gray-900 p-1 text-white">
             <div style={{
                 width:"100%",
                 display:"flex",
@@ -264,7 +264,7 @@ const Step1Inch = () => {
                 justifyContent:"center",
                 paddingTop:"1rem"
             }}>
-			<div className=" w-12 ml-2 rounded-md p-2 bg-blue-600">
+			<div className="  ml-2 rounded-md p-2 bg-blue-600">
 				<NavLink to={"/"} className="text-white">
 					<FaHome size={30} />
 				</NavLink>
@@ -293,7 +293,7 @@ const Step1Inch = () => {
 					id="measurement"
 					value={measurementType}
 					onChange={(e) => setMesurementType(e.target.value)}
-					className="bg-black text-xl  ">
+					className="bg-gray-900 text-xl  ">
 					<option value="mm">MM</option>
 					<option value="cm">CM</option>
 					<option value="meter">METER</option>
@@ -306,7 +306,7 @@ const Step1Inch = () => {
 					</button>
 				</NavLink>
 			</div>
-			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
+			<div className="border-2 rounded-md my-3 mx-1 border-white h-20 text-4xl uppercase text-end flex justify-center items-center pr-3"
             style={{
                 border:"0rem"
             }}
@@ -314,63 +314,63 @@ const Step1Inch = () => {
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">
-				<div onClick={handleLastValue} className="border-2 border-white h-20 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleLastValue} className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >{lastValue || "LV"}</button>
 				</div>
-				<div onClick={handleSecondLastValue} className="border-2 border-white h-20 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleSecondLastValue} className="border-2 border-white h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >
 						{" "}
 						{secondLastValue || "SV"}
 					</button>
 				</div>
-				<div onClick={handleThirdLastValue} className="border-2 border-white h-20  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleThirdLastValue} className="border-2 border-white h-16  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >
 						{" "}
 						{thirdLastValue || "TV"}
 					</button>
 				</div>
-				<div onClick={handleClear}  className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<div onClick={handleClear}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button > AC</button>
 				</div>
-				<div  onClick={() => handleButtonClick("1")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("1")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 1</button>
 				</div>
-				<div  onClick={() => handleButtonClick("2")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("2")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 2</button>
 				</div>
-				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 3</button>
 				</div>
-				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> X</button>
 				</div>
-				<div  onClick={() => handleButtonClick("4")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("4")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 4</button>
 				</div>
-				<div  onClick={() => handleButtonClick("5")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("5")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 5</button>
 				</div>
-				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 6</button>
 				</div>
-				<div onClick={handleCorrect}  className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<div onClick={handleCorrect}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button >
 						<FaAngleLeft />
 					</button>
 				</div>
-				<div  onClick={() => handleButtonClick("7")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("7")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 7</button>
 				</div>
-				<div  onClick={() => handleButtonClick("8")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("8")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 8</button>
 				</div>
-				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<div onClick={handleNext} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button > NEXT</button>
 				</div>
-				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 0</button>
 				</div>
 
@@ -378,22 +378,22 @@ const Step1Inch = () => {
 				measurementType === "cm" ||
 				measurementType === "meter" ? (
 					<>
-                    <div  onClick={() => handleButtonClick(".")} className="col-span-2  border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+                    <div  onClick={() => handleButtonClick(".")} className="col-span-2  border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 						<button>.</button>
                     </div>
 					</>
 				) : (
 					<>
-                    <div  onClick={() => handleButtonClick("-")} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+                    <div  onClick={() => handleButtonClick("-")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 						<button>-</button>
                     </div>
-                    <div onClick={() => handleButtonClick(`"`)} className="border-2 border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+                    <div onClick={() => handleButtonClick(`"`)} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 						<button >"</button>
                     </div>
 					</>
 				)}
 
-				<div onClick={handleFinalize} className="border-2  border-white h-20 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button  > FINAL</button>
 				</div>
 			</div>
