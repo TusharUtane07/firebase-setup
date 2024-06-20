@@ -35,11 +35,6 @@ const ViewRecords3 = () => {
         getData();
     }, [lotNumberValue]);
 
-  //   if (loading) {
-  //     return <div className="flex items-center justify-center h-screen animate-spin">
-  //         <img src={loader} alt="Loading..." className="w-40 h-40" />
-  //     </div>;
-  // }
 
     return (
 

@@ -162,7 +162,7 @@ const Details = () => {
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
                   />
-                  {lotNumberError && <div className="pt-2  text-red-500">Lot number needs to be added.</div>}
+                  {lotNumberError && <div className="pt-2  text-red-500">{labels.lotNumber} needs to be added.</div>}
             <div className="position-absolute" id="password-visibility">
               <i className="bi bi-eye-slash" />
             </div>
