@@ -9,6 +9,9 @@ import { IoHome } from "react-icons/io5";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 
+import { downloadExcel } from './excelUtils'; // adjust the path as necessary
+import { camelCaseToReadable } from "../utils/commonFunctions";
+
 const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -72,7 +75,7 @@ const FinalResult3 = () => {
 	// }
 
 	const handleExport = () => {
-		console.log(exportType);
+        downloadExcel(data?.results, 'SampleData');
 	};
 
 
@@ -101,6 +104,7 @@ const FinalResult3 = () => {
 				</div>
 			</div>
 
+
 			
 			<div className="">
 				<Space
@@ -117,6 +121,8 @@ const FinalResult3 = () => {
 						options={options}
 					/>
 				</Space>
+
+
 			</div>
 
 			<div className="mx-4 my-4">
@@ -210,6 +216,7 @@ const FinalResult3 = () => {
 					}}>
 					Export
 				</button>
+				
 			</div>
 		</div>
 	);

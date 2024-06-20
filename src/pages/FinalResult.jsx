@@ -101,6 +101,7 @@ const FinalResult = () => {
 				</div>
 			</div>
 
+
 			
 			<div className="">
 				<Space
@@ -117,6 +118,25 @@ const FinalResult = () => {
 						options={options}
 					/>
 				</Space>
+
+			<div className="mx-4">
+				{data && Object.entries(data).map(([key, value]) => {
+					if (excludedFields.includes(key)) return null;
+					return    <a class="affan-element-item" style={{
+						display:"flex",
+						alignItems:"center",
+						justifyContent:"space-between"
+					}}>
+						<p>
+					{camelCaseToReadable(key)}
+					</p>
+					<p>
+					${value}
+					</p>
+				  </a>
+					// return <p key={key}>{`${camelCaseToReadable(key)}: ${value}`}</p>;
+				})}
+
 			</div>
 
 			<div className="mx-4 my-4">
