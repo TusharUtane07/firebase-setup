@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
-import loader from "../assets/images/loader.png";
+// import loader from "../assets/images/loader.png";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaHome } from "react-icons/fa";
@@ -247,13 +247,13 @@ const Step1Inch = () => {
 		updateLastData(thirdLastValue);
 	};
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-screen animate-spin">
-				<img src={loader} alt="Loading..." className="w-40 h-40" />
-			</div>
-		);
-	}
+        // if (loading) {
+        // 	return (
+        // 		<div className="flex items-center justify-center h-screen animate-spin">
+        // 			<img src={loader} alt="Loading..." className="w-40 h-40" />
+        // 		</div>
+        // 	);
+        // }
 
 	return (
 		<div className="bg-gray-900 h-screen text-white">

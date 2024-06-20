@@ -4,8 +4,7 @@ import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
-import loader from "../assets/images/loader.png";
-import { FaAngleLeft, FaHome } from "react-icons/fa";
+// import loader from '../assets/images/loader.png'
 
 const Step3Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
@@ -253,13 +252,11 @@ const Step3Inch = () => {
 		setIsMinusClicked(false);
 	};
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-screen animate-spin">
-				<img src={loader} alt="Loading..." className="w-40 h-40" />
-			</div>
-		);
-	}
+    // if (loading) {
+    //     return <div className="flex items-center justify-center h-screen animate-spin">
+    //         <img src={loader} alt="Loading..." className="w-40 h-40" />
+    //     </div>;
+    // }
 
 	return (
 		<div className="bg-gray-900 h-screen text-white">

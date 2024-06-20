@@ -5,7 +5,7 @@ import { database } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
-import loader from "../assets/images/loader.png";
+// import loader from "../assets/images/loader.png";
 import { Radio, Space } from "antd-mobile";
 
 const FinalResult3 = () => {
@@ -50,13 +50,13 @@ const FinalResult3 = () => {
 		return parseFloat(value);
 	};
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center h-screen animate-spin">
-				<img src={loader} alt="Loading..." className="w-40 h-40" />
-			</div>
-		);
-	}
+	// if (loading) {
+	// 	return (
+	// 		<div className="flex items-center justify-center h-screen animate-spin">
+	// 			<img src={loader} alt="Loading..." className="w-40 h-40" />
+	// 		</div>
+	// 	);
+	// }
 
 	const handleExport = () => {
 		console.log(exportType);

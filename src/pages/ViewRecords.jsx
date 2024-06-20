@@ -5,7 +5,7 @@ import { database } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { IoHome } from 'react-icons/io5';
-import loader from '../assets/images/loader.png'
+// import loader from '../assets/images/loader.png'
 
 const ViewRecords = () => {
     const [data, setData] = useState(null);
