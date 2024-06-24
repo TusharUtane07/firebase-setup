@@ -27,6 +27,10 @@ const Step3Inch = () => {
 	const [data, setData] = useState();
 	const [measurementType, setMesurementType] = useState("");
 	const [isMinusClicked, setIsMinusClicked] = useState(false);
+	const [lengthUsed, setLengthUsed] = useState([]);
+	const [breadthUsed, setBreadthUsed] = useState([]);
+	const [filteredLengths, setFilteredLengths] = useState([]);
+	const [filteredBreadth, setFilteredBreadth] = useState([]);
 
 	const navigate = useNavigate();
 
@@ -47,6 +51,9 @@ const Step3Inch = () => {
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
+
+				setLengthUsed(data?.length);
+				setBreadthUsed(data?.breadth);
 				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
 				console.log("No such document!");
@@ -74,7 +81,18 @@ const Step3Inch = () => {
 			}
 			setIsMinusClicked(false);
 		} else {
-			setDisplayValue((prev) => prev + value);
+			const newDisplayValue = displayValue + value;
+			setDisplayValue(newDisplayValue);
+
+			const newFilteredLengths = lengthUsed.filter(length => 
+				length.toString().startsWith(newDisplayValue)
+			);
+
+			setFilteredLengths(newFilteredLengths);
+			const newFilteredBreadths = breadthUsed.filter(breadth => 
+				breadth.toString().startsWith(newDisplayValue)
+			);
+			setFilteredBreadth(newFilteredBreadths);
 		}
 	};
 
@@ -87,11 +105,16 @@ const Step3Inch = () => {
 	};
 
 	const handleNext = async () => {
-		if (!displayValue && !isValidInput(displayValue)) {
-			alert("Invalid format");
+		if (!isValidInput(displayValue)) {
+			alert("Invalid input format.");
 			return;
 		}
+
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
+			const [firstNumber, secondNumber] = displayValue
+				.split("X")
+				.map((num) => parseFloat(num.trim()));
+
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
@@ -99,6 +122,8 @@ const Step3Inch = () => {
 			const newResult = {
 				multiplication: displayValue,
 				measurement: measurementType,
+				firstNumber: firstNumber,
+				secondNumber: secondNumber,
 			};
 
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
@@ -108,10 +133,15 @@ const Step3Inch = () => {
 					if (!docSnapshot.exists()) {
 						throw "Document does not exist!";
 					}
-	
+
 					const currentResults = docSnapshot.data().results || [];
+					const currentLengths = docSnapshot.data().length;
+					const currentBreadths = docSnapshot.data().breadth;
+
 					transaction.update(docRef, {
 						results: [...currentResults, newResult],
+						length: [...currentLengths, firstNumber],
+						breadth: [...currentBreadths, secondNumber],
 						lastValue: newLastValue,
 						secondLastValue: newSecondLastValue,
 						thirdLastValue: newThirdLastValue,
@@ -121,70 +151,82 @@ const Step3Inch = () => {
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
+
 			setLastValue(newLastValue);
 			setSecondLastValue(newSecondLastValue);
 			setThirdLastValue(newThirdLastValue);
 			setPieceNumber(pieceNumber + 1);
 			setDisplayValue("");
-			setIsMinusClicked(false);
 		} else {
 			setShowModal(true);
 		}
 	};
 	const handleFinalize = async () => {
-		if(!displayValue && quantityNumber !== pieceNumber){
-			setShowMismatchModal(true)
+		if (!displayValue && quantityNumber !== pieceNumber) {
+			setShowMismatchModal(true);
+			return;
 		}
-		if(quantityNumber < pieceNumber+2){
-			setShowModal(true)
-		}else{
 
+		if (quantityNumber < pieceNumber + 2) {
+			setShowModal(true);
+		} else {
 			if (displayValue) {
 				if (!isValidInput(displayValue)) {
 					alert("Invalid format");
-			return;
+					return;
+				}
+
+				const [firstNumber, secondNumber] = displayValue
+					.split("X")
+					.map((num) => parseFloat(num.trim()));
+
+				const newLastValue = displayValue;
+				const newSecondLastValue = lastValue;
+				const newThirdLastValue = secondLastValue;
+
+				const newResult = {
+					multiplication: displayValue,
+					measurement: measurementType,
+					firstNumber: firstNumber,
+					secondNumber: secondNumber,
+				};
+
+				const docRef = doc(database, "Data", "lot: " + lotNumberValue);
+				try {
+					await runTransaction(database, async (transaction) => {
+						const docSnapshot = await transaction.get(docRef);
+						if (!docSnapshot.exists()) {
+							throw "Document does not exist!";
+						}
+
+						const currentResults = docSnapshot.data().results || [];
+						const currentLengths = docSnapshot.data()?.length || [];
+						const currentBreadths = docSnapshot.data()?.breadth || [];
+
+						transaction.update(docRef, {
+							results: [...currentResults, newResult],
+							length: [...currentLengths, firstNumber],
+							breadth: [...currentBreadths, secondNumber],
+							lastValue: newLastValue,
+							secondLastValue: newSecondLastValue,
+							thirdLastValue: newThirdLastValue,
+						});
+					});
+					console.log("Result added to Firestore array");
+				} catch (error) {
+					console.error("Error updating document:", error);
+				}
+
+				setLastValue(newLastValue);
+				setSecondLastValue(newSecondLastValue);
+				setThirdLastValue(newThirdLastValue);
+				setPieceNumber(pieceNumber + 1);
+			}
+
+			setDisplayValue("");
+			navigate("/final-result3");
 		}
-	  
-		  const newLastValue = displayValue;
-		  const newSecondLastValue = lastValue;
-		  const newThirdLastValue = secondLastValue;
-	  
-		  const newResult = {
-			  multiplication: displayValue,
-			measurement: measurementType,
-		  };
-		  
-		  const docRef = doc(database, "Data", "lot: " + lotNumberValue);
-		  try {
-			  await runTransaction(database, async (transaction) => {
-				  const docSnapshot = await transaction.get(docRef);
-			  if (!docSnapshot.exists()) {
-				throw "Document does not exist!";
-			  }
-	  
-			  const currentResults = docSnapshot.data().results || [];
-			  transaction.update(docRef, {
-				  results: [...currentResults, newResult],
-				lastValue: newLastValue,
-				secondLastValue: newSecondLastValue,
-				thirdLastValue: newThirdLastValue,
-			  });
-			});
-			console.log("Result added to Firestore array");
-		  } catch (error) {
-			console.error("Error updating document:", error);
-		  }
-	  
-		  setLastValue(newLastValue);
-		  setSecondLastValue(newSecondLastValue);
-		  setThirdLastValue(newThirdLastValue);
-		  setPieceNumber(pieceNumber + 1);
-		}
-		
-		setDisplayValue("");
-		navigate("/final-result3");
-	}
-	  };
+	};
 		
 
 	const handleMismatchContinue = () => {
@@ -292,6 +334,7 @@ const Step3Inch = () => {
 					<FaHome size={30} />
 				</NavLink>
 			</div>
+			
             </div>
 			<div className=" my-2 p-2 flex justify-between ">
 				<div className="text-center px-3 border-2  rounded-md border-white" style={{
@@ -310,13 +353,43 @@ const Step3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-4 flex justify-between">
+			<div className=" px-2 my-4 flex justify-center">
 				<NavLink to={"/view-records3"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
-				<p className="text-white px-3 text-lg py-1 uppercase font-bold">TYPE: {measurementType}</p>			
+				{/* <p className="text-white px-3 text-lg py-1 uppercase font-bold">TYPE: {measurementType}</p>			 */}
+			</div>
+			<div className="text-lg flex justify-between mx-3">
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
+					{" "}
+					{filteredLengths.length > 0 ? (
+                        <div className="filtered-lengths">
+                            {filteredLengths.map((length, index) => (
+                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
+                                    {length}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <button className="mfu-button">MFU</button>
+                    )}
+				</div>
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
+					{" "}
+					{filteredBreadth.length > 0 ? (
+                        <div className="filtered-lengths">
+                            {filteredBreadth.map((length, index) => (
+                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
+                                    {length}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <button className="mfu-button">MFU</button>
+                    )}
+				</div>
 			</div>
 			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}

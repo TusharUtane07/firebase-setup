@@ -111,7 +111,7 @@ const Details = () => {
   const getData = async() => {
     try {
       const querySnapshot = await getDocs(collection(database, 'Templates'));
-      const templateData = querySnapshot.docs.map(doc => doc.data());
+      const templateData = querySnapshot?.docs?.map(doc => doc.data());
       setTemplatesData(templateData);
       console.log("Templates:", templatesData);
     } catch (error) {
@@ -358,7 +358,7 @@ const Details = () => {
     <div className="bg-white p-5 rounded mx-5">
       <h2 className="text-xl mb-4">Saved Templates</h2>
       <div>
-        {templatesData.map((item) => (
+        {templatesData?.map((item) => (
           <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black m-2 p-2 rounded-md">{item.templateName}</div>
         ))}
       </div>
