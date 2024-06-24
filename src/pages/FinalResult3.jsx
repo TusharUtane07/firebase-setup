@@ -10,11 +10,11 @@ import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
 
-const FinalResult = () => {
+const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
-	const [selectedFields, setSelectedFields] = useState(['quantityNumber', 'clientName', 'lotNumber']);
+	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
 
 	const navigate = useNavigate();
@@ -71,7 +71,7 @@ const FinalResult = () => {
 	};
 
 	const handleChange = (value) => {
-		setSelectedFields(['quantityNumber','clientName', ...value]);
+		setSelectedFields([...value]);
 	}
 
 	return (
@@ -107,7 +107,7 @@ const FinalResult = () => {
 						allowClear
 						style={{ width: '100%' }}
 						placeholder="Please select"
-						defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
+						// defaultValue={['Quantity Number']}
 						onChange={handleChange}
 						options={options}
 					/>
@@ -225,4 +225,4 @@ const FinalResult = () => {
 	);
 };
 
-export default FinalResult;
+export default FinalResult3;

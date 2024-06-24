@@ -14,7 +14,7 @@ const FinalResult = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
-	const [selectedFields, setSelectedFields] = useState(['quantityNumber', 'clientName', 'lotNumber']);
+	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
 
 	const navigate = useNavigate();
@@ -45,7 +45,7 @@ const FinalResult = () => {
 			setLoading(false);
 		}
 	};
-
+console.log(data)
 	useEffect(() => {
 		getData();
 	}, [lotNumberValue]);
@@ -79,7 +79,7 @@ const FinalResult = () => {
 
 	// const options = [];
 	const handleChange = (value) => {
-		setSelectedFields(['quantityNumber','clientName', ...value]);
+		setSelectedFields([...value]);
 	}
 
 	return (
@@ -115,7 +115,7 @@ const FinalResult = () => {
 						allowClear
 						style={{ width: '100%' }}
 						placeholder="Please select"
-						defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
+						// defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
 						onChange={handleChange}
 						options={options}
 					/>
@@ -158,14 +158,12 @@ const FinalResult = () => {
 									PIECE NO
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									LENGTH
+									LENGTH ({data?.measurementType})
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									BREADTH
+									BREADTH ({data?.measurementType})
 								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									AREA
-								</th>
+								
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
 									SQFT
 								</th>
@@ -192,7 +190,7 @@ const FinalResult = () => {
 										<td className="py-2 px-4">{index + 1}</td>
 										<td className="py-2 px-4">{value1}</td>
 										<td className="py-2 px-4">{value2}</td>
-										<td className="py-2 px-4">{item.multiplication}</td>
+										{/* <td className="py-2 px-4">{item.multiplication}</td> */}
 										<td className="py-2 px-4">{result}</td>
 									</tr>
 								</tbody>

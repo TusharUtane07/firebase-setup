@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import loader from "../assests/loader.png";
 import "../style/cal.css";
@@ -13,7 +13,7 @@ const Step1Inch = () => {
 	const [showMismatchModal, setShowMismatchModal] = useState(false);
 
 	const [newQuantity, setNewQuantity] = useState("");
-	const placeholderText = "Enter your values";
+	const placeholderText = "Enter your size";
 
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
 	const [vehicleNumber, setVehicleNumber] = useState("");
@@ -26,7 +26,11 @@ const Step1Inch = () => {
 	const [valuesArray, setValuesArray] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState();
-	const [measurementType, setMesurementType] = useState("mm");
+	const [measurementType, setMesurementType] = useState("");
+	const [isMinusClicked, setIsMinusClicked] = useState(false);
+	const [lengthUsed, setLengthUsed] = useState([]);
+	const [breadthUsed, setBreadthUsed] = useState([]);
+
 
 	const navigate = useNavigate();
 
@@ -40,12 +44,17 @@ const Step1Inch = () => {
 				console.log(data);
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
+				setMesurementType(data?.measurementType || "");
 				setQuantityNumber(data?.quantityNumber || "");
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length || 0) - 1);
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
+
+				setLengthUsed(data?.length)
+				setBreadthUsed(data?.breadth)
+				set
 				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
 				console.log("No such document!");
@@ -56,7 +65,6 @@ const Step1Inch = () => {
 			setLoading(false);
 		}
 	};
-
 	useEffect(() => {
 		if (lotNumberValue) {
 			getDocument();
@@ -64,18 +72,18 @@ const Step1Inch = () => {
 	}, [lotNumberValue]);
 
 	const handleButtonClick = (value) => {
-		if (value === "-") {
-			setDisplayValue((prev) => prev + "'");
-		}
-		if (value === "X") {
+		if (value === ".") {
+			setIsMinusClicked(true);
+			setDisplayValue((prev) => prev + ".");
+		} else if (value === "X") {
 			if (!displayValue.includes("X")) {
 				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
 			}
+			setIsMinusClicked(false);
 		} else {
 			setDisplayValue((prev) => prev + value);
 		}
 	};
-
 	const handleCorrect = () => {
 		setDisplayValue((prev) => prev.slice(0, -1));
 	};
@@ -87,33 +95,50 @@ const Step1Inch = () => {
 
 	const handleNext = async () => {
 		if (!isValidInput(displayValue)) {
-			alert("Invalid input format. ");
+			alert("Invalid input format.");
 			return;
 		}
-
+	
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
+			const [firstNumber, secondNumber] = displayValue.split('X').map(num => parseFloat(num.trim()));
+	
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
-
+	
 			const newResult = {
 				multiplication: displayValue,
 				measurement: measurementType,
+				firstNumber: firstNumber,
+				secondNumber: secondNumber
 			};
-
+	
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			try {
-				await updateDoc(docRef, {
-					results: arrayUnion(newResult),
-					inch: "1 Inch Measurements Data",
-					lastValue: newLastValue,
-					secondLastValue: newSecondLastValue,
-					thirdLastValue: newThirdLastValue,
+				await runTransaction(database, async (transaction) => {
+					const docSnapshot = await transaction.get(docRef);
+					if (!docSnapshot.exists()) {
+						throw "Document does not exist!";
+					}
+	
+					const currentResults = docSnapshot.data().results || [];
+					const currentLengths = docSnapshot.data().length || [];
+					const currentBreadths = docSnapshot.data().breadth || [];
+	
+					transaction.update(docRef, {
+						results: [...currentResults, newResult],
+						length: [...currentLengths, firstNumber],
+						breadth: [...currentBreadths, secondNumber],
+						lastValue: newLastValue,
+						secondLastValue: newSecondLastValue,
+						thirdLastValue: newThirdLastValue,
+					});
 				});
 				console.log("Result added to Firestore array");
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
+	
 			setLastValue(newLastValue);
 			setSecondLastValue(newSecondLastValue);
 			setThirdLastValue(newThirdLastValue);
@@ -123,51 +148,73 @@ const Step1Inch = () => {
 			setShowModal(true);
 		}
 	};
-
+	
 	const handleFinalize = async () => {
-		if (displayValue) {
-			if (!isValidInput(displayValue)) {
-				alert("Invalid format");
-				return;
-			}
-		}
-		if (quantityNumber !== "" && pieceNumber !== Number(quantityNumber)) {
+		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
 		}
-
-		if (displayValue) {
-			const newLastValue = displayValue;
-			const newSecondLastValue = lastValue;
-			const newThirdLastValue = secondLastValue;
-
-			const newResult = {
-				multiplication: displayValue,
-				measurement: measurementType,
-			};
-
-			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
-			try {
-				await updateDoc(docRef, {
-					results: arrayUnion(newResult),
-					lastValue: newLastValue,
-					inch: "1Inch",
-					secondLastValue: newSecondLastValue,
-					thirdLastValue: newThirdLastValue,
-				});
-				console.log("Result added to Firestore array");
-			} catch (error) {
-				console.error("Error updating document:", error);
+	
+		if (quantityNumber < pieceNumber + 2) {
+			setShowModal(true);
+		} else {
+	
+			if (displayValue) {
+				if (!isValidInput(displayValue)) {
+					alert("Invalid format");
+					return;
+				}
+	
+				const [firstNumber, secondNumber] = displayValue.split('X').map(num => parseFloat(num.trim()));
+	
+				const newLastValue = displayValue;
+				const newSecondLastValue = lastValue;
+				const newThirdLastValue = secondLastValue;
+	
+				const newResult = {
+					multiplication: displayValue,
+					measurement: measurementType,
+					firstNumber: firstNumber,
+					secondNumber: secondNumber
+				};
+	
+				const docRef = doc(database, "Data", "lot: " + lotNumberValue);
+				try {
+					await runTransaction(database, async (transaction) => {
+						const docSnapshot = await transaction.get(docRef);
+						if (!docSnapshot.exists()) {
+							throw "Document does not exist!";
+						}
+	
+						const currentResults = docSnapshot.data().results || [];
+						const currentLengths = docSnapshot.data().length || [];
+						const currentBreadths = docSnapshot.data().breadth || [];
+	
+						transaction.update(docRef, {
+							results: [...currentResults, newResult],
+							length: [...currentLengths, firstNumber],
+							breadth: [...currentBreadths, secondNumber],
+							lastValue: newLastValue,
+							secondLastValue: newSecondLastValue,
+							thirdLastValue: newThirdLastValue,
+						});
+					});
+					console.log("Result added to Firestore array");
+				} catch (error) {
+					console.error("Error updating document:", error);
+				}
+	
+				setLastValue(newLastValue);
+				setSecondLastValue(newSecondLastValue);
+				setThirdLastValue(newThirdLastValue);
+				setPieceNumber(pieceNumber + 1);
 			}
-			setLastValue(newLastValue);
-			setSecondLastValue(newSecondLastValue);
-			setThirdLastValue(newThirdLastValue);
-			setPieceNumber(pieceNumber + 1);
+	
+			setDisplayValue("");
+			navigate("/final-result");
 		}
-
-		setDisplayValue("");
-		navigate("/final-result");
 	};
+	
 
 	const handleMismatchContinue = () => {
 		setShowMismatchModal(false);
@@ -179,7 +226,7 @@ const Step1Inch = () => {
 	};
 
 	const handleClear = () => {
-		setDisplayValue("");
+		setDisplayValue("")
 	};
 
 	const handleIncreaseQuantity = async () => {
@@ -203,48 +250,18 @@ const Step1Inch = () => {
 		}
 	};
 
-	const updateFirestoreWithResult = async (newResult) => {
-		const docRef = doc(database, "Data", "lot: " + lotNumberValue);
-		try {
-			await updateDoc(docRef, {
-				results: arrayUnion(newResult),
-				lastValue,
-				secondLastValue,
-				thirdLastValue,
-			});
-			console.log("Result added to Firestore array");
-		} catch (error) {
-			console.error("Error updating document:", error);
-		}
-	};
 
-	const updateLastData = (value) => {
-		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
-			const newResult = {
-				multiplication: value,
-				measurement: "1 Inch Measurements Data",
-			};
-			updateFirestoreWithResult(newResult);
-			setLastValue(value);
-			setSecondLastValue(lastValue);
-			setThirdLastValue(secondLastValue);
-			setPieceNumber(pieceNumber + 1);
-			setDisplayValue("");
-		} else {
-			setShowModal(true);
-		}
-	};
 
 	const handleLastValue = () => {
-		updateLastData(lastValue);
+		setDisplayValue(lastValue)
 	};
-
+	
 	const handleSecondLastValue = () => {
-		updateLastData(secondLastValue);
+		setDisplayValue(secondLastValue)
 	};
-
+	
 	const handleThirdLastValue = () => {
-		updateLastData(thirdLastValue);
+		setDisplayValue(thirdLastValue)
 	};
 
         if (loading) {
@@ -279,7 +296,7 @@ const Step1Inch = () => {
 				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white" style={{
                     width:"30%"
                 }}>
-					Quantity <br /> {quantityNumber ? quantityNumber : "Null"}
+					Quantity <br /> {quantityNumber ? quantityNumber : "N/A"}
 				</div>
 				<div className="text-center px-3 border-2 rounded-md  border-white" style={{
                     width:"30%"
@@ -287,24 +304,16 @@ const Step1Inch = () => {
 					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex items-center  justify-between">
-				<select
-					name="measurement"
-					id="measurement"
-					value={measurementType}
-					onChange={(e) => setMesurementType(e.target.value)}
-					className="bg-gray-900 text-xl  ">
-					<option value="mm">MM</option>
-					<option value="cm">CM</option>
-					<option value="meter">METER</option>
-					<option value="inches">INCHES</option>
-					<option value="feet">FEET</option>
-				</select>
+			<div className=" px-2 my-2 flex justify-center ">
 				<NavLink to={"/view-records"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
+			</div>
+			<div className="text-lg flex justify-between mx-3">
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold"> MFU</div>
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold"> MFU</div>
 			</div>
 			<div className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
             style={{
@@ -314,24 +323,24 @@ const Step1Inch = () => {
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4 pb-2 ">
-				<div onClick={handleLastValue} className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				<button onClick={handleLastValue} className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >{lastValue || "LV"}</button>
-				</div>
-				<div onClick={handleSecondLastValue} className="border-2 border-white h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center">
+				</button>
+				<button onClick={handleSecondLastValue} className="border-2 border-white h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >
 						{" "}
 						{secondLastValue || "SV"}
 					</button>
-				</div>
-				<div onClick={handleThirdLastValue} className="border-2 border-white h-16  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+				</button>
+				<button onClick={handleThirdLastValue} className="border-2 border-white h-16  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >
 						{" "}
 						{thirdLastValue || "TV"}
 					</button>
-				</div>
-				<div onClick={handleClear}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				</button>
+				<button onClick={handleClear}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button > AC</button>
-				</div>
+				</button>
 				<div  onClick={() => handleButtonClick("1")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 1</button>
 				</div>
@@ -353,11 +362,11 @@ const Step1Inch = () => {
 				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 6</button>
 				</div>
-				<div onClick={handleCorrect}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<button onClick={handleCorrect}  className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button >
 						<FaAngleLeft />
 					</button>
-				</div>
+				</button>
 				<div  onClick={() => handleButtonClick("7")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 7</button>
 				</div>
@@ -367,35 +376,24 @@ const Step1Inch = () => {
 				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<button onClick={handleNext} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button > NEXT</button>
-				</div>
+				</button>
 				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 0</button>
 				</div>
 
-				{measurementType === "mm" ||
-				measurementType === "cm" ||
-				measurementType === "meter" ? (
-					<>
-                    <div  onClick={() => handleButtonClick(".")} className="col-span-2  border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+				
+					
+                    <button disabled={isMinusClicked} onClick={() => handleButtonClick(".")} className="col-span-2  border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 						<button>.</button>
-                    </div>
-					</>
-				) : (
-					<>
-                    <div  onClick={() => handleButtonClick("-")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
-						<button>-</button>
-                    </div>
-                    <div onClick={() => handleButtonClick(`"`)} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
-						<button >"</button>
-                    </div>
-					</>
-				)}
+                    </button>
+					
+				
 
-				<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+				<button onClick={handleFinalize} className="border-2  border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button  > FINAL</button>
-				</div>
+				</button>
 			</div>
             {showModal && (
 				<div className="fixed text-black  inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">

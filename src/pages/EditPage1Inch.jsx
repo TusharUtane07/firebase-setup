@@ -10,7 +10,7 @@ const EditPage1Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
 	const [showModal, setShowModal] = useState(false);
 	const [newQuantity, setNewQuantity] = useState("");
-	const placeholderText = "Enter your values";
+	const placeholderText = "Enter your size";
 
     const [showMismatchModal, setShowMismatchModal] = useState(false);
 
@@ -165,7 +165,7 @@ const EditPage1Inch = () => {
 			<div className="px-2 mx-2 text-center border-2 rounded-md  border-white" style={{
 				width:"30%"
 			}}>
-				Quantity <br /> {quantityNumber ? quantityNumber : "Null"}
+				Quantity <br /> {quantityNumber ? quantityNumber : "N/A"}
 			</div>
 			<div className="text-center px-3 border-2 rounded-md  border-white" style={{
 				width:"30%"
@@ -173,19 +173,7 @@ const EditPage1Inch = () => {
 				Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
 			</div>
 		</div>
-		<div className=" px-2 my-2 flex items-center  justify-between">
-			<select
-				name="measurement"
-				id="measurement"
-				value={measurementType}
-				onChange={(e) => setMesurementType(e.target.value)}
-				className="bg-gray-900 text-xl  ">
-				<option value="mm">MM</option>
-				<option value="cm">CM</option>
-				<option value="meter">METER</option>
-				<option value="inches">INCHES</option>
-				<option value="feet">FEET</option>
-			</select>
+		<div className=" px-2 my-2 flex items-center  justify-center">
 			<NavLink to={"/view-records"}>
 				<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 					View Records
@@ -260,24 +248,12 @@ const EditPage1Inch = () => {
 				<button> 0</button>
 			</div>
 
-			{measurementType === "mm" ||
-			measurementType === "cm" ||
-			measurementType === "meter" ? (
-				<>
+			
 				<div  onClick={() => handleButtonClick(".")} className="col-span-2  border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button>.</button>
 				</div>
-				</>
-			) : (
-				<>
-				<div  onClick={() => handleButtonClick("-")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
-					<button>-</button>
-				</div>
-				<div onClick={() => handleButtonClick(`"`)} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
-					<button >"</button>
-				</div>
-				</>
-			)}
+			
+			
 
 			<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 				<button  > FINAL</button>
