@@ -157,6 +157,7 @@ const Step3Inch = () => {
 			setThirdLastValue(newThirdLastValue);
 			setPieceNumber(pieceNumber + 1);
 			setDisplayValue("");
+			setIsMinusClicked(false)
 		} else {
 			setShowModal(true);
 		}
@@ -199,9 +200,9 @@ const Step3Inch = () => {
 							throw "Document does not exist!";
 						}
 
-						const currentResults = docSnapshot.data().results || [];
-						const currentLengths = docSnapshot.data()?.length || [];
-						const currentBreadths = docSnapshot.data()?.breadth || [];
+					const currentResults = docSnapshot.data().results || [];
+					const currentLengths = docSnapshot.data()?.length || [];
+					const currentBreadths = docSnapshot.data()?.breadth || [];
 
 						transaction.update(docRef, {
 							results: [...currentResults, newResult],
@@ -212,6 +213,8 @@ const Step3Inch = () => {
 							thirdLastValue: newThirdLastValue,
 						});
 					});
+			setIsMinusClicked(false)
+
 					console.log("Result added to Firestore array");
 				} catch (error) {
 					console.error("Error updating document:", error);

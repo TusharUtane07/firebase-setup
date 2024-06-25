@@ -16,6 +16,7 @@ const FinalResult = () => {
 	const [exportType, setExportType] = useState("excel");
 	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
+	const [exportModal, setExportModal] = useState(false);
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -73,6 +74,7 @@ console.log(data)
 	}
 
 	const handleExport = () => {
+		setExportModal(true);
 		console.log(exportType);
 	};
 
@@ -226,6 +228,26 @@ console.log(data)
 					Export
 				</button>
 			</div>
+			{exportModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+					<div className="bg-white text-black p-4 rounded">
+						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
+						<p>The piece number and quantity number do not match.</p>
+						<div className="flex justify-between mt-4">
+							<button
+								onClick={() => navigate(`/details/${data?.lotNumber}`)}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Lot
+							</button>
+							<button
+								onClick={() => navigate('/')}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Client
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 		</div>
 	);

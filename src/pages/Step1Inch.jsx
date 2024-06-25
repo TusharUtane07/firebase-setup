@@ -139,13 +139,13 @@ const Step1Inch = () => {
 			try {
 				await runTransaction(database, async (transaction) => {
 					const docSnapshot = await transaction.get(docRef);
-					if (!docSnapshot.exists()) {
+					if (!docSnapshot?.exists()) {
 						throw "Document does not exist!";
 					}
 
-					const currentResults = docSnapshot.data().results || [];
-					const currentLengths = docSnapshot.data().length;
-					const currentBreadths = docSnapshot.data().breadth;
+					const currentResults = docSnapshot?.data()?.results || [];
+					const currentLengths = docSnapshot?.data()?.length || [];
+					const currentBreadths = docSnapshot?.data()?.breadth || [];
 
 					transaction.update(docRef, {
 						results: [...currentResults, newResult],
