@@ -41,7 +41,7 @@ const EditPage3Inch = () => {
 			if (docSnapshot.exists()) {
 				setClientName(docSnapshot?.data()?.clientName);
 				setVehicleNumber(docSnapshot?.data()?.vehicleNumber);
-				setQuantityNumber(docSnapshot?.data()?.quantityNumber);
+				setQuantityNumber(docSnapshot?.data()?.['Quantity Number']);
 				setValuesArray(docSnapshot?.data()?.results);
 				const index = parseInt(id);
 		if (!isNaN(index) && index >= 0 && index < docSnapshot?.data()?.results?.length) {

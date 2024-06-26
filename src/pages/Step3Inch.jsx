@@ -44,7 +44,7 @@ const Step3Inch = () => {
 				console.log(data);
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
-				setQuantityNumber(data?.quantityNumber || "");
+				setQuantityNumber(data?.['Quantity Number'] || "");
 				setMesurementType(data?.measurementType || "");
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length || 0) - 1);
@@ -130,13 +130,13 @@ const Step3Inch = () => {
 			try {
 				await runTransaction(database, async (transaction) => {
 					const docSnapshot = await transaction.get(docRef);
-					if (!docSnapshot.exists()) {
+					if (!docSnapshot?.exists()) {
 						throw "Document does not exist!";
 					}
 
-					const currentResults = docSnapshot.data().results || [];
-					const currentLengths = docSnapshot.data().length;
-					const currentBreadths = docSnapshot.data().breadth;
+					const currentResults = docSnapshot?.data()?.results || [];
+					const currentLengths = docSnapshot?.data()?.length || [];
+					const currentBreadths = docSnapshot?.data()?.breadth || [];
 
 					transaction.update(docRef, {
 						results: [...currentResults, newResult],
@@ -148,6 +148,7 @@ const Step3Inch = () => {
 					});
 				});
 				console.log("Result added to Firestore array");
+				setIsMinusClicked(false)
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
@@ -157,11 +158,11 @@ const Step3Inch = () => {
 			setThirdLastValue(newThirdLastValue);
 			setPieceNumber(pieceNumber + 1);
 			setDisplayValue("");
-			setIsMinusClicked(false)
 		} else {
 			setShowModal(true);
 		}
 	};
+
 	const handleFinalize = async () => {
 		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
@@ -200,9 +201,9 @@ const Step3Inch = () => {
 							throw "Document does not exist!";
 						}
 
-					const currentResults = docSnapshot.data().results || [];
-					const currentLengths = docSnapshot.data()?.length || [];
-					const currentBreadths = docSnapshot.data()?.breadth || [];
+						const currentResults = docSnapshot.data().results || [];
+						const currentLengths = docSnapshot.data()?.length || [];
+						const currentBreadths = docSnapshot.data()?.breadth || [];
 
 						transaction.update(docRef, {
 							results: [...currentResults, newResult],
@@ -213,9 +214,8 @@ const Step3Inch = () => {
 							thirdLastValue: newThirdLastValue,
 						});
 					});
-			setIsMinusClicked(false)
-
 					console.log("Result added to Firestore array");
+					setIsMinusClicked(false)
 				} catch (error) {
 					console.error("Error updating document:", error);
 				}
@@ -227,7 +227,7 @@ const Step3Inch = () => {
 			}
 
 			setDisplayValue("");
-			navigate("/final-result3");
+			navigate("/final-result");
 		}
 	};
 		

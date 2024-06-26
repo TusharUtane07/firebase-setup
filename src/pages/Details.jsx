@@ -47,11 +47,11 @@ const Details = () => {
     if (!isValid) return;
 
     const data = {
-      clientName,
-      vehicleNumber,
-      lotNumber: lotNumberValue,
-      quantityNumber,
-      measurementType
+      [labels.clientName]: clientName,
+    [labels.vehicleNumber]: vehicleNumber,
+    [labels.lotNumber]: lotNumberValue,
+    [labels.quantityNumber]: quantityNumber,
+    [labels.measurement]: measurementType,
     };
 
     dynamicFields.forEach((field) => {
@@ -192,11 +192,10 @@ const Details = () => {
           </div>
           <div className="form-group text-start mb-3 position-relative">
           <label
-                    onClick={() => openModal("lotNumber")}
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem" }}
                   >
-                    {labels.lotNumber} <FiEdit />
+                    {labels.lotNumber} 
                   </label>
                   <input
                     type="text"

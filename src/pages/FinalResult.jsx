@@ -27,6 +27,8 @@ const FinalResult = () => {
 		'thirdLastValue',
 		'lastValue',
 		'inch',
+		'length',
+		'breadth',
 	];
 	const getData = async () => {
 		try {
@@ -160,10 +162,10 @@ console.log(data)
 									PIECE NO
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									LENGTH ({data?.measurementType})
+									LENGTH ({data?.['Measurement']})
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									BREADTH ({data?.measurementType})
+									BREADTH ({data?.['Measurement']})
 								</th>
 								
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
@@ -235,7 +237,7 @@ console.log(data)
 						<p>The piece number and quantity number do not match.</p>
 						<div className="flex justify-between mt-4">
 							<button
-								onClick={() => navigate(`/details/${data?.lotNumber}`)}
+								onClick={() => navigate(`/details/${lotNumberValue}`)}
 								className="border-2 border-black py-2 px-4 font-bold text-center">
 								New Lot
 							</button>

@@ -53,7 +53,7 @@ const Step1Inch = () => {
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
 				setMesurementType(data?.measurementType || "");
-				setQuantityNumber(data?.quantityNumber || "");
+				setQuantityNumber(data?.['Quantity Number']|| "");
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length || 0) - 1);
 				setLastValue(data?.lastValue || "");

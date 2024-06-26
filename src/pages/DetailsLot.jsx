@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { database } from "../firebase/firebase";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLotNumber } from "../redux/actions/lotActions";
 import { FiEdit } from "react-icons/fi";
 import img from "../img/bg-img/36.png";
@@ -31,6 +31,9 @@ const DetailsLot = () => {
   let { id } = useParams();
   console.log("id:", id);
 
+	const lotNumberDetailsValue = useSelector((state) => state.lotReducer.lotNumber);
+
+
   const [tempalteName, setTemplateName] = useState("");
   const [templateModal, setTemplateModal] = useState(false);
   const [data, setData] = useState([]);
@@ -41,29 +44,20 @@ const DetailsLot = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    let isValid = true;
-
-    if (!lotNumberValue) {
-      setLotNumberError(true);
-      isValid = false;
-    } else {
-      setLotNumberError(false);
-    }
-
-    if (!isValid) return;
-
+console.log("hey")
     const data = {
-      clientName,
-      vehicleNumber,
-      lotNumber: lotNumberValue,
-      quantityNumber,
-      measurementType
+      [labels.clientName]: clientName,
+    [labels.vehicleNumber]: vehicleNumber,
+    [labels.lotNumber]: lotNumberValue,
+    [labels.quantityNumber]: quantityNumber,
+    [labels.measurement]: measurementType,
     };
 
     dynamicFields.forEach((field) => {
       data[field.label] = field.value;
     });
-    const docRef = doc(database, "Data", "lot: " + id);
+
+    const docRef = doc(database, "Data", "lot: " + lotNumberValue);
     await setDoc(docRef, data);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -153,16 +147,29 @@ const DetailsLot = () => {
     );
   }
 
-  const setTheLabels = (item) => {
-    setLabels({
-      clientName: item[1],
-      vehicleNumber: item[2],
-      lotNumber: item[3],
-      quantityNumber: item[4],
-      measurement: item[5],
-    });
-    setTemplateShowCase(false);
-  }
+  console.log(data)
+
+    const excludedKeys = [
+      "breadth", 
+      "length", 
+      "Quantity Number", 
+      "Lot Number", 
+      "Measurement", 
+      "lastValue", 
+      "results", 
+      "secondLastValue", 
+      "thirdLastValue",
+
+  ];
+  
+  const filteredData = Object.keys(data[0]).reduce((acc, key) => {
+      if (!excludedKeys.includes(key)) {
+          acc[key] = data[0][key];
+      }
+      return acc    
+    }, {});
+  
+
 
   return (
     <>
@@ -187,45 +194,32 @@ const DetailsLot = () => {
             <h5 className="mb-3 text-center ">Please Enter the Lot Details Accordingly </h5>
             {Array.isArray(data) && data.length > 0 && data.map((item, index) => (
               <div key={index}>
-                <div className="form-group text-start mb-3">
-                  <label
-                    onClick={() => openModal("clientName")}
-                    className="cursor-pointer mt-4"
-                    style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
-                  >
-                    {labels.clientName} <FiEdit />
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={item?.clientName}
-                    className="form-control"
-                    value={item?.clientName}
-                    disabled
-                  />
-                </div>
-                <div className="form-group text-start mb-3">
-                  <label
-                    onClick={() => openModal("vehicleNumber")}
-                    className="cursor-pointer"
-                    style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
-                  >
-                    {labels.vehicleNumber} <FiEdit />
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder={item?.vehicleNumber}
-                    value={item?.vehicleNumber}
-                    disabled
-                  />
-                </div>
+                 <div>
+      {Object.keys(filteredData).map((key) => (
+        <div className="form-group text-start mb-3" key={key}>
+          <label
+            onClick={() => openModal(key)}
+            className="cursor-pointer mt-4"
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}
+          >
+            {key}
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder={filteredData[key]}
+            value={filteredData[key]}
+            />
+        </div>
+      ))}
+    </div>
                 <div className="form-group text-start mb-3 position-relative">
                   <label
                     onClick={() => openModal("lotNumber")}
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    {labels.lotNumber} <FiEdit />
+                    lot number
                   </label>
                   <input
                     type="text"
@@ -244,7 +238,7 @@ const DetailsLot = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    {labels.quantityNumber} <FiEdit />
+                    {labels.quantityNumber} 
                   </label>
                   <input
                     type="text"
@@ -263,16 +257,18 @@ const DetailsLot = () => {
                     onClick={() => openModal("measurement")}
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    {labels.measurement} <FiEdit />
+                    {labels.measurement} 
                   </label>
                   <select
                     value={measurementType}
                     className="form-control"
                     onChange={(e) => setMesurementType(e.target.value)}
                   >
-                    <option value="MM">MM</option>
-                    <option value="GM">GM</option>
-                    <option value="KG">KG</option>
+                    <option value="mm">MM</option>
+					<option value="cm">CM</option>
+					<option value="meter">METER</option>
+					<option value="inches">INCHES</option>
+					<option value="feet">FEET</option>
                   </select>
                 </div>
               </div>
@@ -283,7 +279,7 @@ const DetailsLot = () => {
                   className="cursor-pointer mt-4"
                   style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                 >
-                  {field.label} <FiEdit />
+                  {field.label} 
                 </label>
                 <input
                   type="text"

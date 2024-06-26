@@ -22,9 +22,11 @@ const MeasurementType = () => {
       <div className="header-content header-style-five position-relative d-flex align-items-center justify-content-between">
         {/* Back Button */}
         <div className="back-button">
-          <a href="pages.html">
+          {/* <a href="pages.html"> */}
+          <NavLink to={"/details"}>
             <i className="bi bi-arrow-left-short" />
-          </a>
+          </NavLink>
+          {/* </a> */}
         </div>
         {/* Page Title */}
         <div className="page-heading">
