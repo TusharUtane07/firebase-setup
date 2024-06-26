@@ -9,13 +9,16 @@ import loader from "../assests/loader.png";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
+import { downloadExcel } from "./handleDownload";
+import { downloadPDF } from "./handlePdfDownload";
 
 const FinalResult = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
-	const [selectedFields, setSelectedFields] = useState(['quantityNumber', 'clientName', 'lotNumber']);
+	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
+	const [exportModal, setExportModal] = useState(false);
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -26,7 +29,12 @@ const FinalResult = () => {
 		'thirdLastValue',
 		'lastValue',
 		'inch',
+		'length',
+		'breadth',
 	];
+	const handleDownload = () => {
+		downloadExcel(data, 'example.xlsx');
+	  };
 	const getData = async () => {
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
@@ -45,7 +53,11 @@ const FinalResult = () => {
 			setLoading(false);
 		}
 	};
-
+	const handleDownloadPDF = () => {
+		downloadPDF(data, 'example.pdf');
+	  };
+	
+console.log(data)
 	useEffect(() => {
 		getData();
 	}, [lotNumberValue]);
@@ -73,13 +85,14 @@ const FinalResult = () => {
 	}
 
 	const handleExport = () => {
+		setExportModal(true);
 		console.log(exportType);
 	};
 
 
 	// const options = [];
 	const handleChange = (value) => {
-		setSelectedFields(['quantityNumber','clientName', ...value]);
+		setSelectedFields([...value]);
 	}
 
 	return (
@@ -115,7 +128,7 @@ const FinalResult = () => {
 						allowClear
 						style={{ width: '100%' }}
 						placeholder="Please select"
-						defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
+						// defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
 						onChange={handleChange}
 						options={options}
 					/>
@@ -158,14 +171,12 @@ const FinalResult = () => {
 									PIECE NO
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									LENGTH
+									LENGTH ({data?.['Measurement']})
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									BREADTH
+									BREADTH ({data?.['Measurement']})
 								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									AREA
-								</th>
+								
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
 									SQFT
 								</th>
@@ -192,7 +203,7 @@ const FinalResult = () => {
 										<td className="py-2 px-4">{index + 1}</td>
 										<td className="py-2 px-4">{value1}</td>
 										<td className="py-2 px-4">{value2}</td>
-										<td className="py-2 px-4">{item.multiplication}</td>
+										{/* <td className="py-2 px-4">{item.multiplication}</td> */}
 										<td className="py-2 px-4">{result}</td>
 									</tr>
 								</tbody>
@@ -218,7 +229,12 @@ const FinalResult = () => {
 				</Radio.Group>
 				<button
 					className="btn-primary"
-					onClick={handleExport}
+					onClick={()=>{
+						// handleDownload()
+						handleDownloadPDF()
+						// handleExport()
+					
+					}}
 					style={{
 						background: "#4E97F3",
 						color: "white",
@@ -228,6 +244,26 @@ const FinalResult = () => {
 					Export
 				</button>
 			</div>
+			{exportModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+					<div className="bg-white text-black p-4 rounded">
+						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
+						<p>The piece number and quantity number do not match.</p>
+						<div className="flex justify-between mt-4">
+							<button
+								onClick={() => navigate(`/details/${lotNumberValue}`)}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Lot
+							</button>
+							<button
+								onClick={() => navigate('/')}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Client
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 		</div>
 	);

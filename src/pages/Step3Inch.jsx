@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { addDoc, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ const Step3Inch = () => {
 	const [showMismatchModal, setShowMismatchModal] = useState(false);
 
 	const [newQuantity, setNewQuantity] = useState("");
-	const placeholderText = "Enter your values";
+	const placeholderText = "Enter your size";
 
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
 	const [vehicleNumber, setVehicleNumber] = useState("");
@@ -25,8 +25,12 @@ const Step3Inch = () => {
 	const [valuesArray, setValuesArray] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState();
-	const [measurementType, setMesurementType] = useState("mm");
+	const [measurementType, setMesurementType] = useState("");
 	const [isMinusClicked, setIsMinusClicked] = useState(false);
+	const [lengthUsed, setLengthUsed] = useState([]);
+	const [breadthUsed, setBreadthUsed] = useState([]);
+	const [filteredLengths, setFilteredLengths] = useState([]);
+	const [filteredBreadth, setFilteredBreadth] = useState([]);
 
 	const navigate = useNavigate();
 
@@ -40,12 +44,16 @@ const Step3Inch = () => {
 				console.log(data);
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
-				setQuantityNumber(data?.quantityNumber || "");
+				setQuantityNumber(data?.['Quantity Number'] || "");
+				setMesurementType(data?.measurementType || "");
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length || 0) - 1);
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
+
+				setLengthUsed(data?.length);
+				setBreadthUsed(data?.breadth);
 				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
 				console.log("No such document!");
@@ -64,16 +72,27 @@ const Step3Inch = () => {
 	}, [lotNumberValue]);
 
 	const handleButtonClick = (value) => {
-		if (value === "-") {
+		if (value === ".") {
 			setIsMinusClicked(true);
-			setDisplayValue((prev) => prev + "'-");
+			setDisplayValue((prev) => prev + ".");
 		} else if (value === "X") {
 			if (!displayValue.includes("X")) {
 				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
 			}
 			setIsMinusClicked(false);
 		} else {
-			setDisplayValue((prev) => prev + value);
+			const newDisplayValue = displayValue + value;
+			setDisplayValue(newDisplayValue);
+
+			const newFilteredLengths = lengthUsed.filter(length => 
+				length.toString().startsWith(newDisplayValue)
+			);
+
+			setFilteredLengths(newFilteredLengths);
+			const newFilteredBreadths = breadthUsed.filter(breadth => 
+				breadth.toString().startsWith(newDisplayValue)
+			);
+			setFilteredBreadth(newFilteredBreadths);
 		}
 	};
 
@@ -86,11 +105,16 @@ const Step3Inch = () => {
 	};
 
 	const handleNext = async () => {
-		if (displayValue && !isValidInput(displayValue)) {
-			alert("Invalid format");
+		if (!isValidInput(displayValue)) {
+			alert("Invalid input format.");
 			return;
 		}
+
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
+			const [firstNumber, secondNumber] = displayValue
+				.split("X")
+				.map((num) => parseFloat(num.trim()));
+
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
@@ -98,77 +122,115 @@ const Step3Inch = () => {
 			const newResult = {
 				multiplication: displayValue,
 				measurement: measurementType,
+				firstNumber: firstNumber,
+				secondNumber: secondNumber,
 			};
 
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			try {
-				await updateDoc(docRef, {
-					results: arrayUnion(newResult),
-					inch: "1 Inch Measurements Data",
-					lastValue: newLastValue,
-					secondLastValue: newSecondLastValue,
-					thirdLastValue: newThirdLastValue,
+				await runTransaction(database, async (transaction) => {
+					const docSnapshot = await transaction.get(docRef);
+					if (!docSnapshot?.exists()) {
+						throw "Document does not exist!";
+					}
+
+					const currentResults = docSnapshot?.data()?.results || [];
+					const currentLengths = docSnapshot?.data()?.length || [];
+					const currentBreadths = docSnapshot?.data()?.breadth || [];
+
+					transaction.update(docRef, {
+						results: [...currentResults, newResult],
+						length: [...currentLengths, firstNumber],
+						breadth: [...currentBreadths, secondNumber],
+						lastValue: newLastValue,
+						secondLastValue: newSecondLastValue,
+						thirdLastValue: newThirdLastValue,
+					});
 				});
 				console.log("Result added to Firestore array");
+				setIsMinusClicked(false)
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
+
 			setLastValue(newLastValue);
 			setSecondLastValue(newSecondLastValue);
 			setThirdLastValue(newThirdLastValue);
 			setPieceNumber(pieceNumber + 1);
 			setDisplayValue("");
-			setIsMinusClicked(false);
 		} else {
 			setShowModal(true);
 		}
 	};
 
 	const handleFinalize = async () => {
-		if (displayValue) {
-			if (!isValidInput(displayValue)) {
-				alert("Invalid format");
-				return;
-			}
-		}
-
-		if (quantityNumber !== "" && pieceNumber !== Number(quantityNumber)) {
+		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
 		}
 
-		if (displayValue) {
-			const newLastValue = displayValue;
-			const newSecondLastValue = lastValue;
-			const newThirdLastValue = secondLastValue;
+		if (quantityNumber < pieceNumber + 2) {
+			setShowModal(true);
+		} else {
+			if (displayValue) {
+				if (!isValidInput(displayValue)) {
+					alert("Invalid format");
+					return;
+				}
 
-			const newResult = {
-				multiplication: displayValue,
-				measurement: measurementType,
-			};
+				const [firstNumber, secondNumber] = displayValue
+					.split("X")
+					.map((num) => parseFloat(num.trim()));
 
-			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
-			try {
-				await updateDoc(docRef, {
-					results: arrayUnion(newResult),
-					lastValue: newLastValue,
-					inch: "1Inch",
-					secondLastValue: newSecondLastValue,
-					thirdLastValue: newThirdLastValue,
-				});
-				console.log("Result added to Firestore array");
-			} catch (error) {
-				console.error("Error updating document:", error);
+				const newLastValue = displayValue;
+				const newSecondLastValue = lastValue;
+				const newThirdLastValue = secondLastValue;
+
+				const newResult = {
+					multiplication: displayValue,
+					measurement: measurementType,
+					firstNumber: firstNumber,
+					secondNumber: secondNumber,
+				};
+
+				const docRef = doc(database, "Data", "lot: " + lotNumberValue);
+				try {
+					await runTransaction(database, async (transaction) => {
+						const docSnapshot = await transaction.get(docRef);
+						if (!docSnapshot.exists()) {
+							throw "Document does not exist!";
+						}
+
+						const currentResults = docSnapshot.data().results || [];
+						const currentLengths = docSnapshot.data()?.length || [];
+						const currentBreadths = docSnapshot.data()?.breadth || [];
+
+						transaction.update(docRef, {
+							results: [...currentResults, newResult],
+							length: [...currentLengths, firstNumber],
+							breadth: [...currentBreadths, secondNumber],
+							lastValue: newLastValue,
+							secondLastValue: newSecondLastValue,
+							thirdLastValue: newThirdLastValue,
+						});
+					});
+					console.log("Result added to Firestore array");
+					setIsMinusClicked(false)
+				} catch (error) {
+					console.error("Error updating document:", error);
+				}
+
+				setLastValue(newLastValue);
+				setSecondLastValue(newSecondLastValue);
+				setThirdLastValue(newThirdLastValue);
+				setPieceNumber(pieceNumber + 1);
 			}
-			setLastValue(newLastValue);
-			setSecondLastValue(newSecondLastValue);
-			setThirdLastValue(newThirdLastValue);
-			setPieceNumber(pieceNumber + 1);
-		}
 
-		setDisplayValue("");
-		navigate("/final-result3");
+			setDisplayValue("");
+			navigate("/final-result");
+		}
 	};
+		
 
 	const handleMismatchContinue = () => {
 		setShowMismatchModal(false);
@@ -238,18 +300,21 @@ const Step3Inch = () => {
 	};
 
 	const handleLastValue = () => {
-		updateLastData(lastValue);
+
+		setDisplayValue(lastValue)
 		setIsMinusClicked(false);
 	};
 
 	const handleSecondLastValue = () => {
-		updateLastData(secondLastValue);
+
+		setDisplayValue(secondLastValue)
 		setIsMinusClicked(false);
 	};
-
+	
 	const handleThirdLastValue = () => {
-		updateLastData(thirdLastValue);
+		setDisplayValue(thirdLastValue)
 		setIsMinusClicked(false);
+		
 	};
 
     if (loading) {
@@ -272,6 +337,7 @@ const Step3Inch = () => {
 					<FaHome size={30} />
 				</NavLink>
 			</div>
+			
             </div>
 			<div className=" my-2 p-2 flex justify-between ">
 				<div className="text-center px-3 border-2  rounded-md border-white" style={{
@@ -282,7 +348,7 @@ const Step3Inch = () => {
 				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white" style={{
                     width:"30%"
                 }}>
-					Quantity <br /> {quantityNumber ? quantityNumber : "Null"}
+					Quantity <br /> {quantityNumber ? quantityNumber : "N/A"}
 				</div>
 				<div className="text-center px-3 border-2 rounded-md  border-white" style={{
                     width:"30%"
@@ -290,12 +356,43 @@ const Step3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex items-center  justify-center">
+			<div className=" px-2 my-4 flex justify-center">
 				<NavLink to={"/view-records3"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
+				{/* <p className="text-white px-3 text-lg py-1 uppercase font-bold">TYPE: {measurementType}</p>			 */}
+			</div>
+			<div className="text-lg flex justify-between mx-3">
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
+					{" "}
+					{filteredLengths.length > 0 ? (
+                        <div className="filtered-lengths">
+                            {filteredLengths.map((length, index) => (
+                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
+                                    {length}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <button className="mfu-button">MFU</button>
+                    )}
+				</div>
+				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
+					{" "}
+					{filteredBreadth.length > 0 ? (
+                        <div className="filtered-lengths">
+                            {filteredBreadth.map((length, index) => (
+                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
+                                    {length}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <button className="mfu-button">MFU</button>
+                    )}
+				</div>
 			</div>
 			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
@@ -319,10 +416,10 @@ const Step3Inch = () => {
 				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-16 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button  > AC</button>
 				</div>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("1")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("1")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 1</button>
 				</button>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("2")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("2")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 2</button>
 				</button>
 				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
@@ -331,10 +428,10 @@ const Step3Inch = () => {
 				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-16 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button> X</button>
 				</div>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("4")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("4")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 4</button>
 				</button>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("5")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("5")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 5</button>
 				</button>
 				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
@@ -345,10 +442,10 @@ const Step3Inch = () => {
 						<FaAngleLeft />
 					</button>
 				</div>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("7")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("7")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 7</button>
 				</button>
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("8")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick("8")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 8</button>
 				</button>
 				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
@@ -361,12 +458,9 @@ const Step3Inch = () => {
 					<button> 0</button>
 				</div>
 
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick("-")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-black" : "bg-gray-800"}`} >
-					<button >-</button>
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick(".")} className={`border-2 col-span-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
+					<button >.</button>
 				</button>
-				<div  onClick={() => handleButtonClick(`"`)} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center `} >
-					<button>"</button>
-				</div>
 
 				<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button > FINAL</button>
@@ -401,7 +495,7 @@ const Step3Inch = () => {
 				</div>
 			)}
 			{showMismatchModal && (
-				<div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 					<div className="bg-white text-black p-4 rounded">
 						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
 						<p>The piece number and quantity number do not match.</p>
@@ -420,6 +514,7 @@ const Step3Inch = () => {
 					</div>
 				</div>
 			)}
+
 		</div>
 	);
 };

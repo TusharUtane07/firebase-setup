@@ -22,6 +22,7 @@ import EditPage3Inch from "./pages/EditPage3Inch.jsx";
 import WelcomePage from "./pages/WelcomePage.jsx";
 import * as XLSX from 'xlsx';
 import { App as CapacitorApp } from '@capacitor/app';
+import DetailsLot from "./pages/DetailsLot.jsx";
 
 CapacitorApp.addListener('backButton', ({canGoBack}) => {
 	if(!canGoBack){
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
 			{
 				path: "details",
 				element: <Details />,
+			},
+			{
+				path: "details/:id",
+				element: <DetailsLot />,
 			},
 			{
 				path: "measurement-type",

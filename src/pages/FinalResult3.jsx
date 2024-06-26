@@ -10,12 +10,13 @@ import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
 
-const FinalResult = () => {
+const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
-	const [selectedFields, setSelectedFields] = useState(['quantityNumber', 'clientName', 'lotNumber']);
+	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
+	const [exportModal, setExportModal] = useState(false);
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -26,6 +27,8 @@ const FinalResult = () => {
 		'thirdLastValue',
 		'lastValue',
 		'inch',
+		'length',
+		'breadth',
 	];
 	const getData = async () => {
 		try {
@@ -45,16 +48,22 @@ const FinalResult = () => {
 			setLoading(false);
 		}
 	};
-
+console.log(data)
 	useEffect(() => {
 		getData();
 	}, [lotNumberValue]);
 
 	const parseValue = (value) => {
+		// Replace "'" with ".", "-" with "."
 		value = value?.replace(/'/g, ".")?.replace(/"/g, "");
+
+		// If value contains "-", treat it as decimal point
 		if (value?.includes("-")) {
+			// Replace "-" with "." to convert it into decimal
 			value = value?.replace("-", ".");
 		}
+
+		// Parse value into float
 		return parseFloat(value);
 	};
 
@@ -67,11 +76,14 @@ const FinalResult = () => {
 	}
 
 	const handleExport = () => {
+		setExportModal(true);
 		console.log(exportType);
 	};
 
+
+	// const options = [];
 	const handleChange = (value) => {
-		setSelectedFields(['quantityNumber','clientName', ...value]);
+		setSelectedFields([...value]);
 	}
 
 	return (
@@ -107,7 +119,7 @@ const FinalResult = () => {
 						allowClear
 						style={{ width: '100%' }}
 						placeholder="Please select"
-						defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
+						// defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
 						onChange={handleChange}
 						options={options}
 					/>
@@ -150,14 +162,12 @@ const FinalResult = () => {
 									PIECE NO
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									LENGTH
+									LENGTH ({data?.['Measurement']})
 								</th>
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									BREADTH
+									BREADTH ({data?.['Measurement']})
 								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									AREA
-								</th>
+								
 								<th className="py-2 px-4 text-left uppercase tracking-wider">
 									SQFT
 								</th>
@@ -184,7 +194,7 @@ const FinalResult = () => {
 										<td className="py-2 px-4">{index + 1}</td>
 										<td className="py-2 px-4">{value1}</td>
 										<td className="py-2 px-4">{value2}</td>
-										<td className="py-2 px-4">{item.multiplication}</td>
+										{/* <td className="py-2 px-4">{item.multiplication}</td> */}
 										<td className="py-2 px-4">{result}</td>
 									</tr>
 								</tbody>
@@ -194,7 +204,7 @@ const FinalResult = () => {
 				</div>
 			</div>
 			<div
-				className="mt-5 flex flex-col gap-3 border-2 border-black p-4 rounded-md m-3"
+				className="mt-5 flex flex-col gap-3 border-2 p-4 m-3"
 				style={{
 					display: "flex",
 					alignItems: "center",
@@ -220,9 +230,29 @@ const FinalResult = () => {
 					Export
 				</button>
 			</div>
+			{exportModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+					<div className="bg-white text-black p-4 rounded">
+						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
+						<p>The piece number and quantity number do not match.</p>
+						<div className="flex justify-between mt-4">
+							<button
+								onClick={() => navigate(`/details/${lotNumberValue}`)}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Lot
+							</button>
+							<button
+								onClick={() => navigate('/')}
+								className="border-2 border-black py-2 px-4 font-bold text-center">
+								New Client
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 		</div>
 	);
 };
 
-export default FinalResult;
+export default FinalResult3;
