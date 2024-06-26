@@ -270,7 +270,7 @@ const Details = () => {
                 ))}
           <div className="mb-3" id="pswmeter" />
           <div className="flex justify-between gap-3">
-          <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">Add Template</button>
+          <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">+ Add Template</button>
           <button onClick={() => setTemplateShowCase(true)} className="btn btn-primary w-full">Saved Template</button>
           </div>
        <button onClick={() => openModal(null)} type="button" className="btn btn-primary w-100 mt-2 mb-2" style={{
@@ -356,9 +356,11 @@ const Details = () => {
   <div className="fixed inset-0 bg-gray-600 w-full h-screen bg-opacity-50 flex justify-center items-center">
     <div className="bg-white p-5 rounded mx-5">
       <h2 className="text-xl mb-4">Saved Templates</h2>
-      <div>
-        {templatesData?.map((item) => (
-          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black m-2 p-2 rounded-md">{item.templateName}</div>
+      <div className="row">
+        {templatesData?.map((item, index) => (
+          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black m-2 p-2 rounded-md " style={{
+            textAlign:"center"
+          }}>{item.templateName}</div>
         ))}
       </div>
       <div className="mt-4 flex justify-center">

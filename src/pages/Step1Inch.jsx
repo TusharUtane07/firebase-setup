@@ -338,7 +338,7 @@ const Step1Inch = () => {
 					</button>
 				</NavLink>
 			</div>
-			<div className="text-lg flex justify-between mx-3">
+			<div className="text-lg flex justify-between mx-3 mt-4">
 				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
 					{" "}
 					{filteredLengths.length > 0 ? (
@@ -350,7 +350,7 @@ const Step1Inch = () => {
                             ))}
                         </div>
                     ) : (
-                        <button className="mfu-button">MFU</button>
+                        <button className="mfu-button">{displayValue.includes('X') ? "BREADTH - 1" : "LENGTH - 1"}</button>
                     )}
 				</div>
 				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
@@ -364,7 +364,7 @@ const Step1Inch = () => {
                             ))}
                         </div>
                     ) : (
-                        <button className="mfu-button">MFU</button>
+                        <button className="mfu-button">{displayValue.includes('X') ? "BREADTH - 2" : "LENGTH - 2"}</button>
                     )}
 				</div>
 			</div>

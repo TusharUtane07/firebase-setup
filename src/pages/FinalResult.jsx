@@ -9,6 +9,8 @@ import loader from "../assests/loader.png";
 import { Radio, Space } from "antd-mobile";
 import { Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
+import { downloadExcel } from "./handleDownload";
+import { downloadPDF } from "./handlePdfDownload";
 
 const FinalResult = () => {
 	const [data, setData] = useState(null);
@@ -30,6 +32,9 @@ const FinalResult = () => {
 		'length',
 		'breadth',
 	];
+	const handleDownload = () => {
+		downloadExcel(data, 'example.xlsx');
+	  };
 	const getData = async () => {
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
@@ -48,6 +53,10 @@ const FinalResult = () => {
 			setLoading(false);
 		}
 	};
+	const handleDownloadPDF = () => {
+		downloadPDF(data, 'example.pdf');
+	  };
+	
 console.log(data)
 	useEffect(() => {
 		getData();
@@ -220,7 +229,12 @@ console.log(data)
 				</Radio.Group>
 				<button
 					className="btn-primary"
-					onClick={handleExport}
+					onClick={()=>{
+						// handleDownload()
+						handleDownloadPDF()
+						// handleExport()
+					
+					}}
 					style={{
 						background: "#4E97F3",
 						color: "white",
