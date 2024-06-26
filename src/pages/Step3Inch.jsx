@@ -31,6 +31,8 @@ const Step3Inch = () => {
 	const [breadthUsed, setBreadthUsed] = useState([]);
 	const [filteredLengths, setFilteredLengths] = useState([]);
 	const [filteredBreadth, setFilteredBreadth] = useState([]);
+	const [squareFeet, setSquareFeet] = useState(0);
+	const [total, setTotal] = useState(0);
 
 	const navigate = useNavigate();
 
@@ -51,6 +53,10 @@ const Step3Inch = () => {
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
+
+				data.results.map((item) => {
+					setSquareFeet(Number(item.sqft))
+				})
 
 				setLengthUsed(data?.length);
 				setBreadthUsed(data?.breadth);
