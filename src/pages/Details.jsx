@@ -98,14 +98,22 @@ const Details = () => {
       2: labels.vehicleNumber,
       3: labels.lotNumber,
       4: labels.quantityNumber,
-      5: labels.measurement
-    }
+      5: labels.measurement,
+    };
+    
+    // Assuming dynamicFields is an array of objects with a 'label' property
+    dynamicFields.forEach((field, index) => {
+      data[6 + index] = field.label;
+    });
+    
+    console.log(data);
 
     const docRef = doc(database, "Templates", tempalteName);
     await setDoc(docRef, data);
 
     setTemplateModal(false);
     setTemplateName("");
+    getData();
   }
 
   const getData = async() => {
@@ -358,7 +366,7 @@ const Details = () => {
       <h2 className="text-xl mb-4">Saved Templates</h2>
       <div className="row">
         {templatesData?.map((item, index) => (
-          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black m-2 p-2 rounded-md " style={{
+          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
             textAlign:"center"
           }}>{item.templateName}</div>
         ))}

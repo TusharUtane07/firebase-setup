@@ -109,23 +109,26 @@ const Step3Inch = () => {
 			alert("Invalid input format.");
 			return;
 		}
-
+	
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
 			const [firstNumber, secondNumber] = displayValue
 				.split("X")
 				.map((num) => parseFloat(num.trim()));
-
+	
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
-
+	
+			const result = ((firstNumber * secondNumber) / 144).toFixed(2);
+	
 			const newResult = {
 				multiplication: displayValue,
 				measurement: measurementType,
 				firstNumber: firstNumber,
 				secondNumber: secondNumber,
+				sqft: result
 			};
-
+	
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			try {
 				await runTransaction(database, async (transaction) => {
@@ -133,11 +136,11 @@ const Step3Inch = () => {
 					if (!docSnapshot?.exists()) {
 						throw "Document does not exist!";
 					}
-
+	
 					const currentResults = docSnapshot?.data()?.results || [];
 					const currentLengths = docSnapshot?.data()?.length || [];
 					const currentBreadths = docSnapshot?.data()?.breadth || [];
-
+	
 					transaction.update(docRef, {
 						results: [...currentResults, newResult],
 						length: [...currentLengths, firstNumber],
@@ -149,10 +152,14 @@ const Step3Inch = () => {
 				});
 				console.log("Result added to Firestore array");
 				setIsMinusClicked(false)
+
+	
+				// Update total after adding new square feet
+				setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
-
+	
 			setLastValue(newLastValue);
 			setSecondLastValue(newSecondLastValue);
 			setThirdLastValue(newThirdLastValue);
@@ -162,13 +169,13 @@ const Step3Inch = () => {
 			setShowModal(true);
 		}
 	};
-
+	
 	const handleFinalize = async () => {
 		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
 		}
-
+	
 		if (quantityNumber < pieceNumber + 2) {
 			setShowModal(true);
 		} else {
@@ -177,22 +184,24 @@ const Step3Inch = () => {
 					alert("Invalid format");
 					return;
 				}
-
+	
 				const [firstNumber, secondNumber] = displayValue
 					.split("X")
 					.map((num) => parseFloat(num.trim()));
-
+	
 				const newLastValue = displayValue;
 				const newSecondLastValue = lastValue;
 				const newThirdLastValue = secondLastValue;
-
+	
+				const result = ((firstNumber * secondNumber) / 144).toFixed(2);
 				const newResult = {
 					multiplication: displayValue,
 					measurement: measurementType,
 					firstNumber: firstNumber,
 					secondNumber: secondNumber,
+					sqft: result
 				};
-
+	
 				const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 				try {
 					await runTransaction(database, async (transaction) => {
@@ -200,11 +209,11 @@ const Step3Inch = () => {
 						if (!docSnapshot.exists()) {
 							throw "Document does not exist!";
 						}
-
+	
 						const currentResults = docSnapshot.data().results || [];
 						const currentLengths = docSnapshot.data()?.length || [];
 						const currentBreadths = docSnapshot.data()?.breadth || [];
-
+	
 						transaction.update(docRef, {
 							results: [...currentResults, newResult],
 							length: [...currentLengths, firstNumber],
@@ -216,16 +225,20 @@ const Step3Inch = () => {
 					});
 					console.log("Result added to Firestore array");
 					setIsMinusClicked(false)
+
+	
+					// Update total after adding new square feet
+					setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
 				} catch (error) {
 					console.error("Error updating document:", error);
 				}
-
+	
 				setLastValue(newLastValue);
 				setSecondLastValue(newSecondLastValue);
 				setThirdLastValue(newThirdLastValue);
 				setPieceNumber(pieceNumber + 1);
 			}
-
+	
 			setDisplayValue("");
 			navigate("/final-result");
 		}
@@ -356,12 +369,14 @@ const Step3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-4 flex justify-center">
+			<div className=" px-2 my-4 flex justify-center items-center gap-4">
 				<NavLink to={"/view-records3"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
+				<div className="">SQFT: {total}</div>
+
 				{/* <p className="text-white px-3 text-lg py-1 uppercase font-bold">TYPE: {measurementType}</p>			 */}
 			</div>
 			<div className="text-lg flex justify-between mx-3">

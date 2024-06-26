@@ -39,6 +39,8 @@ const Step1Inch = () => {
 	const [breadthUsed, setBreadthUsed] = useState([]);
 	const [filteredLengths, setFilteredLengths] = useState([]);
 	const [filteredBreadth, setFilteredBreadth] = useState([]);
+	const [squareFeet, setSquareFeet] = useState(0);
+	const [total, setTotal] = useState(0);
 
 	const navigate = useNavigate();
 
@@ -59,9 +61,13 @@ const Step1Inch = () => {
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
-
+				data.results.map((item) => {
+					setSquareFeet(Number(item.sqft))
+				})
 				setLengthUsed(data?.length);
 				setBreadthUsed(data?.breadth);
+				setTotal(Number(squareFeet + total))
+		
 				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
 				console.log("No such document!");
@@ -118,23 +124,26 @@ const Step1Inch = () => {
 			alert("Invalid input format.");
 			return;
 		}
-
+	
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
 			const [firstNumber, secondNumber] = displayValue
 				.split("X")
 				.map((num) => parseFloat(num.trim()));
-
+	
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
-
+	
+			const result = ((firstNumber * secondNumber) / 144).toFixed(2);
+	
 			const newResult = {
 				multiplication: displayValue,
 				measurement: measurementType,
 				firstNumber: firstNumber,
 				secondNumber: secondNumber,
+				sqft: result
 			};
-
+	
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			try {
 				await runTransaction(database, async (transaction) => {
@@ -142,11 +151,11 @@ const Step1Inch = () => {
 					if (!docSnapshot?.exists()) {
 						throw "Document does not exist!";
 					}
-
+	
 					const currentResults = docSnapshot?.data()?.results || [];
 					const currentLengths = docSnapshot?.data()?.length || [];
 					const currentBreadths = docSnapshot?.data()?.breadth || [];
-
+	
 					transaction.update(docRef, {
 						results: [...currentResults, newResult],
 						length: [...currentLengths, firstNumber],
@@ -157,10 +166,13 @@ const Step1Inch = () => {
 					});
 				});
 				console.log("Result added to Firestore array");
+	
+				// Update total after adding new square feet
+				setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
 			} catch (error) {
 				console.error("Error updating document:", error);
 			}
-
+	
 			setLastValue(newLastValue);
 			setSecondLastValue(newSecondLastValue);
 			setThirdLastValue(newThirdLastValue);
@@ -170,13 +182,13 @@ const Step1Inch = () => {
 			setShowModal(true);
 		}
 	};
-
+	
 	const handleFinalize = async () => {
 		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
 		}
-
+	
 		if (quantityNumber < pieceNumber + 2) {
 			setShowModal(true);
 		} else {
@@ -185,22 +197,24 @@ const Step1Inch = () => {
 					alert("Invalid format");
 					return;
 				}
-
+	
 				const [firstNumber, secondNumber] = displayValue
 					.split("X")
 					.map((num) => parseFloat(num.trim()));
-
+	
 				const newLastValue = displayValue;
 				const newSecondLastValue = lastValue;
 				const newThirdLastValue = secondLastValue;
-
+	
+				const result = ((firstNumber * secondNumber) / 144).toFixed(2);
 				const newResult = {
 					multiplication: displayValue,
 					measurement: measurementType,
 					firstNumber: firstNumber,
 					secondNumber: secondNumber,
+					sqft: result
 				};
-
+	
 				const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 				try {
 					await runTransaction(database, async (transaction) => {
@@ -208,11 +222,11 @@ const Step1Inch = () => {
 						if (!docSnapshot.exists()) {
 							throw "Document does not exist!";
 						}
-
+	
 						const currentResults = docSnapshot.data().results || [];
 						const currentLengths = docSnapshot.data()?.length || [];
 						const currentBreadths = docSnapshot.data()?.breadth || [];
-
+	
 						transaction.update(docRef, {
 							results: [...currentResults, newResult],
 							length: [...currentLengths, firstNumber],
@@ -223,16 +237,19 @@ const Step1Inch = () => {
 						});
 					});
 					console.log("Result added to Firestore array");
+	
+					// Update total after adding new square feet
+					setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
 				} catch (error) {
 					console.error("Error updating document:", error);
 				}
-
+	
 				setLastValue(newLastValue);
 				setSecondLastValue(newSecondLastValue);
 				setThirdLastValue(newThirdLastValue);
 				setPieceNumber(pieceNumber + 1);
 			}
-
+	
 			setDisplayValue("");
 			navigate("/final-result");
 		}
@@ -292,6 +309,8 @@ const Step1Inch = () => {
 		);
 	}
 
+
+
 	return (
 		<div className="bg-gray-900 min-h-screen p-1 text-white">
 			<div
@@ -331,12 +350,13 @@ const Step1Inch = () => {
 					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex justify-center ">
+			<div className=" px-2 my-2 flex justify-center items-center gap-4">
 				<NavLink to={"/view-records"}>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
 				</NavLink>
+				<div className="">SQFT: {total}</div>
 			</div>
 			<div className="text-lg flex justify-between mx-3 mt-4">
 				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
