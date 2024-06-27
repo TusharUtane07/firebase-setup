@@ -7,7 +7,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
 import loader from "../assests/loader.png";
 import { Radio, Space } from "antd-mobile";
-import { Select } from "antd";
+import { Modal, Progress, Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
 import { downloadExcel } from "./handleDownload";
 import { downloadPDF } from "./handlePdfDownload";
@@ -19,6 +19,22 @@ const FinalResult = () => {
 	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
 	const [exportModal, setExportModal] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const showModal = () => {
+	  setIsModalOpen(true);
+	};
+	const handleOk = () => {
+	  setIsModalOpen(false);
+	  setTimeout(() => {
+							
+		handleExport()
+
+	}, 1500);
+	};
+	const handleCancel = () => {
+	  setIsModalOpen(false);
+	};
+	const [percentageDownload, setPercentageDownload] = useState(0)
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -33,7 +49,7 @@ const FinalResult = () => {
 		'breadth',
 	];
 	const handleDownload = () => {
-		downloadExcel(data, 'example.xlsx');
+		downloadExcel(data, 'measurements.xlsx');
 	  };
 	const getData = async () => {
 		try {
@@ -54,7 +70,7 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		downloadPDF(data, 'example.pdf');
+		downloadPDF(data, 'measurements.pdf');
 	  };
 	
 console.log(data)
@@ -227,12 +243,42 @@ console.log(data)
 						<Radio value="pdf">Export as PDF</Radio>
 					</Space>
 				</Radio.Group>
+				<Modal  open={isModalOpen} onOk={handleOk}        onCancel={handleCancel}
+        cancelButtonProps={{ style: { display: 'none' } }}
+				>
+					<div style={{
+						display:"flex",
+						alignItems:"center",
+						justifyContent:"center",
+						flexDirection:"column"
+					}}>
+				<Progress type="circle" percent={percentageDownload} />
+				<p style={{
+					marginTop:"1rem"
+				}}>{percentageDownload==100 && "File has been saved in your device"}</p>
+				</div>
+      </Modal>
 				<button
 					className="btn-primary"
 					onClick={()=>{
-						// handleDownload()
+						
+						if(exportType == "pdf"){
 						handleDownloadPDF()
-						// handleExport()
+
+						}
+						else if(exportType == "pdf"){
+						handleDownload()
+
+						}
+						
+					setTimeout(() => {
+						
+						showModal()
+
+					}, 1000);
+						setTimeout(()=>{
+							setPercentageDownload(100)
+						},1500)
 					
 					}}
 					style={{
@@ -247,12 +293,14 @@ console.log(data)
 			{exportModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 					<div className="bg-white text-black p-4 rounded">
-						<h2 className="text-lg font-bold">Quantity Mismatch</h2>
-						<p>The piece number and quantity number do not match.</p>
+						<h2 className="text-lg font-bold">Please Select</h2>
+						<p>Choose the type of next measurement</p>
 						<div className="flex justify-between mt-4">
 							<button
 								onClick={() => navigate(`/details/${lotNumberValue}`)}
-								className="border-2 border-black py-2 px-4 font-bold text-center">
+								className="border-2 border-black py-2 px-4 font-bold text-center" style={{
+									marginRight:"1rem"
+								}}>
 								New Lot
 							</button>
 							<button

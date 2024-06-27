@@ -93,13 +93,16 @@ const MeasurementType = () => {
             className="accordion accordion-flush accordion-style-two"
             id="accordionStyle2"
           >
-             <NavLink to={"/step1inch"} className="btn btn-primary w-100" style={{
+             <div  onClick={()=>{
+                  navigate(`/step1inch`, { state: { sqft: true } });
+
+             }} className="btn btn-primary w-100" style={{
         background:"transparent",
         color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select Regular Type
-          </NavLink>
+          </div>
           </div>
         </div>
       </div>
@@ -142,13 +145,18 @@ const MeasurementType = () => {
             className="accordion accordion-flush accordion-style-two"
             id="accordionStyle2"
           >
-             <NavLink to={"/step3inch"} className="btn btn-primary w-100" style={{
+             <div 
+              onClick={()=>{
+                navigate(`/step3inch`, { state: { sqft: true } });
+
+           }}
+          className="btn btn-primary w-100" style={{
         background:"transparent",
         color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select 3 Steps Type
-          </NavLink>
+          </div>
           </div>
         </div>
       </div>

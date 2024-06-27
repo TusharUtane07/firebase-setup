@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { addDoc, arrayUnion, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { database } from "../firebase/firebase";
 import "../style/cal.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaHome } from "react-icons/fa";
 import loader from "../assests/loader.png";
 const Step3Inch = () => {
@@ -13,7 +13,8 @@ const Step3Inch = () => {
 
 	const [newQuantity, setNewQuantity] = useState("");
 	const placeholderText = "Enter your size";
-
+	const location = useLocation();
+	const { sqft } = location.state || {};
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
 	const [vehicleNumber, setVehicleNumber] = useState("");
 	const [clientName, setClientName] = useState("");
@@ -33,7 +34,19 @@ const Step3Inch = () => {
 	const [filteredBreadth, setFilteredBreadth] = useState([]);
 	const [squareFeet, setSquareFeet] = useState(0);
 	const [total, setTotal] = useState(0);
-
+	useEffect(()=>{
+		if(sqft){
+			setTotal(0)
+			localStorage.removeItem("sqft")
+		}
+	},[])
+	useEffect(()=>{
+		
+		const check_local = localStorage.getItem("sqft")
+		if (check_local){
+			setTotal(parseFloat(check_local))
+		}
+	},[])
 	const navigate = useNavigate();
 
 	const getDocument = async () => {
@@ -177,6 +190,8 @@ const Step3Inch = () => {
 	};
 	
 	const handleFinalize = async () => {
+		localStorage.setItem("sqft", total)
+
 		if (!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
@@ -376,45 +391,24 @@ const Step3Inch = () => {
 				</div>
 			</div>
 			<div className=" px-2 my-4 flex justify-center items-center gap-4">
-				<NavLink to={"/view-records3"}>
+				<div 
+				onClick={()=>{
+					localStorage.setItem("sqft", total)
+					navigate("/view-records3")
+		}}
+				>
 					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
 						View Records
 					</button>
-				</NavLink>
-				<div className="">SQFT: {total}</div>
+				</div>
+				<div className="" 
+				style={{
+					fontSize:"1.3rem"}}
+				>SQFT: {total.toFixed(2)}</div>
 
 				{/* <p className="text-white px-3 text-lg py-1 uppercase font-bold">TYPE: {measurementType}</p>			 */}
 			</div>
-			<div className="text-lg flex justify-between mx-3">
-				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
-					{" "}
-					{filteredLengths.length > 0 ? (
-                        <div className="filtered-lengths">
-                            {filteredLengths.map((length, index) => (
-                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
-                                    {length}
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        <button className="mfu-button">MFU</button>
-                    )}
-				</div>
-				<div className="border-2 border-white px-3 py-1 rounded-md font-semibold">
-					{" "}
-					{filteredBreadth.length > 0 ? (
-                        <div className="filtered-lengths">
-                            {filteredBreadth.map((length, index) => (
-                                <button key={index} onClick={() => setDisplayValue(length.toString())}>
-                                    {length}
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        <button className="mfu-button">MFU</button>
-                    )}
-				</div>
-			</div>
+
 			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
