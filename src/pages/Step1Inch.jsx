@@ -104,9 +104,9 @@ const Step1Inch = () => {
 			setDisplayValue((prev) => prev + ".");
 		} else if (value === "X") {
 			if (!displayValue.includes("X")) {
+				setIsMinusClicked(false);
 				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
 			}
-			setIsMinusClicked(false);
 		} else {
 			const newDisplayValue = displayValue + value;
 			setDisplayValue(newDisplayValue);
@@ -280,6 +280,7 @@ const Step1Inch = () => {
 	};
 
 	const handleClear = () => {
+		setIsMinusClicked(false);  
 		setDisplayValue("");
 	};
 
@@ -381,7 +382,7 @@ const Step1Inch = () => {
 			</div>
 
 			<div
-				className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3"
+				className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3 "
 				style={{
 					border: "0rem",
 				}}>
@@ -390,17 +391,17 @@ const Step1Inch = () => {
 			<div className="grid grid-cols-4 pb-2 ">
 				<button
 					onClick={handleLastValue}
-					className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+					className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{lastValue || "LV"}</button>
 				</button>
 				<button
 					onClick={handleSecondLastValue}
-					className="border-2 border-white h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center">
+					className="border-2 border-white h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {secondLastValue || "SV"}</button>
 				</button>
 				<button
 					onClick={handleThirdLastValue}
-					className="border-2 border-white h-16  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
+					className="border-2 border-white h-16  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {thirdLastValue || "TV"}</button>
 				</button>
 				<button

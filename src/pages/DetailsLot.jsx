@@ -44,6 +44,18 @@ const DetailsLot = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
+
+    let isValid = true;
+
+    if (!lotNumberValue) {
+      setLotNumberError(true);
+      isValid = false;
+    } else {
+      setLotNumberError(false);
+    }
+
+    if (!isValid) return;
+    
 console.log("hey")
     const data = {
       [labels.clientName]: clientName,
@@ -95,9 +107,6 @@ console.log("hey")
       templateName: tempalteName,
       1: labels.clientName,
       2: labels.vehicleNumber,
-      3: labels.lotNumber,
-      4: labels.quantityNumber,
-      5: labels.measurement
     };
 
     const docRef = doc(database, "Templates", tempalteName);
@@ -159,7 +168,7 @@ console.log("hey")
       "results", 
       "secondLastValue", 
       "thirdLastValue",
-
+      "undefined"
   ];
   
   const filteredData = Object.keys(data[0]).reduce((acc, key) => {
@@ -209,6 +218,7 @@ console.log("hey")
             className="form-control"
             placeholder={filteredData[key]}
             value={filteredData[key]}
+            disabled
             />
         </div>
       ))}
@@ -219,16 +229,16 @@ console.log("hey")
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    lot number
+                    Lot Number
                   </label>
                   <input
                     type="text"
-                    placeholder={`Enter the ${labels.lotNumber}`}
+                    placeholder={`Enter the Lot Number`}
                     className="form-control"
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
                   />
-                  {lotNumberError && <div className="pt-2 text-red-500">{labels.lotNumber} needs to be added.</div>}
+                  {lotNumberError && <div className="pt-2 text-red-500">Lot Number needs to be added.</div>}
                   <div className="position-absolute" id="password-visibility">
                     <i className="bi bi-eye-slash" />
                   </div>
@@ -238,12 +248,12 @@ console.log("hey")
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    {labels.quantityNumber} 
+                    Quantity Number 
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder={`Enter the ${labels.quantityNumber}`}
+                    placeholder={`Enter the Quantity Number `}
                     value={quantityNumber}
                     onChange={(e) => setQuantityNumber(e.target.value)}
                   />
@@ -257,7 +267,7 @@ console.log("hey")
                     onClick={() => openModal("measurement")}
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
                   >
-                    {labels.measurement} 
+                    Measurement 
                   </label>
                   <select
                     value={measurementType}

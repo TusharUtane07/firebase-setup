@@ -96,9 +96,9 @@ const Step3Inch = () => {
 			setDisplayValue((prev) => prev + ".");
 		} else if (value === "X") {
 			if (!displayValue.includes("X")) {
+				setIsMinusClicked(false);
 				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
 			}
-			setIsMinusClicked(false);
 		} else {
 			const newDisplayValue = displayValue + value;
 			setDisplayValue(newDisplayValue);
@@ -414,16 +414,16 @@ const Step3Inch = () => {
 			</div>
 			<div className="grid grid-cols-4  ">
 				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleLastValue}>{lastValue || "LV"}</button>
+					<button onClick={handleLastValue} className="overflow-hidden">{lastValue || "LV"}</button>
 				</div>
 				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleSecondLastValue}>
+					<button onClick={handleSecondLastValue} className="overflow-hidden">
 						{" "}
 						{secondLastValue || "SV"}
 					</button>
 				</div>
 				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button onClick={handleThirdLastValue}>
+					<button onClick={handleThirdLastValue} className="overflow-hidden">
 						{" "}
 						{thirdLastValue || "TV"}
 					</button>

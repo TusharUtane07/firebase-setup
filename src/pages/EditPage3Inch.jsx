@@ -72,9 +72,9 @@ const EditPage3Inch = () => {
 			setDisplayValue((prev) => prev + ".");
 		} else if (value === "X") {
 			if (!displayValue.includes("X")) {
+				setIsMinusClicked(false);
 				setDisplayValue((prev) => (prev === "" ? "" : prev + value));
 			}
-			setIsMinusClicked(false);
 		} else {
 			setDisplayValue((prev) => prev + value);
 		}
@@ -150,6 +150,7 @@ const EditPage3Inch = () => {
 	
 
 	const handleClear = () => {
+		setIsMinusClicked(false);
 		setDisplayValue("");
 	};
 

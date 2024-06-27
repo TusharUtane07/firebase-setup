@@ -96,14 +96,11 @@ const Details = () => {
       templateName: tempalteName,
       1: labels.clientName,
       2: labels.vehicleNumber,
-      3: labels.lotNumber,
-      4: labels.quantityNumber,
-      5: labels.measurement,
     };
     
     // Assuming dynamicFields is an array of objects with a 'label' property
     dynamicFields.forEach((field, index) => {
-      data[6 + index] = field.label;
+      data[3 + index] = field.label;
     });
     
     console.log(data);
@@ -132,16 +129,24 @@ const Details = () => {
   }, [])
 
   const setTheLabels = (item) => {
-    setLabels({
+    // First, set the static labels
+    const updatedLabels = {
       clientName: item[1],
-    vehicleNumber: item[2],
-    lotNumber: item[3],
-    quantityNumber:item[4],
-    measurement: item[5],
-    })
-    setTemplateShowCase(false)
-  }
-
+      vehicleNumber: item[2],
+    };
+  
+    const updatedDynamicFields = [];
+    for (let i = 3; i < Object.keys(item).length; i++) {
+      updatedDynamicFields.push({ label: item[i], value: "" });
+    }
+  
+    // Update labels and dynamicFields state together
+    setLabels(updatedLabels);
+    setDynamicFields(updatedDynamicFields);
+    setTemplateShowCase(false);
+  };
+  
+  
   return (
     <>
 
@@ -203,16 +208,16 @@ const Details = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem" }}
                   >
-                    {labels.lotNumber} 
+                    Lot Number 
                   </label>
                   <input
                     type="text"
-                    placeholder={`Enter the ${labels.lotNumber}`}
+                    placeholder={`Enter the Lot Number`}
                     className="form-control"
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
                   />
-                  {lotNumberError && <div className="pt-2  text-red-500">{labels.lotNumber} needs to be added.</div>}
+                  {lotNumberError && <div className="pt-2  text-red-500">Lot Number needs to be added.</div>}
             <div className="position-absolute" id="password-visibility">
               <i className="bi bi-eye-slash" />
             </div>
@@ -222,11 +227,11 @@ const Details = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                    {labels.quantityNumber}
+                    Quantity Number
                   </label>
                   <input
                     type="number"
-                    placeholder={`Enter the ${labels.quantityNumber}`}
+                    placeholder={`Enter the Quantity Number`}
                     className="form-control"
                     value={quantityNumber}
                     onChange={(e) => setQuantityNumber(e.target.value)}
@@ -241,7 +246,7 @@ const Details = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                    {labels.measurement}
+                    Measurement
                   </label>
                   <select
 					name="measurement"
@@ -260,22 +265,22 @@ const Details = () => {
             </div>
           </div>
           {dynamicFields.map((field, index) => (
-                  <div key={index}>
-                    <label
-                      className="cursor-pointer"
-                      style={{ display: 'flex', alignItems: 'center', gap: "10px", marginTop:"0.5rem"  }}
-                      >
-                      {field.label}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={`Enter the ${field.label}`}
-                      className="form-control"
-                      value={field.value}
-                      onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
-                    />
-                  </div>
-                ))}
+  <div key={index}>
+    <label
+      className="cursor-pointer"
+      style={{ display: 'flex', alignItems: 'center', gap: "10px", marginTop:"0.5rem" }}
+    >
+      {field.label}
+    </label>
+    <input
+      type="text"
+      placeholder={`Enter the ${field.label}`}
+      className="form-control"
+      value={field.value}
+      onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
+    />
+  </div>
+))}
           <div className="mb-3" id="pswmeter" />
           <div className="flex justify-between gap-3">
           <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">+ Add Template</button>
