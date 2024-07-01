@@ -22,9 +22,11 @@ const MeasurementType = () => {
       <div className="header-content header-style-five position-relative d-flex align-items-center justify-content-between">
         {/* Back Button */}
         <div className="back-button">
-          <a href="pages.html">
+          {/* <a href="pages.html"> */}
+          <NavLink to={"/details"}>
             <i className="bi bi-arrow-left-short" />
-          </a>
+          </NavLink>
+          {/* </a> */}
         </div>
         {/* Page Title */}
         <div className="page-heading">
@@ -91,13 +93,16 @@ const MeasurementType = () => {
             className="accordion accordion-flush accordion-style-two"
             id="accordionStyle2"
           >
-             <NavLink to={"/step1inch"} className="btn btn-primary w-100" style={{
+             <div  onClick={()=>{
+                  navigate(`/step1inch`, { state: { sqft: true } });
+
+             }} className="btn btn-primary w-100" style={{
         background:"transparent",
         color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select Regular Type
-          </NavLink>
+          </div>
           </div>
         </div>
       </div>
@@ -140,13 +145,18 @@ const MeasurementType = () => {
             className="accordion accordion-flush accordion-style-two"
             id="accordionStyle2"
           >
-             <NavLink to={"/step3inch"} className="btn btn-primary w-100" style={{
+             <div 
+              onClick={()=>{
+                navigate(`/step3inch`, { state: { sqft: true } });
+
+           }}
+          className="btn btn-primary w-100" style={{
         background:"transparent",
         color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select 3 Steps Type
-          </NavLink>
+          </div>
           </div>
         </div>
       </div>
