@@ -1,4 +1,4 @@
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+// import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { generatePDF } from './utilityFunction';
 
 

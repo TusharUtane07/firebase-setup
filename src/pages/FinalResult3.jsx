@@ -12,7 +12,7 @@ import { camelCaseToReadable } from "../utils/commonFunctions";
 import { downloadExcel } from "./handleDownload";
 import { downloadPDF } from "./handlePdfDownload";
 
-const FinalResult = () => {
+const FinalResult3 = () => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [exportType, setExportType] = useState("excel");
@@ -24,9 +24,19 @@ const FinalResult = () => {
 	const [measurements, setMeasurements] = useState([]);
 	const [measurementUnit, setMeasurementUnit] = useState("mm");
 
+	const [selectedValue, setSelectedValue] = useState('1');
+	const [pieceNumbers, setPieceNumbers] = useState([]);
+
+	const [totalArea, setTotalArea] = useState(0);
+
 	const showModal = () => {
 	  setIsModalOpen(true);
 	};
+
+	const handleRadioChange = (event) => {
+		setSelectedValue(event.target.value);
+	};
+
 	const handleOk = () => {
 	  setIsModalOpen(false);
 	  setTimeout(() => {
@@ -132,6 +142,40 @@ const FinalResult = () => {
 		setSelectedFields([...value]);
 	};
 
+	
+	const groupData = () => {
+		const grouped = {};
+		data.results.forEach((item, index) => {
+			const value1 = parseValue(item.multiplication.split("X")[0]);
+			const value2 = parseValue(item.multiplication.split("X")[1]);
+
+			if (isNaN(value1) || isNaN(value2)) {
+				console.error("Invalid values:", value1, value2);
+				return;
+			}
+
+			const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
+			const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
+			const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+
+			const key = `${convertedValue1}-${convertedValue2}-${result}`;
+			if (!grouped[key]) {
+				grouped[key] = {
+					length: convertedValue1,
+					breadth: convertedValue2,
+					sqft: result,
+					pieceNumbers: [],
+				};
+			}
+			grouped[key].pieceNumbers.push(index + 1);
+		});
+		return Object.values(grouped);
+	};
+
+	const groupedData = groupData();
+	let totalResult = 0;
+	let  sumOfSqft = 0;
+	let peiceNumberTotal = 0;
 	return (
 		<div className="h-screen">
 			<div className="flex items-center gap-6 justify-start mb-2" style={{ fontSize: "1rem" }}>
@@ -170,7 +214,7 @@ const FinalResult = () => {
 							return null;
 						})}
 				</div>
-				<div style={{
+				<div className="flex justify-between"  style={{
 					padding:"1.4rem"
 				}}>
 					<select name="measurement" id="measurement" onChange={handleMeasurementChange}>
@@ -180,47 +224,124 @@ const FinalResult = () => {
 						<option value="inch">INCH</option>
 						<option value="feet">FEET</option>
 					</select>
+				<div className="flex gap-2">
+					<input 
+						type="radio" 
+						name="options" 
+						value="1" 
+						id="option1"
+						checked={selectedValue === '1'} 
+						onChange={handleRadioChange} 
+					/>
+					<label htmlFor="option1">Option 1</label>
+					
+					<input 
+					id="option2"
+						type="radio" 
+						name="options" 
+						value="2" 
+						checked={selectedValue === '2'} 
+						onChange={handleRadioChange} 
+					/>
+					<label htmlFor="option2">Option 2</label>
 				</div>
-				<div className="mx-4 overflow-hidden">
-					<div className="overflow-x-auto">
-						<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-							<thead className="bg-gray-200">
-								<tr>
-									<th className="py-2 px-4 text-left uppercase tracking-wider">SR NO</th>
-									<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
-									<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
-									<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
-									<th className="py-2 px-4 text-left uppercase tracking-wider">SQFT</th>
-								</tr>
-							</thead>
-							{data?.results?.map((item, index) => {
-								const value1 = parseValue(item.multiplication.split("X")[0]);
-								const value2 = parseValue(item.multiplication.split("X")[1]);
+				</div>
+				<div>
+				{selectedValue === '1' && (
+					<div className="mx-4 overflow-hidden">
+						<div className="overflow-x-auto">
+							<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+								<thead className="bg-gray-200">
+									<tr>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">SR NO</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQFT)</th>
+									</tr>
+								</thead>
+								<tbody>
+									{data.results.map((item, index) => {
+										const value1 = parseValue(item.multiplication.split("X")[0]);
+										const value2 = parseValue(item.multiplication.split("X")[1]);
 
-								if (isNaN(value1) || isNaN(value2)) {
-									console.error("Invalid values:", value1, value2);
-									return null;
-								}
+										if (isNaN(value1) || isNaN(value2)) {
+											console.error("Invalid values:", value1, value2);
+											return null;
+										}
 
-								const convertedValue1 = convertValue(value1, measurementUnit);
-								const convertedValue2 = convertValue(value2, measurementUnit);
-								const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
 
-								return (
-									<tbody key={index}>
-										<tr className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
-											<td className="py-2 px-4">{index + 1}</td>
-											<td className="py-2 px-4">{index + 1}</td>
-											<td className="py-2 px-4">{convertedValue1.toFixed(2)}</td>
-											<td className="py-2 px-4">{convertedValue2.toFixed(2)}</td>
-											<td className="py-2 px-4">{result}</td>
-										</tr>
-									</tbody>
-								);
-							})}
-						</table>
+										const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
+										const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
+										const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+
+										totalResult += parseFloat(result);
+
+										return (
+											<tr key={index}>
+												<td className="py-2 px-4">{index + 1}</td>
+												<td className="py-2 px-4">{index + 1}</td>
+												<td className="py-2 px-4">{convertedValue1}</td>
+												<td className="py-2 px-4">{convertedValue2}</td>
+												<td className="py-2 px-4">{result}</td>
+											</tr>
+										);
+									})}
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td className="py-2 px-4 border-2 border-black">{totalResult.toFixed(2)}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</div>
+				)}
+				{selectedValue === '2' && (
+					<div className="mx-4 overflow-hidden">
+						<div className="overflow-x-auto">
+							<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+								<thead className="bg-gray-200">
+									<tr>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">No.Of Pieces</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQFT)</th>
+									</tr>
+								</thead>
+								<tbody>
+									{groupedData.map((group, index) => 
+									{
+
+										sumOfSqft += Number(group.sqft);
+ peiceNumberTotal += group.pieceNumbers.length;
+
+									return(
+											<tr key={index}>
+											<td className="py-2 px-4">{group.pieceNumbers.length}</td>
+											<td className="py-2 px-4">{group.length}</td>
+											<td className="py-2 px-4">{group.breadth}</td>
+											<td className="py-2 px-4">{group.pieceNumbers.join(", ")}</td>
+											<td className="py-2 px-4">{group.sqft}</td>
+										</tr>
+									)})}
+								
+									<tr>
+										<td className="py-2 px-4 border-2 border-black">{peiceNumberTotal}</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td className="py-2 px-4 border-2 border-black">{sumOfSqft}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				)}
+			</div>
 				<div className="mt-5 flex flex-col gap-3 border-2 p-4 m-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
 					<Radio.Group value={exportType} onChange={(e) => setExportType(e)}>
 						<Space direction="vertical" block className="">
@@ -281,4 +402,4 @@ const FinalResult = () => {
 	);
 };
 
-export default FinalResult;
+export default FinalResult3;
