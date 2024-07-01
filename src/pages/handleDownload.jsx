@@ -1,11 +1,17 @@
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { generateExcel } from './utilityFunction';
 
-export const downloadExcel = async (data, filename) => {
-  const wbout = generateExcel(data);
 
+const generateUniqueFilename = (baseFilename) => {
+  const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+  return `${timestamp}_${baseFilename}`;
+};
+export const downloadExcel = async (data, filename, measurementUnit) => {
+
+  filename = generateUniqueFilename(filename);
+
+  const wbout = generateExcel(data, measurementUnit);
   const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
   const arrayBuffer = await blob.arrayBuffer();
   const base64Data = btoa(
     new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')

@@ -52,7 +52,8 @@ const FinalResult = () => {
 	];
 
 	const handleDownload = () => {
-		downloadExcel(data, "measurements.xlsx");
+		console.log("sdd")
+		downloadExcel(data, "measurements.xlsx", measurementUnit);
 	};
 	const getData = async () => {
 		try {
@@ -74,7 +75,7 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		downloadPDF(data, "measurements.pdf");
+		downloadPDF(data, "measurements.pdf", measurementUnit);
 	};
 
 	useEffect(() => {
@@ -169,7 +170,9 @@ const FinalResult = () => {
 							return null;
 						})}
 				</div>
-				<div>
+				<div style={{
+					padding:"1.4rem"
+				}}>
 					<select name="measurement" id="measurement" onChange={handleMeasurementChange}>
 						<option value="mm">MM</option>
 						<option value="cm">CM</option>
@@ -236,7 +239,7 @@ const FinalResult = () => {
 						onClick={() => {
 							if (exportType === "pdf") {
 								handleDownloadPDF();
-							} else if (exportType === "excel") {
+							} else{
 								handleDownload();
 							}
 							setTimeout(() => {

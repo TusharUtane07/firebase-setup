@@ -20,37 +20,41 @@ const FinalResult = () => {
 	const [options, setOptions] = useState([]);
 	const [exportModal, setExportModal] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const [measurements, setMeasurements] = useState([]);
+	const [measurementUnit, setMeasurementUnit] = useState("mm");
+
 	const showModal = () => {
 	  setIsModalOpen(true);
 	};
 	const handleOk = () => {
 	  setIsModalOpen(false);
 	  setTimeout(() => {
-							
-		handleExport()
-
-	}, 1500);
+		handleExport();
+	  }, 1500);
 	};
 	const handleCancel = () => {
 	  setIsModalOpen(false);
 	};
-	const [percentageDownload, setPercentageDownload] = useState(0)
+	const [percentageDownload, setPercentageDownload] = useState(0);
 
 	const navigate = useNavigate();
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
-	
+
 	const excludedFields = [
-		'results',
-		'secondLastValue',
-		'thirdLastValue',
-		'lastValue',
-		'inch',
-		'length',
-		'breadth',
+		"results",
+		"secondLastValue",
+		"thirdLastValue",
+		"lastValue",
+		"inch",
+		"length",
+		"breadth",
 	];
+
 	const handleDownload = () => {
-		downloadExcel(data, 'measurements.xlsx');
-	  };
+		console.log("sdd")
+		downloadExcel(data, "measurements.xlsx", measurementUnit);
+	};
 	const getData = async () => {
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
@@ -60,6 +64,7 @@ const FinalResult = () => {
 				const fields = Object?.keys(docSnapshot?.data())?.filter(key => !excludedFields.includes(key));
 				const selectOptions = fields?.map(field => ({ label: camelCaseToReadable(field), value: field }));
 				setOptions(selectOptions);
+				setMeasurements(docSnapshot?.data()?.Measurement)
 			} else {
 				console.log("No such document!");
 			}
@@ -70,10 +75,9 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		downloadPDF(data, 'measurements.pdf');
-	  };
-	
-console.log(data)
+		downloadPDF(data, "measurements.pdf", measurementUnit);
+	};
+
 	useEffect(() => {
 		getData();
 	}, [lotNumberValue]);
@@ -92,6 +96,21 @@ console.log(data)
 		return parseFloat(value);
 	};
 
+	const convertValue = (value, unit) => {
+		switch (unit) {
+			case "cm":
+				return value / 10;
+			case "meter":
+				return value / 1000;
+			case "inch":
+				return value / 25.4;
+			case "feet":
+				return value / 304.8;
+			default:
+				return value;
+		}
+	};
+
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center h-screen animate-spin">
@@ -105,214 +124,159 @@ console.log(data)
 		console.log(exportType);
 	};
 
+	const handleMeasurementChange = (e) => {
+		setMeasurementUnit(e.target.value);
+	};
 
-	// const options = [];
 	const handleChange = (value) => {
 		setSelectedFields([...value]);
-	}
+	};
 
 	return (
 		<div className="h-screen">
-			<div
-				className="flex items-center gap-6 justify-start mb-2"
-				style={{
-					fontSize: "1rem",
-				}}>
+			<div className="flex items-center gap-6 justify-start mb-2" style={{ fontSize: "1rem" }}>
 				<div>
-					<IoIosArrowRoundBack
-						size={50}
-						onClick={() => navigate("/step3inch")}
-					/>
+					<IoIosArrowRoundBack size={50} onClick={() => navigate("/step3inch")} />
 				</div>
 				<div className="">
-					<p className="font-bold text-2xl text-center my-3">
-						Final Data Records
-					</p>
+					<p className="font-bold text-2xl text-center my-3">Final Data Records</p>
 				</div>
 			</div>
 
-
-			
-			<div className="" >
-				<Space
-					style={{ width: '100%', padding:"1rem" }}
-					direction="vertical"
-					
-				>
+			<div className="">
+				<Space style={{ width: '100%', padding: "1rem" }} direction="vertical">
 					<Select
 						mode="multiple"
 						allowClear
 						style={{ width: '100%' }}
 						placeholder="Please select"
-						// defaultValue={['Client Name', 'Lot Number', 'Quantity Number']}
 						onChange={handleChange}
 						options={options}
 					/>
 				</Space>
 
-		
-			<div className="mx-4 my-4" style={{
-				marginTop:"0rem !important"
-			}}>
-				{data &&
-					Object.entries(data)?.map(([key, value]) => {
-						if (excludedFields?.includes(key)) return null;
-						if (selectedFields?.includes(key)) {
-							return    <a class="affan-element-item" style={{
-								display:"flex",
-								alignItems:"center",
-								justifyContent:"space-between"
-							}}>
-								<p style={{
-									color:"black"
-								}}>
-							{camelCaseToReadable(key)}
-							</p>
-							<p>
-							{value}
-							</p>
-						  </a>						}
-						return null;
-					})}
-			</div>
-			<div className="mx-4 overflow-hidden">
-				<div className="overflow-x-auto">
-					<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-						<thead className="bg-gray-200">
-							<tr>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									SR NO
-								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									PIECE NO
-								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									LENGTH ({data?.['Measurement']})
-								</th>
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									BREADTH ({data?.['Measurement']})
-								</th>
-								
-								<th className="py-2 px-4 text-left uppercase tracking-wider">
-									SQFT
-								</th>
-							</tr>
-						</thead>
-						{data?.results?.map((item, index) => {
-							const value1 = parseValue(item.multiplication.split("X")[0]);
-							const value2 = parseValue(item.multiplication.split("X")[1]);
-
-							if (isNaN(value1) || isNaN(value2)) {
-								console.error("Invalid values:", value1, value2);
-								return null;
+				<div className="mx-4 my-4" style={{ marginTop: "0rem !important" }}>
+					{data &&
+						Object.entries(data)?.map(([key, value]) => {
+							if (excludedFields?.includes(key)) return null;
+							if (selectedFields?.includes(key)) {
+								return (
+									<a className="affan-element-item" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+										<p style={{ color: "black" }}>{camelCaseToReadable(key)}</p>
+										<p>{value}</p>
+									</a>
+								);
 							}
-
-							const result = ((value1 * value2) / 144).toFixed(2);
-
-							return (
-								<tbody key={index}>
-									<tr
-										className={`border-b ${
-											index % 2 === 0 ? "bg-gray-50" : "bg-white"
-										} hover:bg-gray-100`}>
-										<td className="py-2 px-4">{index + 1}</td>
-										<td className="py-2 px-4">{index + 1}</td>
-										<td className="py-2 px-4">{value1}</td>
-										<td className="py-2 px-4">{value2}</td>
-										{/* <td className="py-2 px-4">{item.multiplication}</td> */}
-										<td className="py-2 px-4">{result}</td>
-									</tr>
-								</tbody>
-							);
+							return null;
 						})}
-					</table>
 				</div>
-			</div>
-			<div
-				className="mt-5 flex flex-col gap-3 border-2 p-4 m-3"
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
+				<div style={{
+					padding:"1.4rem"
 				}}>
-				<Radio.Group value={exportType} onChange={(e) => setExportType(e)}>
-					<Space direction="vertical" block className="">
-						<Radio value="excel" block>
-							Export as Excel
-						</Radio>
-						<Radio value="pdf">Export as PDF</Radio>
-					</Space>
-				</Radio.Group>
-				<Modal  open={isModalOpen} onOk={handleOk}        onCancel={handleCancel}
-        cancelButtonProps={{ style: { display: 'none' } }}
-				>
-					<div style={{
-						display:"flex",
-						alignItems:"center",
-						justifyContent:"center",
-						flexDirection:"column"
-					}}>
-				<Progress type="circle" percent={percentageDownload} />
-				<p style={{
-					marginTop:"1rem"
-				}}>{percentageDownload==100 && "File has been saved in your device"}</p>
+					<select name="measurement" id="measurement" onChange={handleMeasurementChange}>
+						<option value="mm">MM</option>
+						<option value="cm">CM</option>
+						<option value="meter">METER</option>
+						<option value="inch">INCH</option>
+						<option value="feet">FEET</option>
+					</select>
 				</div>
-      </Modal>
-				<button
-					className="btn-primary"
-					onClick={()=>{
-						
-						if(exportType == "pdf"){
-						handleDownloadPDF()
+				<div className="mx-4 overflow-hidden">
+					<div className="overflow-x-auto">
+						<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+							<thead className="bg-gray-200">
+								<tr>
+									<th className="py-2 px-4 text-left uppercase tracking-wider">SR NO</th>
+									<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
+									<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
+									<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
+									<th className="py-2 px-4 text-left uppercase tracking-wider">SQFT</th>
+								</tr>
+							</thead>
+							{data?.results?.map((item, index) => {
+								const value1 = parseValue(item.multiplication.split("X")[0]);
+								const value2 = parseValue(item.multiplication.split("X")[1]);
 
-						}
-						else if(exportType == "pdf"){
-						handleDownload()
+								if (isNaN(value1) || isNaN(value2)) {
+									console.error("Invalid values:", value1, value2);
+									return null;
+								}
 
-						}
-						
-					setTimeout(() => {
-						
-						showModal()
+								const convertedValue1 = convertValue(value1, measurementUnit);
+								const convertedValue2 = convertValue(value2, measurementUnit);
+								const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
 
-					}, 1000);
-						setTimeout(()=>{
-							setPercentageDownload(100)
-						},1500)
-					
-					}}
-					style={{
-						background: "#4E97F3",
-						color: "white",
-						width: "70%",
-						alignSelf: "center",
-					}}>
-					Export
-				</button>
-			</div>
-			{exportModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white text-black p-4 rounded">
-						<h2 className="text-lg font-bold">Please Select</h2>
-						<p>Choose the type of next measurement</p>
-						<div className="flex justify-between mt-4">
-							<button
-								onClick={() => navigate(`/details/${lotNumberValue}`)}
-								className="border-2 border-black py-2 px-4 font-bold text-center" style={{
-									marginRight:"1rem"
-								}}>
-								New Lot
-							</button>
-							<button
-								onClick={() => navigate('/')}
-								className="border-2 border-black py-2 px-4 font-bold text-center">
-								New Client
-							</button>
-						</div>
+								return (
+									<tbody key={index}>
+										<tr className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
+											<td className="py-2 px-4">{index + 1}</td>
+											<td className="py-2 px-4">{index + 1}</td>
+											<td className="py-2 px-4">{convertedValue1.toFixed(2)}</td>
+											<td className="py-2 px-4">{convertedValue2.toFixed(2)}</td>
+											<td className="py-2 px-4">{result}</td>
+										</tr>
+									</tbody>
+								);
+							})}
+						</table>
 					</div>
 				</div>
-			)}
-		</div>
+				<div className="mt-5 flex flex-col gap-3 border-2 p-4 m-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+					<Radio.Group value={exportType} onChange={(e) => setExportType(e)}>
+						<Space direction="vertical" block className="">
+							<Radio value="excel" block>Export as Excel</Radio>
+							<Radio value="pdf">Export as PDF</Radio>
+						</Space>
+					</Radio.Group>
+					<Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} cancelButtonProps={{ style: { display: 'none' } }}>
+						<div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+							<Progress type="circle" percent={percentageDownload} />
+							<p style={{ marginTop: "1rem" }}>{percentageDownload === 100 && "File has been saved in your device"}</p>
+						</div>
+					</Modal>
+					<button
+						className="btn-primary"
+						onClick={() => {
+							if (exportType === "pdf") {
+								handleDownloadPDF();
+							} else{
+								handleDownload();
+							}
+							setTimeout(() => {
+								showModal();
+							}, 1000);
+							setTimeout(() => {
+								setPercentageDownload(100);
+							}, 1500);
+						}}
+						style={{ background: "#4E97F3", color: "white", width: "70%", alignSelf: "center" }}
+					>
+						Export
+					</button>
+				</div>
+				{exportModal && (
+					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+						<div className="bg-white text-black p-4 rounded">
+							<h2 className="text-lg font-bold">Please Select</h2>
+							<p>Choose the type of next measurement</p>
+							<div className="flex justify-between mt-4">
+								<button
+									onClick={() => navigate(`/details/${lotNumberValue}`)}
+									className="border-2 border-black py-2 px-4 font-bold text-center" style={{ marginRight: "1rem" }}
+								>
+									New Lot
+								</button>
+								<button
+									onClick={() => navigate('/')}
+									className="border-2 border-black py-2 px-4 font-bold text-center"
+								>
+									New Client
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };

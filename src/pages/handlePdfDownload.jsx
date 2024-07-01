@@ -1,8 +1,16 @@
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { generatePDF } from './utilityFunction';
 
-export const downloadPDF = async (data, filename) => {
-  const pdfData = generatePDF(data);
+
+const generateUniqueFilename = (baseFilename) => {
+  const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+  return `${timestamp}_${baseFilename}`;
+};
+
+export const downloadPDF = async (data, filename, measurementUnit) => {
+  filename = generateUniqueFilename(filename);
+
+  const pdfData = generatePDF(data, measurementUnit);
 
   const blob = new Blob([pdfData], { type: 'application/pdf' });
 
