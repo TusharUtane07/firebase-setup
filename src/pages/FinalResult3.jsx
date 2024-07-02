@@ -22,7 +22,7 @@ const FinalResult3 = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const [measurements, setMeasurements] = useState([]);
-	const [measurementUnit, setMeasurementUnit] = useState("mm");
+	const [measurementUnit, setMeasurementUnit] = useState("feet");
 
 	const [selectedValue, setSelectedValue] = useState('1');
 	const [pieceNumbers, setPieceNumbers] = useState([]);
@@ -109,15 +109,17 @@ const FinalResult3 = () => {
 	const convertValue = (value, unit) => {
 		switch (unit) {
 			case "cm":
-				return value / 10;
+				return value / 30.48; // 1 cm = 0.0328084 feet
 			case "meter":
-				return value / 1000;
+				return value / 0.3048; // 1 meter = 3.28084 feet
 			case "inch":
-				return value / 25.4;
+				return value / 12; // 1 inch = 0.0833333 feet
 			case "feet":
-				return value / 304.8;
+				return value; // 1 feet = 1 feet
+			case "mm":
+				return value / 304.8; // 1 mm = 0.00328084 feet
 			default:
-				return value;
+				return value * 0.3048; // Convert unknown unit to feet
 		}
 	};
 
@@ -222,7 +224,7 @@ const FinalResult3 = () => {
 						<option value="cm">CM</option>
 						<option value="meter">METER</option>
 						<option value="inch">INCH</option>
-						<option value="feet">FEET</option>
+						<option selected value="feet">FEET</option>
 					</select>
 				<div className="flex gap-2">
 					<input 

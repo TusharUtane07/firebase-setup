@@ -241,29 +241,7 @@ const Details = () => {
               <i className="bi bi-eye-slash" />
             </div>
           </div>
-          <div className="form-group text-start mb-3 position-relative">
-          <label
-                    className="cursor-pointer"
-                    style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
-                  >
-                    Measurement
-                  </label>
-                  <select
-					name="measurement"
-					id="measurement"
-					value={measurementType}
-					onChange={(e) => setMesurementType(e.target.value)}
-					className="form-control">
-					<option value="mm">MM</option>
-					<option value="cm">CM</option>
-					<option value="meter">METER</option>
-					<option value="inches">INCHES</option>
-					<option value="feet">FEET</option>
-				</select>                 
-            <div className="position-absolute" id="password-visibility">
-              <i className="bi bi-eye-slash" />
-            </div>
-          </div>
+          
           {dynamicFields.map((field, index) => (
   <div key={index}>
     <label
