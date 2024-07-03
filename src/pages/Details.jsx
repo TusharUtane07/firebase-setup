@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../firebase/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { setLotNumber } from "../redux/actions/lotActions";
 import { FiEdit } from "react-icons/fi";
@@ -11,6 +11,7 @@ const Details = () => {
   const [clientName, setClientName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [lotNumberValue, setLotNumberValue] = useState("");
+  const [measurementType, setMesurementType ] = useState("MM");
   const [quantityNumber, setQuantityNumber] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newText, setNewText] = useState("");
@@ -20,10 +21,15 @@ const Details = () => {
     vehicleNumber: "Vehicle Number",
     lotNumber: "Lot Number",
     quantityNumber: "Quantity Number",
+    measurement: "Measurement",
   });
   const [dynamicFields, setDynamicFields] = useState([]);
   const [lotNumberError, setLotNumberError] = useState(false);
-  const [quantityNumberError, setQuantityNumberError] = useState(false);
+
+  const [tempalteName, setTemplateName] = useState("");
+  const [templateModal, setTemplateModal] = useState(false);
+  const [templatesData, setTemplatesData] = useState({});
+  const [templateShowCase, setTemplateShowCase] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,20 +44,14 @@ const Details = () => {
       setLotNumberError(false);
     }
 
-    if (!quantityNumber) {
-      setQuantityNumberError(true);
-      isValid = false;
-    } else {
-      setQuantityNumberError(false);
-    }
-
     if (!isValid) return;
 
     const data = {
-      clientName,
-      vehicleNumber,
-      lotNumber: lotNumberValue,
-      quantityNumber,
+      [labels.clientName]: clientName,
+    [labels.vehicleNumber]: vehicleNumber,
+    [labels.lotNumber]: lotNumberValue,
+    [labels.quantityNumber]: quantityNumber,
+    [labels.measurement]: measurementType,
     };
 
     dynamicFields.forEach((field) => {
@@ -91,6 +91,62 @@ const Details = () => {
     setDynamicFields(updatedFields);
   };
 
+  const handleAddTemplate = async() => {
+    const data = {
+      templateName: tempalteName,
+      1: labels.clientName,
+      2: labels.vehicleNumber,
+    };
+    
+    // Assuming dynamicFields is an array of objects with a 'label' property
+    dynamicFields.forEach((field, index) => {
+      data[3 + index] = field.label;
+    });
+    
+    console.log(data);
+
+    const docRef = doc(database, "Templates", tempalteName);
+    await setDoc(docRef, data);
+
+    setTemplateModal(false);
+    setTemplateName("");
+    getData();
+  }
+
+  const getData = async() => {
+    try {
+      const querySnapshot = await getDocs(collection(database, 'Templates'));
+      const templateData = querySnapshot?.docs?.map(doc => doc.data());
+      setTemplatesData(templateData);
+      console.log("Templates:", templatesData);
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
+
+  const setTheLabels = (item) => {
+    // First, set the static labels
+    const updatedLabels = {
+      clientName: item[1],
+      vehicleNumber: item[2],
+    };
+  
+    const updatedDynamicFields = [];
+    for (let i = 3; i < Object.keys(item).length; i++) {
+      updatedDynamicFields.push({ label: item[i], value: "" });
+    }
+  
+    // Update labels and dynamicFields state together
+    setLabels(updatedLabels);
+    setDynamicFields(updatedDynamicFields);
+    setTemplateShowCase(false);
+  };
+  
+  
   return (
     <>
 
@@ -149,20 +205,19 @@ const Details = () => {
           </div>
           <div className="form-group text-start mb-3 position-relative">
           <label
-                    onClick={() => openModal("lotNumber")}
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem" }}
                   >
-                    {labels.lotNumber} <FiEdit />
+                    Lot Number 
                   </label>
                   <input
                     type="text"
-                    placeholder={`Enter the ${labels.lotNumber}`}
+                    placeholder={`Enter the Lot Number`}
                     className="form-control"
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
                   />
-                  {lotNumberError && <div className="pt-2  text-red-500">{labels.lotNumber} needs to be added.</div>}
+                  {lotNumberError && <div className="pt-2  text-red-500">Lot Number needs to be added.</div>}
             <div className="position-absolute" id="password-visibility">
               <i className="bi bi-eye-slash" />
             </div>
@@ -172,40 +227,42 @@ const Details = () => {
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                    {labels.quantityNumber}
+                    Quantity Number
                   </label>
                   <input
                     type="number"
-                    placeholder={`Enter the ${labels.quantityNumber}`}
+                    placeholder={`Enter the Quantity Number`}
                     className="form-control"
                     value={quantityNumber}
                     onChange={(e) => setQuantityNumber(e.target.value)}
                   />
-                  {quantityNumberError && <div className="pt-2 text-red-500">Quantity number needs to be added.</div>}
+                 
             <div className="position-absolute" id="password-visibility">
               <i className="bi bi-eye-slash" />
             </div>
           </div>
-          {dynamicFields.map((field, index) => (
-                  <div key={index}>
-                    <label
-                      className="cursor-pointer"
-                      style={{ display: 'flex', alignItems: 'center', gap: "10px", marginTop:"0.5rem"  }}
-                      >
-                      {field.label}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={`Enter the ${field.label}`}
-                      className="form-control"
-                      value={field.value}
-                      onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
-                    />
-                  </div>
-                ))}
-          <div className="mb-3" id="pswmeter" />
-          <div className="form-check mb-3">
           
+          {dynamicFields.map((field, index) => (
+  <div key={index}>
+    <label
+      className="cursor-pointer"
+      style={{ display: 'flex', alignItems: 'center', gap: "10px", marginTop:"0.5rem" }}
+    >
+      {field.label}
+    </label>
+    <input
+      type="text"
+      placeholder={`Enter the ${field.label}`}
+      className="form-control"
+      value={field.value}
+      onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
+    />
+  </div>
+))}
+          <div className="mb-3" id="pswmeter" />
+          <div className="flex justify-between gap-3">
+          <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">+ Add Template</button>
+          <button onClick={() => setTemplateShowCase(true)} className="btn btn-primary w-full">Saved Template</button>
           </div>
        <button onClick={() => openModal(null)} type="button" className="btn btn-primary w-100 mt-2 mb-2" style={{
         background:"transparent",
@@ -252,117 +309,68 @@ const Details = () => {
             </div>
           </div>
         )}
+      {templateModal && (
+          <div className="fixed inset-0 bg-gray-600 w-full h-screen bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-5 rounded mx-5">
+              <h2 className="text-xl mb-4">Enter Name of Template</h2>
+              <input
+                type="text"
+                value={tempalteName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                placeholder="Enter title"
+                className="border p-2 mt-1 border-black w-full rounded-lg"
+              />
+              <div className="mt-4 flex justify-start">
+                <button
+                  onClick={() => setTemplateModal(false)}
+                  className="btn btn-secondary"
+                  style={{
+                    width:"5rem"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddTemplate}
+                  className="btn-primary py-1 border-none ml-3 rounded-md"
+                  style={{
+                    width:"5rem"
+                  }}
+                >
+                  Set
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      {templateShowCase && (
+  <div className="fixed inset-0 bg-gray-600 w-full h-screen bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-5 rounded mx-5">
+      <h2 className="text-xl mb-4">Saved Templates</h2>
+      <div className="row">
+        {templatesData?.map((item, index) => (
+          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
+            textAlign:"center"
+          }}>{item.templateName}</div>
+        ))}
+      </div>
+      <div className="mt-4 flex justify-center">
+        <button
+          onClick={() => setTemplateShowCase(false)}
+          className="btn btn-secondary"
+          style={{ width: "5rem" }}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   </div>
   {/* All JavaScript Files */}
 </>
-
-    // <>
-    //   <main>
-    //     <section className="auth signin-email">
-    //       <div className="page-title"></div>
-    //       <div className="heading">
-    //         <h2> Details</h2>
-    //         <p>Please Enter the Lot Details Accordingly</p>
-    //       </div>
-    //       <div className="auth-form">
-    //         <form action="#">
-    //           <div className="d-flex flex-column gap-4">
-    //             <div>
-    //               <label
-    //                 onClick={() => openModal("clientName")}
-    //                 className="cursor-pointer"
-    //                 style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
-    //               >
-    //                 {labels.clientName} <FiEdit />
-    //               </label>
-    //               <input
-    //                 type="text"
-    //                 placeholder={`Enter the ${labels.clientName}`}
-    //                 className="input-field d-block"
-    //                 value={clientName}
-    //                 onChange={(e) => setClientName(e.target.value)}
-    //               />
-    //             </div>
-    //             <div>
-    //               <label
-    //                 onClick={() => openModal("vehicleNumber")}
-    //                 className="cursor-pointer"
-    //                 style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
-    //               >
-    //                 {labels.vehicleNumber} <FiEdit />
-    //               </label>
-    //               <input
-    //                 type="text"
-    //                 placeholder={`Enter the ${labels.vehicleNumber}`}
-    //                 className="input-field d-block"
-    //                 value={vehicleNumber}
-    //                 onChange={(e) => setVehicleNumber(e.target.value)}
-    //               />
-    //             </div>
-    //             <div>
-    //               <label
-    //                 onClick={() => openModal("lotNumber")}
-    //                 className="cursor-pointer"
-    //                 style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
-    //               >
-    //                 {labels.lotNumber} <FiEdit />
-    //               </label>
-    //               <input
-    //                 type="text"
-    //                 placeholder={`Enter the ${labels.lotNumber}`}
-    //                 className="input-field d-block"
-    //                 value={lotNumberValue}
-    //                 onChange={(e) => setLotNumberValue(e.target.value)}
-    //               />
-    //               {lotNumberError && <div className="pt-2 text-center text-red-500">Lot number needs to be added.</div>}
-    //             </div>
-    //             <div>
-    //               <label
-    //                 className="cursor-pointer"
-    //                 style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
-    //               >
-    //                 {labels.quantityNumber}
-    //               </label>
-    //               <input
-    //                 type="number"
-    //                 placeholder={`Enter the ${labels.quantityNumber}`}
-    //                 className="input-field d-block"
-    //                 value={quantityNumber}
-    //                 onChange={(e) => setQuantityNumber(e.target.value)}
-    //               />
-    //               {quantityNumberError && <div className="pt-2 text-center text-red-500">Quantity number needs to be added.</div>}
-    //             </div>
-    //             {dynamicFields.map((field, index) => (
-    //               <div key={index}>
-    //                 <label
-    //                   className="cursor-pointer"
-    //                   style={{ display: 'flex', alignItems: 'center', gap: "10px" }}
-    //                 >
-    //                   {field.label}
-    //                 </label>
-    //                 <input
-    //                   type="text"
-    //                   placeholder={`Enter the ${field.label}`}
-    //                   className="input-field d-block"
-    //                   value={field.value}
-    //                   onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
-    //                 />
-    //               </div>
-    //             ))}
-    //             <div>
-    //               <button onClick={() => openModal(null)} type="button" className="btn-primary border-none">Add new field</button>
-    //             </div>
-    //           </div>
-    //           <a onClick={handleSubmit} className="btn-primary">
-    //             Proceed
-    //           </a>
-    //         </form>
-    //       </div>
-    //     </section>
-
-    //   </main>
-    // </>
   );
 };
 
