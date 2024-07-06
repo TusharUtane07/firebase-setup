@@ -75,7 +75,7 @@ console.log("hey")
     localStorage.setItem("data", JSON.stringify(data));
     console.log("Document Added: ", docRef.id);
     dispatch(setLotNumber(lotNumberValue));
-    navigate("/measurement-type");
+    navigate("/measurement-type/"+measurementType);
   };
 
   const openModal = (field) => {

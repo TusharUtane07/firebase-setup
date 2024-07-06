@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../firebase/firebase";
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { setLotNumber } from "../redux/actions/lotActions";
 import { FiEdit } from "react-icons/fi";
 import img from "../img/bg-img/36.png"
+import { FaTrash } from "react-icons/fa";
+import { Spin } from "antd";
 
 const Details = () => {
+  useEffect(()=>{
+    window.localStorage.clear() 
+   },[])
   const [clientName, setClientName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [lotNumberValue, setLotNumberValue] = useState("");
-  const [measurementType, setMesurementType ] = useState("MM");
+  const [measurementType, setMesurementType ] = useState("feet");
   const [quantityNumber, setQuantityNumber] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newText, setNewText] = useState("");
@@ -33,8 +38,9 @@ const Details = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+const [handleLoader, setLoader] = useState(false)
   const handleSubmit = async () => {
+    setLoader(true)
     let isValid = true;
 
     if (!lotNumberValue) {
@@ -60,11 +66,11 @@ const Details = () => {
 
     const docRef = doc(database, "Data", "lot: " + lotNumberValue);
     await setDoc(docRef, data);
-
+    setLoader(false)
     localStorage.setItem("data", JSON.stringify(data));
     console.log("Document Added: ", docRef.id);
     dispatch(setLotNumber(lotNumberValue));
-    navigate("/measurement-type");
+    navigate("/measurement-type/"+measurementType);
   };
 
   const openModal = (field) => {
@@ -90,7 +96,18 @@ const Details = () => {
     updatedFields[index].value = value;
     setDynamicFields(updatedFields);
   };
-
+  const deleteItem = async(id) => {
+    try {
+      console.log(id.templateName)
+      const docRef = doc(database, "Templates", id.templateName);
+      console.log("SAdas")
+      await deleteDoc(docRef);
+      getData()
+      console.log('Document successfully deleted!');
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    }
+  }
   const handleAddTemplate = async() => {
     const data = {
       templateName: tempalteName,
@@ -222,6 +239,7 @@ const Details = () => {
               <i className="bi bi-eye-slash" />
             </div>
           </div>
+          
           <div className="form-group text-start mb-3 position-relative">
           <label
                     className="cursor-pointer"
@@ -241,6 +259,27 @@ const Details = () => {
               <i className="bi bi-eye-slash" />
             </div>
           </div>
+          {/* <div className="form-group text-start mb-3 position-relative">
+
+          <label
+                    className="cursor-pointer"
+                    style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
+                  >
+                    {labels.measurement}
+                  </label>
+                  <select
+					name="measurement"
+					id="measurement"
+					value={measurementType}
+					onChange={(e) => setMesurementType(e.target.value)}
+					className="form-control">
+					<option value="mm">MM</option>
+					<option value="cm">CM</option>
+					<option value="meter">METER</option>
+					<option value="inches">INCHES</option>
+					<option value="feet">FEET</option>
+				</select>  
+        </div> */}
           
           {dynamicFields.map((field, index) => (
   <div key={index}>
@@ -270,7 +309,7 @@ const Details = () => {
        }}>Add new field</button>
 
           <button className="btn btn-primary w-100" onClick={handleSubmit}>
-            Start
+            {handleLoader ? <Spin /> :"Start"} 
           </button>
         </div>
       </div>
@@ -349,9 +388,17 @@ const Details = () => {
       <h2 className="text-xl mb-4">Saved Templates</h2>
       <div className="row">
         {templatesData?.map((item, index) => (
-          <div onClick={() => setTheLabels(item)} key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
-            textAlign:"center"
-          }}>{item.templateName}</div>
+          <div  key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between"
+          }}><p onClick={() => setTheLabels(item)} style={{
+            margin:"0rem"
+          }}>{item.templateName}</p> <a onClick={()=>{
+            deleteItem(item)
+          }} style={{
+            color:"red"
+          }}><FaTrash /></a></div>
         ))}
       </div>
       <div className="mt-4 flex justify-center">

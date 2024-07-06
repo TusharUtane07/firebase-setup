@@ -6,11 +6,11 @@ const generateUniqueFilename = (baseFilename) => {
   const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
   return `${timestamp}_${baseFilename}`;
 };
-export const downloadExcel = async (data, filename, measurementUnit) => {
+export const downloadExcel = async (data, groupedData ,filename, measurementUnit, selectedValue) => {
 
   filename = generateUniqueFilename(filename);
 
-  const wbout = generateExcel(data, measurementUnit);
+  const wbout = generateExcel(data, groupedData, measurementUnit, selectedValue);
   const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const arrayBuffer = await blob.arrayBuffer();
   const base64Data = btoa(
