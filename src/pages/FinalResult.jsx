@@ -79,7 +79,6 @@ const FinalResult = () => {
 				setOptions(selectOptions);
 				setMeasurements(docSnapshot?.data()?.Measurement)
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error getting document:", error);
@@ -88,7 +87,6 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		console.log("pdfChcek")
 		downloadPDF(data, groupedData , "measurements.pdf", measurementUnit, selectedValue);
 	};
 
@@ -135,7 +133,6 @@ const FinalResult = () => {
 
 	const handleExport = () => {
 		setExportModal(true);
-		console.log(exportType);
 	};
 
 	const handleMeasurementChange = (e) => {

@@ -48,7 +48,6 @@ const Step1Inch = () => {
 	const [mostUsedbreadthArray, setMostUsedbreadthArray] = useState([]);
 
 	useEffect(()=>{
-		console.log(mostUsedLength)
 		const frequencyMap = mostUsedLength.reduce((acc, val) => {
 			acc[val] = (acc[val] || 0) + 1;
 			return acc;
@@ -56,7 +55,6 @@ const Step1Inch = () => {
 		  const frequencyArray = Object.entries(frequencyMap);
 		  frequencyArray.sort((a, b) => a[1] - b[1]);
 
-		  console.log(frequencyArray)
 		  let most_user = []
 		  try{
 			most_user.push(frequencyArray[frequencyArray.length-1][0])
@@ -82,7 +80,6 @@ const Step1Inch = () => {
 		  const frequencyArray = Object.entries(frequencyMap);
 		  frequencyArray.sort((a, b) => a[1] - b[1]);
 
-		  console.log(frequencyArray)
 		  let most_user = []
 		  try{
 			most_user.push(frequencyArray[frequencyArray.length-1][0])
@@ -111,11 +108,9 @@ const Step1Inch = () => {
 		}
 		
 		if (check_local_length){
-			console.log(check_local_length)
 			setLastlength(check_local_length)
 		}
 		if (check_local_breadth){
-			console.log(check_local_breadth)
 			setLastBreadth(check_local_breadth)
 		}
 
@@ -130,7 +125,6 @@ const Step1Inch = () => {
 			);
 			if (docSnapshot.exists()) {
 				const data = docSnapshot.data();
-				console.log(data);
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
 				setMesurementType(data?.Measurement || "");
@@ -147,9 +141,7 @@ const Step1Inch = () => {
 				setBreadthUsed(data?.breadth);
 				// setTotal(Number(squareFeet + total))
 		
-				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error getting document:", error);
@@ -251,7 +243,6 @@ const Step1Inch = () => {
 						thirdLastValue: newThirdLastValue,
 					});
 				});
-				console.log("Result added to Firestore array");
 	
 				// Update total after adding new square feet
 				setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
@@ -326,7 +317,6 @@ const Step1Inch = () => {
 							thirdLastValue: newThirdLastValue,
 						});
 					});
-					console.log("Result added to Firestore array");
 	
 					// Update total after adding new square feet
 					setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
@@ -369,7 +359,6 @@ const Step1Inch = () => {
 				await updateDoc(quantityRef, {
 					quantityNumber: updatedQuantity,
 				});
-				console.log("Quantity updated successfully");
 				setShowModal(false);
 				setNewQuantity("");
 			} catch (err) {

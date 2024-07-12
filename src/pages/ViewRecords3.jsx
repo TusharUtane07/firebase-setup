@@ -19,10 +19,8 @@ const ViewRecords3 = () => {
             const docRef = doc(database, "Data", "lot: "+lotNumberValue);
             const docSnapshot = await getDoc(docRef);
             if (docSnapshot.exists()) {
-                console.log(docSnapshot.data())
                 setData(docSnapshot.data());
             } else {
-                console.log("No such document!");
             }
         } catch (error) {
             console.error("Error getting document:", error);

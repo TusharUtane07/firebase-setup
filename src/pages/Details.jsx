@@ -8,11 +8,65 @@ import { FiEdit } from "react-icons/fi";
 import img from "../img/bg-img/36.png"
 import { FaTrash } from "react-icons/fa";
 import { Spin } from "antd";
+import { App as CapacitorApp } from '@capacitor/app';
 
 const Details = () => {
   useEffect(()=>{
     window.localStorage.clear() 
    },[])
+   useEffect(() => {
+    CapacitorApp.removeAllListeners();
+
+    const backButtonListener = CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      const currentUrl = window.location.pathname;
+      console.log(currentUrl);
+      let toGo = true;
+      
+      if (!canGoBack) {
+        CapacitorApp.exitApp();
+      } else if (currentUrl === '/view-records') {
+        console.log("aa");
+        toGo = false;
+        navigate(`/step1inch`);
+      } else if (currentUrl.includes("measurement-type")) {
+        toGo = false;
+        navigate(`/details`);
+      } else if (currentUrl.includes("details")) {
+        toGo = false;
+        navigate(`/`);
+      } else if (currentUrl === '/view-records3') {
+        console.log("bb");
+        toGo = false;
+        navigate(`/step3inch`);
+      } else if (currentUrl === '/step1inch') {
+        console.log("cc");
+        toGo = false;
+        navigate(`/measurement-type/feet`);
+      } else if (currentUrl === '/step3inch') {
+        console.log("dd");
+        toGo = false;
+        navigate(`/measurement-type/feet`);
+      } else if (currentUrl.includes("edit-1inch")) {
+        console.log("ee");
+        toGo = false;
+        navigate(`/view-records`);
+      } else if (currentUrl.includes("edit-3inch")) {
+        console.log("ff");
+        toGo = false;
+        navigate(`/view-records3`);
+      } else if (currentUrl === "/final-result") {
+        console.log("gg");
+        toGo = false;
+        navigate(`/step1inch`);
+      } else if (currentUrl === "/final-result3") {
+        console.log("hh");
+        toGo = false;
+        navigate(`/step3inch`);
+      }
+    });
+
+
+  }, []);
   const [clientName, setClientName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [lotNumberValue, setLotNumberValue] = useState("");
@@ -68,7 +122,6 @@ const [handleLoader, setLoader] = useState(false)
     await setDoc(docRef, data);
     setLoader(false)
     localStorage.setItem("data", JSON.stringify(data));
-    console.log("Document Added: ", docRef.id);
     dispatch(setLotNumber(lotNumberValue));
     navigate("/measurement-type/"+measurementType);
   };
@@ -98,12 +151,9 @@ const [handleLoader, setLoader] = useState(false)
   };
   const deleteItem = async(id) => {
     try {
-      console.log(id.templateName)
       const docRef = doc(database, "Templates", id.templateName);
-      console.log("SAdas")
       await deleteDoc(docRef);
       getData()
-      console.log('Document successfully deleted!');
     } catch (error) {
       console.error('Error removing document: ', error);
     }
@@ -120,7 +170,6 @@ const [handleLoader, setLoader] = useState(false)
       data[3 + index] = field.label;
     });
     
-    console.log(data);
 
     const docRef = doc(database, "Templates", tempalteName);
     await setDoc(docRef, data);
@@ -135,7 +184,6 @@ const [handleLoader, setLoader] = useState(false)
       const querySnapshot = await getDocs(collection(database, 'Templates'));
       const templateData = querySnapshot?.docs?.map(doc => doc.data());
       setTemplatesData(templateData);
-      console.log("Templates:", templatesData);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }

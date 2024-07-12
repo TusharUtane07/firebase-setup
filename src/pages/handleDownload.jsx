@@ -16,7 +16,6 @@ export const downloadExcel = async (data, groupedData ,filename, measurementUnit
   const base64Data = btoa(
     new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
   );
-  console.log("Testing")
   await Filesystem.writeFile({
     path: filename,
     data: base64Data,

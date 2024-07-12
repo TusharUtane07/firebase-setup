@@ -13,11 +13,9 @@ const Login = () => {
         e.preventDefault();
         await signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-            console.log("user login successful!!");
             navigate("/");
         })
         .catch((error) => {
-            console.log(error.message);
         });
     }
 

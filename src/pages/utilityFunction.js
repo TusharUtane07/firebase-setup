@@ -35,7 +35,6 @@ export const generateExcel = (data, groupedData, measurementUnit, selectedValue)
 let  sumOfSqft = 0;
 let peiceNumberTotal = 0;
 const resultsArray = [];
-  console.log(measurementUnit)
   if(selectedValue == "1"){
     data?.results?.map((item, index) => {
       const value1 = parseValue(item.multiplication.split("X")[0]);
