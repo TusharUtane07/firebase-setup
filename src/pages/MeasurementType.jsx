@@ -1,8 +1,15 @@
-import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 const MeasurementType = () => {
-	const navigate = useNavigate()
+  const navigate = useNavigate()
+
+  let { type } = useParams();
+  useEffect(()=>{
+    if(type != "feet"){
+      navigate("/step1inch")
+    }
+  },[])
 	return (
 
 

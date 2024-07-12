@@ -21,16 +21,9 @@ import FinalResult3 from "./pages/FinalResult3.jsx";
 import EditPage3Inch from "./pages/EditPage3Inch.jsx";
 import WelcomePage from "./pages/WelcomePage.jsx";
 import * as XLSX from 'xlsx';
-import { App as CapacitorApp } from '@capacitor/app';
 import DetailsLot from "./pages/DetailsLot.jsx";
+import CheckItem from "./CheckItem.jsx";
 
-CapacitorApp.addListener('backButton', ({canGoBack}) => {
-	if(!canGoBack){
-	  CapacitorApp.exitApp();
-	} else {
-	  window.history.back();
-	}
-  });
 
 const router = createBrowserRouter([
 	{
@@ -61,7 +54,7 @@ const router = createBrowserRouter([
 				element: <DetailsLot />,
 			},
 			{
-				path: "measurement-type",
+				path: "measurement-type/:type",
 				element: <MeasurementType />,
 			},
 			{
@@ -104,6 +97,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 	<Provider store={store}>
 		<PersistGate loading={null} persistor={persistor}>
 			<RouterProvider router={router}>
+				<CheckItem/>
 				<App />
 			</RouterProvider>
 		</PersistGate>

@@ -18,7 +18,8 @@ const Step1Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
 	const [showModal, setShowModal] = useState(false);
 	const [showMismatchModal, setShowMismatchModal] = useState(false);
-
+	const [mostUsedLength, setLastlength] = useState([])
+	const [mostUsedBreadth, setLastBreadth] = useState([])
 	const [newQuantity, setNewQuantity] = useState("");
 	const placeholderText = "Enter your size";
 	const location = useLocation();
@@ -43,19 +44,78 @@ const Step1Inch = () => {
 	const [filteredBreadth, setFilteredBreadth] = useState([]);
 	const [squareFeet, setSquareFeet] = useState(0);
 	const [total, setTotal] = useState(0);
+	const [mostUsedLengthArray, setMostUsedLengthArray] = useState([]);
+	const [mostUsedbreadthArray, setMostUsedbreadthArray] = useState([]);
+
 	useEffect(()=>{
-		if(sqft){
-			setTotal(0)
-			localStorage.removeItem("sqft")
-		}
-	},[])
+		const frequencyMap = mostUsedLength.reduce((acc, val) => {
+			acc[val] = (acc[val] || 0) + 1;
+			return acc;
+		  }, {});
+		  const frequencyArray = Object.entries(frequencyMap);
+		  frequencyArray.sort((a, b) => a[1] - b[1]);
+
+		  let most_user = []
+		  try{
+			most_user.push(frequencyArray[frequencyArray.length-1][0])
+
+		  }
+		  catch{
+
+		  }
+		  try{
+			most_user.push(frequencyArray[frequencyArray.length-2][0])
+
+		  }
+		  catch{
+			
+		  }
+		setMostUsedLengthArray(most_user)
+	},[mostUsedLength])
+	useEffect(()=>{
+		const frequencyMap = mostUsedBreadth.reduce((acc, val) => {
+			acc[val] = (acc[val] || 0) + 1;
+			return acc;
+		  }, {});
+		  const frequencyArray = Object.entries(frequencyMap);
+		  frequencyArray.sort((a, b) => a[1] - b[1]);
+
+		  let most_user = []
+		  try{
+			most_user.push(frequencyArray[frequencyArray.length-1][0])
+
+		  }
+		  catch{
+
+		  }
+		  try{
+			most_user.push(frequencyArray[frequencyArray.length-2][0])
+
+		  }
+		  catch{
+			
+		  }
+		  setMostUsedbreadthArray(most_user)
+	},[mostUsedBreadth])
+
 	useEffect(()=>{
 		
 		const check_local = localStorage.getItem("sqft")
+		const check_local_length = JSON.parse(localStorage.getItem("length"));
+		const check_local_breadth = JSON.parse(localStorage.getItem("breadth"));
 		if (check_local){
 			setTotal(parseFloat(check_local))
 		}
+		
+		if (check_local_length){
+			setLastlength(check_local_length)
+		}
+		if (check_local_breadth){
+			setLastBreadth(check_local_breadth)
+		}
+
 	},[])
+
 	const navigate = useNavigate();
 
 	const getDocument = async () => {
@@ -65,10 +125,9 @@ const Step1Inch = () => {
 			);
 			if (docSnapshot.exists()) {
 				const data = docSnapshot.data();
-				console.log(data);
 				setClientName(data?.clientName || "");
 				setVehicleNumber(data?.vehicleNumber || "");
-				setMesurementType(data?.measurementType || "");
+				setMesurementType(data?.Measurement || "");
 				setQuantityNumber(data?.['Quantity Number']|| "");
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length || 0) - 1);
@@ -82,9 +141,7 @@ const Step1Inch = () => {
 				setBreadthUsed(data?.breadth);
 				// setTotal(Number(squareFeet + total))
 		
-				console.log(quantityNumber, clientName, vehicleNumber);
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error getting document:", error);
@@ -125,6 +182,10 @@ const Step1Inch = () => {
 	
 
 	const handleCorrect = () => {
+		let lastCharacter = displayValue.slice(-1);
+		if(lastCharacter == "."){
+			setIsMinusClicked(false)
+		}
 		setDisplayValue((prev) => prev.slice(0, -1));
 	};
 
@@ -138,7 +199,7 @@ const Step1Inch = () => {
 			alert("Invalid input format.");
 			return;
 		}
-	
+		setIsMinusClicked(false)
 		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
 			const [firstNumber, secondNumber] = displayValue
 				.split("X")
@@ -147,7 +208,7 @@ const Step1Inch = () => {
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
-	
+
 			const result = ((firstNumber * secondNumber) / 144).toFixed(2);
 	
 			const newResult = {
@@ -157,6 +218,9 @@ const Step1Inch = () => {
 				secondNumber: secondNumber,
 				sqft: result
 			};
+
+			setLastlength([...mostUsedLength,firstNumber])
+			setLastBreadth([...mostUsedBreadth,secondNumber])
 	
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			try {
@@ -179,7 +243,6 @@ const Step1Inch = () => {
 						thirdLastValue: newThirdLastValue,
 					});
 				});
-				console.log("Result added to Firestore array");
 	
 				// Update total after adding new square feet
 				setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
@@ -199,12 +262,15 @@ const Step1Inch = () => {
 	
 	const handleFinalize = async () => {
 		localStorage.setItem("sqft", total)
-		if (!displayValue && quantityNumber !== pieceNumber) {
+		
+		localStorage.setItem("length", JSON.stringify(mostUsedLength))
+		localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
+		if (quantityNumber &&!displayValue && quantityNumber !== pieceNumber) {
 			setShowMismatchModal(true);
 			return;
 		}
 	
-		if (quantityNumber < pieceNumber + 2) {
+		if (quantityNumber && quantityNumber < pieceNumber + 2) {
 			setShowModal(true);
 		} else {
 			if (displayValue) {
@@ -251,7 +317,6 @@ const Step1Inch = () => {
 							thirdLastValue: newThirdLastValue,
 						});
 					});
-					console.log("Result added to Firestore array");
 	
 					// Update total after adding new square feet
 					setTotal(prevTotal => prevTotal + parseFloat(result)); // Ensure result is parsed as float
@@ -294,7 +359,6 @@ const Step1Inch = () => {
 				await updateDoc(quantityRef, {
 					quantityNumber: updatedQuantity,
 				});
-				console.log("Quantity updated successfully");
 				setShowModal(false);
 				setNewQuantity("");
 			} catch (err) {
@@ -308,6 +372,10 @@ const Step1Inch = () => {
 	const handleLastValue = () => {
 		setDisplayValue(lastValue);
 	};
+	const handleMostUsed = (check) => {
+		setDisplayValue((prev) => prev + check);
+	};
+
 
 	const handleSecondLastValue = () => {
 		setDisplayValue(secondLastValue);
@@ -334,11 +402,22 @@ const Step1Inch = () => {
 					width: "100%",
 					display: "flex",
 					alignItems: "center",
-					justifyContent: "center",
+					justifyContent: "space-around",
 					paddingTop: "1rem",
+				}} >
+				
+				<div  onClick={()=>{
+							localStorage.setItem("sqft", total)
+							localStorage.setItem("length", JSON.stringify(mostUsedLength))
+							localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
+							navigate("/view-records")
 				}}>
+					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
+						View Records
+					</button>
+				</div>
 				<div className="  ml-2 rounded-md p-2 bg-blue-600">
-					<NavLink to={"/"} className="text-white">
+					<NavLink to={"/"} className="text-white" >
 						<FaHome size={30} />
 					</NavLink>
 				</div>
@@ -366,25 +445,66 @@ const Step1Inch = () => {
 					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex justify-center items-center gap-4">
-				<div  onClick={()=>{
-							localStorage.setItem("sqft", total)
-							navigate("/view-records")
-				}}>
-					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
-						View Records
-					</button>
-				</div>
+			<div className=" px-2 my-2 flex justify-around items-center gap-4">
+				
 				<div className="" style={{
 					fontSize:"1.3rem"
-				}}>	SQFT: {total.toFixed(2)}</div>
+				}}>Type	: {measurementType}</div>
+				<div className="" style={{
+					fontSize:"1.3rem"
+				}}>	SQFT : {total.toFixed(2)}</div>
 
+			</div>
+			<div style={{
+				display:"flex",
+				alignItems:"center",
+				justifyContent:"space-around"
+			}}>
+<button
+					onClick={()=>{
+						if(!displayValue?.includes("X")){
+							handleMostUsed(mostUsedLengthArray?.[0])
+
+						}
+						else{
+							handleMostUsed(mostUsedbreadthArray?.[0])
+
+						}
+					}
+					}
+					style={{
+						width:"40%"
+					}}
+					className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "2nd Most Used" : mostUsedbreadthArray?.[0] || "2nd Most Used" }</button>
+
+				</button>				
+				<button
+				style={{
+					width:"40%"
+				}}
+				onClick={()=>{
+					if(!displayValue?.includes("X")){
+						handleMostUsed(mostUsedLengthArray?.[1])
+
+					}
+					else{
+						handleMostUsed(mostUsedbreadthArray?.[1])
+
+					}
+				}
+				}
+					className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[1] || "2nd Most Used" : mostUsedbreadthArray?.[1] || "2nd Most Used" }</button>
+				</button>
 			</div>
 
 			<div
 				className="border-2 rounded-md my-3 mx-1 border-white h-32 text-4xl uppercase text-end flex justify-center items-center pr-3 "
 				style={{
 					border: "0rem",
+					height:"5rem"
+					
 				}}>
 				{displayValue || placeholderText}
 			</div>

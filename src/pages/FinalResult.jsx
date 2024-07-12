@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoHome } from "react-icons/io5";
 import loader from "../assests/loader.png";
-import { Radio, Space } from "antd-mobile";
+import {  Space } from "antd-mobile";
+import {  Radio } from "antd";
 import { Modal, Progress, Select } from "antd";
 import { camelCaseToReadable } from "../utils/commonFunctions";
 import { downloadExcel } from "./handleDownload";
@@ -33,8 +34,11 @@ const FinalResult = () => {
 	  setIsModalOpen(true);
 	};
 
-	const handleRadioChange = (event) => {
-		setSelectedValue(event.target.value);
+	const handleRadioChange = ({ target: { value } }) => {
+		setSelectedValue(value);
+	};
+	const handleExcelChange = ({ target: { value } }) => {
+		setExportType(value);
 	};
 
 	const handleOk = () => {
@@ -62,8 +66,7 @@ const FinalResult = () => {
 	];
 
 	const handleDownload = () => {
-		console.log("sdd")
-		downloadExcel(data, "measurements.xlsx", measurementUnit);
+		downloadExcel(data, groupedData , "measurements.xlsx", measurementUnit, selectedValue);
 	};
 	const getData = async () => {
 		try {
@@ -76,7 +79,6 @@ const FinalResult = () => {
 				setOptions(selectOptions);
 				setMeasurements(docSnapshot?.data()?.Measurement)
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error getting document:", error);
@@ -85,7 +87,7 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		downloadPDF(data, "measurements.pdf", measurementUnit);
+		downloadPDF(data, groupedData , "measurements.pdf", measurementUnit, selectedValue);
 	};
 
 	useEffect(() => {
@@ -109,17 +111,15 @@ const FinalResult = () => {
 	const convertValue = (value, unit) => {
 		switch (unit) {
 			case "cm":
-				return value / 30.48; // 1 cm = 0.0328084 feet
+				return value * 30.48; // 1 cm = 0.0328084 feet
 			case "meter":
-				return value / 0.3048; // 1 meter = 3.28084 feet
+				return value * 0.3048; // 1 meter = 3.28084 feet
 			case "inch":
-				return value / 12; // 1 inch = 0.0833333 feet
+				return value * 12; // 1 inch = 0.0833333 feet
 			case "feet":
 				return value; // 1 feet = 1 feet
 			case "mm":
-				return value / 304.8; // 1 mm = 0.00328084 feet
-			default:
-				return value * 0.3048; // Convert unknown unit to feet
+				return value * 304.8; // 1 mm = 0.00328084 feet
 		}
 	};
 
@@ -133,7 +133,6 @@ const FinalResult = () => {
 
 	const handleExport = () => {
 		setExportModal(true);
-		console.log(exportType);
 	};
 
 	const handleMeasurementChange = (e) => {
@@ -158,7 +157,14 @@ const FinalResult = () => {
 
 			const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
 			const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
-			const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+			let result = ""
+
+			if(measurementUnit == "feet"){
+				result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+			}
+			else{
+				result = (convertedValue1 * convertedValue2).toFixed(2);
+			}
 
 			const key = `${convertedValue1}-${convertedValue2}-${result}`;
 			if (!grouped[key]) {
@@ -207,9 +213,11 @@ const FinalResult = () => {
 							if (excludedFields?.includes(key)) return null;
 							if (selectedFields?.includes(key)) {
 								return (
-									<a className="affan-element-item" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-										<p style={{ color: "black" }}>{camelCaseToReadable(key)}</p>
-										<p>{value}</p>
+									<a className="affan-element-item" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", border:"1px solid black" }}>
+										<p style={{ color: "black", margin:"0rem" }}>{camelCaseToReadable(key)}</p>
+										<p style={{
+											margin:"0rem"
+										}}>{value}</p>
 									</a>
 								);
 							}
@@ -217,8 +225,11 @@ const FinalResult = () => {
 						})}
 				</div>
 				<div className="flex justify-between"  style={{
-					padding:"1.4rem"
+					padding:"1.4rem",
+					paddingBottom:"0.3rem",
+					paddingTop:"0rem"
 				}}>
+				
 					<select name="measurement" id="measurement" onChange={handleMeasurementChange}>
 						<option value="mm">MM</option>
 						<option value="cm">CM</option>
@@ -226,26 +237,28 @@ const FinalResult = () => {
 						<option value="inch">INCH</option>
 						<option selected value="feet">FEET</option>
 					</select>
+					</div>
+					<div className="row" style={{
+						paddingLeft:"1.2rem",
+						paddingTop:"0.1rem",
+						paddingBottom:"1rem"
+					}}>
 				<div className="flex gap-2">
-					<input 
-						type="radio" 
-						name="options" 
-						value="1" 
-						id="option1"
-						checked={selectedValue === '1'} 
-						onChange={handleRadioChange} 
-					/>
-					<label htmlFor="option1">Option 1</label>
-					
-					<input 
-					id="option2"
-						type="radio" 
-						name="options" 
-						value="2" 
-						checked={selectedValue === '2'} 
-						onChange={handleRadioChange} 
-					/>
-					<label htmlFor="option2">Option 2</label>
+				<Radio.Group
+        options={[{
+			label: 'Regular view',
+			value: '1',
+		  },
+		  {
+			label: 'Cumulative view',
+			value: '2',
+		  },]}
+		  value={selectedValue}
+        onChange={handleRadioChange}
+        optionType="button"
+        buttonStyle="solid"
+      />
+				
 				</div>
 				</div>
 				<div>
@@ -275,7 +288,14 @@ const FinalResult = () => {
 
 										const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
 										const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
-										const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+										let result = ""
+
+										if(measurementUnit == "feet"){
+											result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+										}
+										else{
+											result = (convertedValue1 * convertedValue2).toFixed(2);
+										}
 
 										totalResult += parseFloat(result);
 
@@ -336,7 +356,7 @@ const FinalResult = () => {
 										<td></td>
 										<td></td>
 										<td></td>
-										<td className="py-2 px-4 border-2 border-black">{sumOfSqft}</td>
+										<td className="py-2 px-4 border-2 border-black">{sumOfSqft.toFixed(2)}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -344,14 +364,25 @@ const FinalResult = () => {
 					</div>
 				)}
 			</div>
-				<div className="mt-5 flex flex-col gap-3 border-2 p-4 m-3" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-					<Radio.Group value={exportType} onChange={(e) => setExportType(e)}>
-						<Space direction="vertical" block className="">
-							<Radio value="excel" block>Export as Excel</Radio>
-							<Radio value="pdf">Export as PDF</Radio>
-						</Space>
-					</Radio.Group>
-					<Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} cancelButtonProps={{ style: { display: 'none' } }}>
+				<div className="mt-5 flex flex-col gap-3 border-2 p-4 m-3 margintopcheck" style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop:"1rem" }}>
+					
+				<Radio.Group
+        options={[{
+			label: 'Export as Excel',
+			value: 'excel',
+		  },
+		  {
+			label: 'Export as PDF',
+			value: 'pdf',
+		  },]}
+		  value={exportType}
+        onChange={handleExcelChange}
+        optionType="button"
+        buttonStyle="solid"
+      />
+					
+					
+					<Modal open={isModalOpen} okText={"NEXT"} onOk={handleOk} onCancel={handleCancel} cancelButtonProps={{ style: { display: 'none' } }}>
 						<div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
 							<Progress type="circle" percent={percentageDownload} />
 							<p style={{ marginTop: "1rem" }}>{percentageDownload === 100 && "File has been saved in your device"}</p>
@@ -372,9 +403,9 @@ const FinalResult = () => {
 								setPercentageDownload(100);
 							}, 1500);
 						}}
-						style={{ background: "#4E97F3", color: "white", width: "70%", alignSelf: "center" }}
+						style={{ background: "#4E97F3", color: "white", width: "80%", alignSelf: "center", height:"3rem" }}
 					>
-						Export
+						Download
 					</button>
 				</div>
 				{exportModal && (

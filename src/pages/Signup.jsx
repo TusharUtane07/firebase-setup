@@ -14,10 +14,8 @@ const Signup = () => {
 		await createUserWithEmailAndPassword(auth, email, password)
 			.then(() => {
 				navigate("/login");
-				console.log("Sign up Successfull!!");
 			})
 			.catch((error) => {
-				console.log(error.message);
 			});
 	};
 

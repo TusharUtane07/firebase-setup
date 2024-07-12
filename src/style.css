@@ -8709,3 +8709,6 @@ form .btn-lg {
 [data-theme=dark] body .single-plan-check {
   border-color: rgba(255, 255, 255, 0.1);
 }
+.margintopcheck{
+  margin-top: 1rem !important;
+}

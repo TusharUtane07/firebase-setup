@@ -11,6 +11,8 @@ const EditPage3Inch = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [newQuantity, setNewQuantity] = useState("");
 	const placeholderText = "Enter your size";
+	
+    const [oldValue, setOldvalue] = useState("")
 
     const [showMismatchModal, setShowMismatchModal] = useState(false);
 
@@ -47,12 +49,10 @@ const EditPage3Inch = () => {
 		if (!isNaN(index) && index >= 0 && index < docSnapshot?.data()?.results?.length) {
 			const valueToSave = docSnapshot?.data()?.results[index];
 			setDisplayValue(valueToSave?.multiplication);
-			console.log("Value to save:", valueToSave);
+			setOldvalue(valueToSave?.multiplication)
 		} else {
-			console.error("Invalid index or values array is empty.");
 		}
 			} else {
-				console.log("No such document!");
 				return null;
 			}
 		} catch (error) {
@@ -81,6 +81,10 @@ const EditPage3Inch = () => {
 	};
 
 	const handleCorrect = () => {
+		let lastCharacter = displayValue.slice(-1);
+		if(lastCharacter == "."){
+			setIsMinusClicked(false)
+		}
 		setDisplayValue((prev) => prev.slice(0, -1));
 	};
 
@@ -90,11 +94,42 @@ const EditPage3Inch = () => {
         return pattern.test(input);
     }
 
+	const parseValue = (value) => {
+		// Replace "'" with ".", "-" with "."
+		value = value?.replace(/'/g, ".")?.replace(/"/g, "");
+
+		// If value contains "-", treat it as decimal point
+		if (value?.includes("-")) {
+			// Replace "-" with "." to convert it into decimal
+			value = value?.replace("-", ".");
+		}
+
+		// Parse value into float
+		return parseFloat(value);
+	};
 	const handleNext = async () => {
-        if (!isValidInput(displayValue)) {
+		if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
+		if(oldValue != displayValue){
+			let oldSqft = localStorage.getItem("sqft")
+			const num1 = parseValue(oldValue.split("X")[0]);
+			const num2 = parseValue(oldValue.split("X")[1]);
+			const newnum1 = parseValue(displayValue.split("X")[0]);
+			const newnum2 = parseValue(displayValue.split("X")[1]);
+
+			let sqfttoDelete = ((parseFloat(num1) * parseFloat(num2))/144).toFixed(2);
+			let sqfttoAdd = ((parseFloat(newnum1) * parseFloat(newnum2))/144).toFixed(2);
+
+			let newToAddSqft = parseFloat(oldSqft - sqfttoDelete).toFixed(2);
+
+			newToAddSqft = parseFloat(newToAddSqft) + parseFloat(sqfttoAdd)
+			localStorage.setItem("sqft", newToAddSqft)
+
+
+		}
+
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			
@@ -111,7 +146,7 @@ const EditPage3Inch = () => {
 					console.error("Invalid index or values array is empty.");
 				}
 			} else {
-				console.log("No such document!");
+
 			}
 		} catch (error) {
 			console.error("Error updating document:", error);
@@ -141,7 +176,6 @@ const EditPage3Inch = () => {
 					console.error("Invalid index or values array is empty.");
 				}
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error updating document:", error);
@@ -157,19 +191,24 @@ const EditPage3Inch = () => {
 
 	return (
 		<div className="bg-gray-900 min-h-screen text-white">
-         <div style={{
-                width:"100%",
-                display:"flex",
-                alignItems:"center",
-                justifyContent:"center",
-                paddingTop:"1rem"
-            }}>
-			<div className=" w-12 ml-2 rounded-md p-2 bg-blue-600">
-				<NavLink to={"/"} className="text-white">
-					<FaHome size={30} />
-				</NavLink>
+	<div
+				style={{
+					width: "100%",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-around",
+					paddingTop: "1rem",
+				}} >
+				
+				<div  onClick={()=>{
+							navigate("/view-records")
+				}}>
+					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
+						View Records
+					</button>
+				</div>
+				
 			</div>
-            </div>
 			<div className=" my-2 p-2 flex justify-between ">
 				<div className="text-center px-3 border-2  rounded-md border-white" style={{
                     width:"30%"
@@ -187,35 +226,12 @@ const EditPage3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex items-center  justify-center">
-				<NavLink to={"/view-records"}>
-					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
-						View Records
-					</button>
-				</NavLink>
-			</div>
+
 			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">
-				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >{lastValue || "LV"}</button>
-				</div>
-				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						{" "}
-						{secondLastValue || "SV"}
-					</button>
-				</div>
-				<div className="border-2 border-white h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						{" "}
-						{thirdLastValue || "TV"}
-					</button>
-				</div>
-				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-16 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button  > AC</button>
-				</div>
+				
 				<button   onClick={() => handleButtonClick("1")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-800" : "bg-gray-800"}`} >
 					<button > 1</button>
 				</button>
@@ -225,8 +241,8 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 3</button>
 				</div>
-				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-16 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button> X</button>
+				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-16 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button  > AC</button>
 				</div>
 				<button   onClick={() => handleButtonClick("4")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-800" : "bg-gray-800"}`} >
 					<button > 4</button>
@@ -237,10 +253,8 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 6</button>
 				</div>
-				<div onClick={handleCorrect} className="border-2 border-white h-16 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						<FaAngleLeft />
-					</button>
+				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-16 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button> X</button>
 				</div>
 				<button   onClick={() => handleButtonClick("7")} className={`border-2 border-white h-16 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-800" : "bg-gray-800"}`} >
 					<button > 7</button>
@@ -251,8 +265,10 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button > NEXT</button>
+				<div onClick={handleCorrect} className="border-2 border-white h-16 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button >
+						<FaAngleLeft />
+					</button>
 				</div>
 				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-16 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 0</button>
@@ -263,8 +279,8 @@ const EditPage3Inch = () => {
 				</button>
 				
 
-				<div onClick={handleFinalize} className="border-2  border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button > FINAL</button>
+				<div onClick={handleNext} className="border-2 border-white h-16 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button > NEXT</button>
 				</div>
 			</div>
 			{showModal && (

@@ -3,13 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { database } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import { IoHome } from 'react-icons/io5';
 import loader from "../assests/loader.png";
-import { FaPencilAlt } from 'react-icons/fa';
 import { BsPencilSquare } from 'react-icons/bs';
 const ViewRecords = () => {
     const [data, setData] = useState(null);
+
     const [toogleView, setToggleView] = useState("detailed")
     const navigate = useNavigate();
     const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
@@ -20,10 +18,8 @@ const ViewRecords = () => {
             const docRef = doc(database, "Data", "lot: "+lotNumberValue);
             const docSnapshot = await getDoc(docRef);
             if (docSnapshot.exists()) {
-                console.log(docSnapshot.data())
                 setData(docSnapshot.data());
             } else {
-                console.log("No such document!");
             }
         } catch (error) {
             console.error("Error getting document:", error);

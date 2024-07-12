@@ -11,6 +11,7 @@ const EditPage3Inch = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [newQuantity, setNewQuantity] = useState("");
 	const placeholderText = "Enter your size";
+    const [oldValue, setOldvalue] = useState("")
 
     const [showMismatchModal, setShowMismatchModal] = useState(false);
 
@@ -47,12 +48,12 @@ const EditPage3Inch = () => {
 		if (!isNaN(index) && index >= 0 && index < docSnapshot?.data()?.results?.length) {
 			const valueToSave = docSnapshot?.data()?.results[index];
 			setDisplayValue(valueToSave?.multiplication);
-			console.log("Value to save:", valueToSave);
+			setOldvalue(valueToSave?.multiplication)
+
 		} else {
 			console.error("Invalid index or values array is empty.");
 		}
 			} else {
-				console.log("No such document!");
 				return null;
 			}
 		} catch (error) {
@@ -62,6 +63,19 @@ const EditPage3Inch = () => {
 	};
 
 
+	const parseValue = (value) => {
+		// Replace "'" with ".", "-" with "."
+		value = value?.replace(/'/g, ".")?.replace(/"/g, "");
+
+		// If value contains "-", treat it as decimal point
+		if (value?.includes("-")) {
+			// Replace "-" with "." to convert it into decimal
+			value = value?.replace("-", ".");
+		}
+
+		// Parse value into float
+		return parseFloat(value);
+	};
 	useEffect(() => {
 		getDocument();
 	}, [lotNumberValue]);
@@ -81,6 +95,10 @@ const EditPage3Inch = () => {
 	};
 
 	const handleCorrect = () => {
+		let lastCharacter = displayValue.slice(-1);
+		if(lastCharacter == "."){
+			setIsMinusClicked(false)
+		}
 		setDisplayValue((prev) => prev.slice(0, -1));
 	};
 
@@ -91,10 +109,28 @@ const EditPage3Inch = () => {
     }
 
 	const handleNext = async () => {
-        if (!isValidInput(displayValue)) {
+		if (!isValidInput(displayValue)) {
             alert("Invalid format");
             return;
         }
+		if(oldValue != displayValue){
+			let oldSqft = localStorage.getItem("sqft")
+			const num1 = parseValue(oldValue.split("X")[0]);
+			const num2 = parseValue(oldValue.split("X")[1]);
+			const newnum1 = parseValue(displayValue.split("X")[0]);
+			const newnum2 = parseValue(displayValue.split("X")[1]);
+
+			let sqfttoDelete = ((parseFloat(num1) * parseFloat(num2))/144).toFixed(2);
+			let sqfttoAdd = ((parseFloat(newnum1) * parseFloat(newnum2))/144).toFixed(2);
+
+			let newToAddSqft = parseFloat(oldSqft - sqfttoDelete).toFixed(2);
+
+			newToAddSqft = parseFloat(newToAddSqft) + parseFloat(sqfttoAdd)
+			localStorage.setItem("sqft", newToAddSqft)
+
+
+		}
+      
 		try {
 			const docRef = doc(database, "Data", "lot: " + lotNumberValue);
 			
@@ -111,7 +147,6 @@ const EditPage3Inch = () => {
 					console.error("Invalid index or values array is empty.");
 				}
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error updating document:", error);
@@ -141,7 +176,6 @@ const EditPage3Inch = () => {
 					console.error("Invalid index or values array is empty.");
 				}
 			} else {
-				console.log("No such document!");
 			}
 		} catch (error) {
 			console.error("Error updating document:", error);
@@ -157,19 +191,24 @@ const EditPage3Inch = () => {
 
 	return (
 		<div className="bg-gray-900 min-h-screen text-white">
-         <div style={{
-                width:"100%",
-                display:"flex",
-                alignItems:"center",
-                justifyContent:"center",
-                paddingTop:"1rem"
-            }}>
-			<div className=" w-12 ml-2 rounded-md p-2 bg-blue-600">
-				<NavLink to={"/"} className="text-white">
-					<FaHome size={30} />
-				</NavLink>
+	<div
+				style={{
+					width: "100%",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-around",
+					paddingTop: "1rem",
+				}} >
+				
+				<div  onClick={()=>{
+							navigate("/view-records3")
+				}}>
+					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
+						View Records
+					</button>
+				</div>
+				
 			</div>
-            </div>
 			<div className=" my-2 p-2 flex justify-between ">
 				<div className="text-center px-3 border-2  rounded-md border-white" style={{
                     width:"30%"
@@ -187,13 +226,7 @@ const EditPage3Inch = () => {
 					Number <br /> {pieceNumber ? pieceNumber + 1 : 1}
 				</div>
 			</div>
-			<div className=" px-2 my-2 flex items-center  justify-center">
-				<NavLink to={"/view-records3"}>
-					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
-						View Records
-					</button>
-				</NavLink>
-			</div>
+		
 			<div className=" rounded-md my-3 mx-1 h-32 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>

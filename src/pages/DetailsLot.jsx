@@ -12,7 +12,7 @@ const DetailsLot = () => {
   const [clientName, setClientName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [lotNumberValue, setLotNumberValue] = useState("");
-  const [measurementType, setMesurementType] = useState("MM");
+  const [measurementType, setMesurementType] = useState("feet");
   const [quantityNumber, setQuantityNumber] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newText, setNewText] = useState("");
@@ -29,7 +29,6 @@ const DetailsLot = () => {
   const [lotNumberError, setLotNumberError] = useState(false);
 
   let { id } = useParams();
-  console.log("id:", id);
 
 	const lotNumberDetailsValue = useSelector((state) => state.lotReducer.lotNumber);
 
@@ -56,7 +55,6 @@ const DetailsLot = () => {
 
     if (!isValid) return;
     
-console.log("hey")
     const data = {
       [labels.clientName]: clientName,
     [labels.vehicleNumber]: vehicleNumber,
@@ -73,9 +71,8 @@ console.log("hey")
     await setDoc(docRef, data);
 
     localStorage.setItem("data", JSON.stringify(data));
-    console.log("Document Added: ", docRef.id);
     dispatch(setLotNumber(lotNumberValue));
-    navigate("/measurement-type");
+    navigate("/measurement-type/"+measurementType);
   };
 
   const openModal = (field) => {
@@ -121,7 +118,6 @@ console.log("hey")
       const querySnapshot = await getDocs(collection(database, 'Templates'));
       const templateData = querySnapshot.docs.map(doc => doc.data());
       setTemplatesData(templateData);
-      console.log("Templates:", templatesData);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }
@@ -134,7 +130,6 @@ console.log("hey")
       if (docSnapshot.exists()) {
         setData([docSnapshot.data()]);
       } else {
-        console.log("No such document!");
       }
     } catch (error) {
       console.error("Error getting document:", error);
@@ -156,7 +151,6 @@ console.log("hey")
     );
   }
 
-  console.log(data)
 
     const excludedKeys = [
       "breadth", 
@@ -199,12 +193,12 @@ console.log("hey")
             <img className="login-intro-img" src={img} alt="" />
           </div>
           {/* Register Form */}
-          <div className="register-form mt-4">
+         <div className="register-form mt-4">
             <h5 className="mb-3 text-center ">Please Enter the Lot Details Accordingly </h5>
             {Array.isArray(data) && data.length > 0 && data.map((item, index) => (
               <div key={index}>
                  <div>
-      {Object.keys(filteredData).map((key) => (
+      {/* {Object.keys(filteredData).map((key) => (
         <div className="form-group text-start mb-3" key={key}>
           <label
             onClick={() => openModal(key)}
@@ -221,9 +215,9 @@ console.log("hey")
             disabled
             />
         </div>
-      ))}
+      ))} */}
     </div>
-                <div className="form-group text-start mb-3 position-relative">
+                <div className="form-group text-start mb-3 position-relative mt-4">
                   <label
                     onClick={() => openModal("lotNumber")}
                     className="cursor-pointer"
@@ -261,26 +255,7 @@ console.log("hey")
                     <i className="bi bi-eye-slash" />
                   </div>
                 </div>
-                <div className="form-group text-start mb-3">
-                  <label
-                    className="cursor-pointer"
-                    onClick={() => openModal("measurement")}
-                    style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom: "0.5rem" }}
-                  >
-                    Measurement 
-                  </label>
-                  <select
-                    value={measurementType}
-                    className="form-control"
-                    onChange={(e) => setMesurementType(e.target.value)}
-                  >
-                    <option value="mm">MM</option>
-					<option value="cm">CM</option>
-					<option value="meter">METER</option>
-					<option value="inches">INCHES</option>
-					<option value="feet">FEET</option>
-                  </select>
-                </div>
+ 
               </div>
             ))}
             {dynamicFields.map((field, index) => (
@@ -334,7 +309,7 @@ console.log("hey")
             >
               Save & Next
             </button>
-          </div>
+          </div> 
         </div>
       </div>
       {/* Modal */}
