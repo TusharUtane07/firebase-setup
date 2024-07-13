@@ -9,6 +9,7 @@ import img from "../img/bg-img/36.png"
 import { FaTrash } from "react-icons/fa";
 import { Spin } from "antd";
 import { App as CapacitorApp } from '@capacitor/app';
+import jsPDF from "jspdf";
 
 const Details = () => {
   useEffect(()=>{
@@ -89,7 +90,9 @@ const Details = () => {
   const [templateModal, setTemplateModal] = useState(false);
   const [templatesData, setTemplatesData] = useState({});
   const [templateShowCase, setTemplateShowCase] = useState(false);
+  const [defaultButton, setDefaultButton] = useState(false);
 
+  console.log(JSON.stringify(templatesData) + "datatemplate")
   const navigate = useNavigate();
   const dispatch = useDispatch();
 const [handleLoader, setLoader] = useState(false)
@@ -114,6 +117,12 @@ const [handleLoader, setLoader] = useState(false)
     [labels.measurement]: measurementType,
     };
 
+    const lotQuant = {
+      "lotId": labels.lotNumber,
+      "quantityId": labels.quantityNumber,
+      "quantity": quantityNumber
+    }
+
     dynamicFields.forEach((field) => {
       data[field.label] = field.value;
     });
@@ -122,6 +131,7 @@ const [handleLoader, setLoader] = useState(false)
     await setDoc(docRef, data);
     setLoader(false)
     localStorage.setItem("data", JSON.stringify(data));
+    localStorage.setItem("lotQuant", JSON.stringify(lotQuant));
     dispatch(setLotNumber(lotNumberValue));
     navigate("/measurement-type/"+measurementType);
   };
@@ -163,11 +173,13 @@ const [handleLoader, setLoader] = useState(false)
       templateName: tempalteName,
       1: labels.clientName,
       2: labels.vehicleNumber,
+      3: labels.lotNumber,
+      4: labels.quantityNumber,
     };
     
     // Assuming dynamicFields is an array of objects with a 'label' property
     dynamicFields.forEach((field, index) => {
-      data[3 + index] = field.label;
+      data[5 + index] = field.label;
     });
     
 
@@ -188,6 +200,17 @@ const [handleLoader, setLoader] = useState(false)
       console.error("Error fetching templates:", error);
     }
   }
+  const getDefaultTemplate = async() => {
+    try {
+      const querySnapshot = await getDocs(collection(database, 'DefaultTemplate'));
+      const templateData = querySnapshot?.docs?.map(doc => doc.data());
+      setTheLabels(templateData[0]);
+      console.log("lbales", labels)
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+    }
+  }
+  
 
   useEffect(() => {
     getData();
@@ -198,10 +221,12 @@ const [handleLoader, setLoader] = useState(false)
     const updatedLabels = {
       clientName: item[1],
       vehicleNumber: item[2],
+      lotNumber: item[3],
+      quantityNumber: item[4],
     };
   
     const updatedDynamicFields = [];
-    for (let i = 3; i < Object.keys(item).length; i++) {
+    for (let i = 5; i < Object.keys(item).length; i++) {
       updatedDynamicFields.push({ label: item[i], value: "" });
     }
   
@@ -210,7 +235,27 @@ const [handleLoader, setLoader] = useState(false)
     setDynamicFields(updatedDynamicFields);
     setTemplateShowCase(false);
   };
+
+  const handleSetDefault = async() => {
+    const data = {
+      1: labels.clientName,
+      2: labels.vehicleNumber,
+      3: labels.lotNumber,
+      4: labels.quantityNumber,
+    };
+
+    dynamicFields.forEach((field, index) => {
+      data[5 + index] = field.label;
+    });
+    const docRef = doc(database, "DefaultTemplate", "tempalteName");
+    await setDoc(docRef, data);
+    getDefaultTemplate();
+    console.log("set this as default")
+  }
   
+  useEffect(() => {
+    getDefaultTemplate();
+  }, [])
   
   return (
     <>
@@ -270,14 +315,15 @@ const [handleLoader, setLoader] = useState(false)
           </div>
           <div className="form-group text-start mb-3 position-relative">
           <label
+                    onClick={() => openModal("lotNumber")}
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem" }}
                   >
-                    Lot Number 
+                   {labels.lotNumber} <FiEdit />
                   </label>
                   <input
                     type="text"
-                    placeholder={`Enter the Lot Number`}
+                    placeholder={`Enter the ${labels.lotNumber}`}
                     className="form-control"
                     value={lotNumberValue}
                     onChange={(e) => setLotNumberValue(e.target.value)}
@@ -290,14 +336,15 @@ const [handleLoader, setLoader] = useState(false)
           
           <div className="form-group text-start mb-3 position-relative">
           <label
+                    onClick={() => openModal("quantityNumber")}
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                    Quantity Number
+                    {labels.quantityNumber} <FiEdit />
                   </label>
                   <input
                     type="number"
-                    placeholder={`Enter the Quantity Number`}
+                    placeholder={`Enter the ${labels.quantityNumber}`}
                     className="form-control"
                     value={quantityNumber}
                     onChange={(e) => setQuantityNumber(e.target.value)}
@@ -351,9 +398,9 @@ const [handleLoader, setLoader] = useState(false)
           <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">+ Add Template</button>
           <button onClick={() => setTemplateShowCase(true)} className="btn btn-primary w-full">Saved Template</button>
           </div>
-       <button onClick={() => openModal(null)} type="button" className="btn btn-primary w-100 mt-2 mb-2" style={{
-        background:"transparent",
-        color:"rgb(12,109,253)"
+      { defaultButton && <button onClick={handleSetDefault} type="button" className="btn btn-primary w-100 mt-1 mb-2" style={{
+       }}>Set as Default</button>}
+       <button onClick={() => openModal(null)} type="button" className="btn mt-1 btn-primary w-100  mb-2" style={{
        }}>Add new field</button>
 
           <button className="btn btn-primary w-100" onClick={handleSubmit}>
@@ -436,17 +483,24 @@ const [handleLoader, setLoader] = useState(false)
       <h2 className="text-xl mb-4">Saved Templates</h2>
       <div className="row">
         {templatesData?.map((item, index) => (
+          <>
+          <div className="flex flex-col ">
           <div  key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
             display:"flex",
             alignItems:"center",
             justifyContent:"space-between"
-          }}><p onClick={() => setTheLabels(item)} style={{
+          }}><p onClick={() => {setTheLabels(item)
+             setDefaultButton(true)}
+            } style={{
             margin:"0rem"
           }}>{item.templateName}</p> <a onClick={()=>{
             deleteItem(item)
           }} style={{
             color:"red"
-          }}><FaTrash /></a></div>
+          }}><FaTrash /></a>
+          </div>
+          </div>
+          </>
         ))}
       </div>
       <div className="mt-4 flex justify-center">

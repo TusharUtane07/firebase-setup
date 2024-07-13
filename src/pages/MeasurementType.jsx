@@ -62,9 +62,9 @@ const MeasurementType = () => {
   <div className="page-content-wrapper py-3">
     <div className="container">
       {/* Accordion Card */}
-      <div className="card bg-primary rounded-0 rounded-top">
+      <div className="card  rounded-0 rounded-top">
         <div className="card-body text-center py-3">
-          <h6 className="mb-0 text-white line-height-1">Regular Type</h6>
+          <h6 className="mb-0  line-height-1">Regular Type</h6>
         </div>
       </div>
       <div className="card mb-3 rounded-0 rounded-bottom">
@@ -104,8 +104,6 @@ const MeasurementType = () => {
                   navigate(`/step1inch`, { state: { sqft: true } });
 
              }} className="btn btn-primary w-100" style={{
-        background:"transparent",
-        color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select Regular Type
@@ -114,9 +112,9 @@ const MeasurementType = () => {
         </div>
       </div>
       {/* Accordion Card */}
-      <div className="card bg-primary rounded-0 rounded-top">
+      <div className="card rounded-0 rounded-top">
         <div className="card-body text-center py-3">
-          <h6 className="mb-0 text-white line-height-1">3 ,6 ,9 ,0</h6>
+          <h6 className="mb-0 line-height-1">3 ,6 ,9 ,0</h6>
         </div>
       </div>
       <div className="card mb-3 rounded-0 rounded-bottom">
@@ -158,8 +156,6 @@ const MeasurementType = () => {
 
            }}
           className="btn btn-primary w-100" style={{
-        background:"transparent",
-        color:"rgb(12,109,253)",
         marginTop:"1rem"
        }}>
            Select 3 Steps Type
