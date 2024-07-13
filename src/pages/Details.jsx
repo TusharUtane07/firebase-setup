@@ -354,13 +354,13 @@ const [handleLoader, setLoader] = useState(false)
               <i className="bi bi-eye-slash" />
             </div>
           </div>
-          {/* <div className="form-group text-start mb-3 position-relative">
+           <div className="form-group text-start mb-3 position-relative">
 
           <label
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                    {labels.measurement}
+                  Measurement Type
                   </label>
                   <select
 					name="measurement"
@@ -374,7 +374,7 @@ const [handleLoader, setLoader] = useState(false)
 					<option value="inches">INCHES</option>
 					<option value="feet">FEET</option>
 				</select>  
-        </div> */}
+        </div> 
           
           {dynamicFields.map((field, index) => (
   <div key={index}>
