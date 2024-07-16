@@ -10,6 +10,7 @@ import { FaTrash } from "react-icons/fa";
 import { Spin } from "antd";
 import { App as CapacitorApp } from '@capacitor/app';
 import jsPDF from "jspdf";
+import toast, { Toaster } from "react-hot-toast";
 
 const Details = () => {
   useEffect(()=>{
@@ -81,7 +82,7 @@ const Details = () => {
     vehicleNumber: "Vehicle Number",
     lotNumber: "Lot Number",
     quantityNumber: "Quantity Number",
-    measurement: "Measurement",
+    measurement: "Measurement Type",
   });
   const [dynamicFields, setDynamicFields] = useState([]);
   const [lotNumberError, setLotNumberError] = useState(false);
@@ -113,7 +114,7 @@ const [handleLoader, setLoader] = useState(false)
       [labels.clientName]: clientName,
     [labels.vehicleNumber]: vehicleNumber,
     [labels.lotNumber]: lotNumberValue,
-    [labels.quantityNumber]: quantityNumber,
+    quantityNumber: quantityNumber,
     [labels.measurement]: measurementType,
     };
 
@@ -175,11 +176,12 @@ const [handleLoader, setLoader] = useState(false)
       2: labels.vehicleNumber,
       3: labels.lotNumber,
       4: labels.quantityNumber,
+      5: labels.measurement
     };
     
     // Assuming dynamicFields is an array of objects with a 'label' property
     dynamicFields.forEach((field, index) => {
-      data[5 + index] = field.label;
+      data[6 + index] = field.label;
     });
     
 
@@ -223,10 +225,11 @@ const [handleLoader, setLoader] = useState(false)
       vehicleNumber: item[2],
       lotNumber: item[3],
       quantityNumber: item[4],
+      measurement:item[5]
     };
   
     const updatedDynamicFields = [];
-    for (let i = 5; i < Object.keys(item).length; i++) {
+    for (let i = 6; i < Object.keys(item).length; i++) {
       updatedDynamicFields.push({ label: item[i], value: "" });
     }
   
@@ -242,14 +245,17 @@ const [handleLoader, setLoader] = useState(false)
       2: labels.vehicleNumber,
       3: labels.lotNumber,
       4: labels.quantityNumber,
+      5: labels.measurement,
     };
 
     dynamicFields.forEach((field, index) => {
-      data[5 + index] = field.label;
+      data[6 + index] = field.label;
     });
     const docRef = doc(database, "DefaultTemplate", "tempalteName");
     await setDoc(docRef, data);
+    toast.success("This template is now Default")
     getDefaultTemplate();
+    setDefaultButton(false)
     console.log("set this as default")
   }
   
@@ -360,7 +366,7 @@ const [handleLoader, setLoader] = useState(false)
                     className="cursor-pointer"
                     style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
                   >
-                  Measurement Type
+                  {labels.measurement}
                   </label>
                   <select
 					name="measurement"
@@ -393,20 +399,22 @@ const [handleLoader, setLoader] = useState(false)
     />
   </div>
 ))}
-          <div className="mb-3" id="pswmeter" />
+          <div className="" id="pswmeter" />
           <div className="flex justify-between gap-3">
           <button onClick={() => setTemplateModal(true)} className="btn btn-primary w-full">+ Add Template</button>
           <button onClick={() => setTemplateShowCase(true)} className="btn btn-primary w-full">Saved Template</button>
           </div>
-      { defaultButton && <button onClick={handleSetDefault} type="button" className="btn btn-primary w-100 mt-1 mb-2" style={{
+      { defaultButton && <button onClick={handleSetDefault} type="button" className="btn btn-primary w-100 mt-2" style={{
        }}>Set as Default</button>}
-       <button onClick={() => openModal(null)} type="button" className="btn mt-1 btn-primary w-100  mb-2" style={{
+       <button onClick={() => openModal(null)} type="button" className="btn mt-2 btn-primary w-100 mb-2" style={{
        }}>Add new field</button>
 
           <button className="btn btn-primary w-100" onClick={handleSubmit}>
             {handleLoader ? <Spin /> :"Start"} 
           </button>
         </div>
+				<Toaster />
+
       </div>
       {/* Login Meta */}
       {showModal && (
@@ -482,27 +490,40 @@ const [handleLoader, setLoader] = useState(false)
     <div className="bg-white p-5 rounded mx-5">
       <h2 className="text-xl mb-4">Saved Templates</h2>
       <div className="row">
-        {templatesData?.map((item, index) => (
-          <>
-          <div className="flex flex-col ">
-          <div  key={item.templateName} className="border border-black cursor-pointer m-2 p-2 rounded-md " style={{
-            display:"flex",
-            alignItems:"center",
-            justifyContent:"space-between"
-          }}><p onClick={() => {setTheLabels(item)
-             setDefaultButton(true)}
-            } style={{
-            margin:"0rem"
-          }}>{item.templateName}</p> <a onClick={()=>{
-            deleteItem(item)
-          }} style={{
-            color:"red"
-          }}><FaTrash /></a>
-          </div>
-          </div>
-          </>
-        ))}
+  {templatesData?.map((item, index) => (
+    <div key={item.templateName} className="flex flex-col">
+      <div
+        className="border border-black cursor-pointer m-2 p-2 rounded-md"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}
+      >
+        <p
+          onClick={() => {
+            setTheLabels(item);
+            setDefaultButton(true);
+          }}
+          style={{ margin: "0rem" }}
+        >
+          {item.templateName}
+        </p>
+        {index !== 0 && ( 
+          <a
+            onClick={() => {
+              deleteItem(item);
+            }}
+            style={{ color: "red" }}
+          >
+            <FaTrash />
+          </a>
+        )}
       </div>
+    </div>
+  ))}
+</div>
+
       <div className="mt-4 flex justify-center">
         <button
           onClick={() => setTemplateShowCase(false)}
