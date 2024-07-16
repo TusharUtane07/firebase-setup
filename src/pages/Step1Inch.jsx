@@ -29,7 +29,7 @@ const Step1Inch = () => {
 	const [vehicleNumber, setVehicleNumber] = useState("");
 	const [clientName, setClientName] = useState("");
 	const [quantityNumber, setQuantityNumber] = useState("");
-	const [pieceNumber, setPieceNumber] = useState(0);
+	const [pieceNumber, setPieceNumber] = useState();
 	const [lastValue, setLastValue] = useState("");
 	const [secondLastValue, setSecondLastValue] = useState("");
 	const [thirdLastValue, setThirdLastValue] = useState("");
@@ -133,11 +133,12 @@ const Step1Inch = () => {
 			);
 			if (docSnapshot.exists()) {
 				const data = docSnapshot.data();
-				setClientName(data?.clientName || "");
-				setVehicleNumber(data?.vehicleNumber || "");
-				setMesurementType(data?.Measurement || "");
+				setClientName(data?.["Client Name"] || "");
+				setVehicleNumber(data?.["Vehicle Number"] || "");
+				setMesurementType(data?.["Measurement Type"] || "");
 				setValuesArray(data?.results || []);
-				setPieceNumber((data?.results?.length || 0) - 1);
+				setQuantityNumber(data?.quantityNumber)
+				setPieceNumber((data?.results?.length || 0));
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
@@ -272,12 +273,12 @@ const Step1Inch = () => {
 		
 		localStorage.setItem("length", JSON.stringify(mostUsedLength))
 		localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
-		if (quantityNumber &&!displayValue && quantityNumber !== pieceNumber) {
+		if (quantityNumber &&!displayValue && quantityNumber !== pieceNumber +1 ) {
 			setShowMismatchModal(true);
 			return;
 		}
 	
-		if (quantityNumber && quantityNumber < pieceNumber + 2) {
+		if (displayValue && quantityNumber && quantityNumber < pieceNumber + 2) {
 			setShowModal(true);
 		} else {
 			if (displayValue) {
@@ -383,7 +384,6 @@ const Step1Inch = () => {
 		setDisplayValue((prev) => prev + check);
 	};
 
-
 	const handleSecondLastValue = () => {
 		setDisplayValue(secondLastValue);
 	};
@@ -403,7 +403,7 @@ const Step1Inch = () => {
 
 
 	return (
-		<div className="bg-gray-900 overflow-scroll h-screen p-1 text-white">
+		<div className="bg-gray-900 h-screen p-1 text-white">
 			<div
 				style={{
 					width: "100%",
@@ -442,14 +442,14 @@ const Step1Inch = () => {
 					style={{
 						width: "30%",
 					}}>
-					{data.quantityId} <br /> {data.quantity ? data.quantity : "N/A"}
+					{data.quantityId} <br /> {quantityNumber ? quantityNumber : "N/A"}
 				</div>
 				<div
 					className="text-center px-3 border-2 rounded-md  border-white"
 					style={{
 						width: "30%",
 					}}>
-					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
+					Piece <br /> {pieceNumber + 1}
 				</div>
 			</div>
 			<div className=" px-2 my-2 flex justify-around items-center gap-4">
@@ -507,7 +507,7 @@ const Step1Inch = () => {
 			</div>
 
 			<div
-				className="border-2 rounded-md my-3 mx-1 border-white h-28 text-4xl uppercase text-end flex justify-center items-center pr-3 "
+				className="border-2 rounded-md  mx-1 border-white h-[85px] text-4xl uppercase text-end flex justify-center items-center pr-3 "
 				style={{
 					border: "0rem",
 					height:"5rem"
@@ -518,102 +518,102 @@ const Step1Inch = () => {
 			<div className="grid grid-cols-4 pb-2 ">
 				<button
 					onClick={handleLastValue}
-					className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h-10 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{lastValue || "LV"}</button>
 				</button>
 				<button
 					onClick={handleSecondLastValue}
-					className="border-2 border-white h-14 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h-10 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {secondLastValue || "SV"}</button>
 				</button>
 				<button
 					onClick={handleThirdLastValue}
-					className="border-2 border-white h-14  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h-10  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {thirdLastValue || "TV"}</button>
 				</button>
 				<button
 					onClick={handleClear}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> AC</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("1")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 1</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("2")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 2</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("3")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 3</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("X")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> X</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("4")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 4</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("5")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 5</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("6")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 6</button>
 				</div>
 				<button
 					onClick={handleCorrect}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button>
 						<FaAngleLeft />
 					</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("7")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 7</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("8")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 8</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("9")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 9</button>
 				</div>
 				<button
 					onClick={handleNext}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> NEXT</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("0")}
-					className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 0</button>
 				</div>
 
 				<button
 					disabled={isMinusClicked}
 					onClick={() => handleButtonClick(".")}
-					className="col-span-2  border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="col-span-2  border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button>.</button>
 				</button>
 
 				<button
 					onClick={handleFinalize}
-					className="border-2  border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2  border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> FINAL</button>
 				</button>
 			</div>
