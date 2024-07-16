@@ -482,7 +482,7 @@ const Step1Inch = () => {
 					style={{
 						width:"40%"
 					}}
-					className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h-14 h700:h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "2nd Most Used" : mostUsedbreadthArray?.[0] || "2nd Most Used" }</button>
 
 				</button>				
@@ -501,13 +501,13 @@ const Step1Inch = () => {
 					}
 				}
 				}
-					className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[1] || "2nd Most Used" : mostUsedbreadthArray?.[1] || "2nd Most Used" }</button>
 				</button>
 			</div>
 
 			<div
-				className="border-2 rounded-md  mx-1 border-white h-[85px] text-4xl uppercase text-end flex justify-center items-center pr-3 "
+				className="border-2 rounded-md  mx-1 border-white h-[85px] h700:h-[100px] h700:my-6 text-4xl uppercase text-end flex justify-center items-center pr-3 "
 				style={{
 					border: "0rem",
 					height:"5rem"
@@ -515,105 +515,105 @@ const Step1Inch = () => {
 				}}>
 				{displayValue || placeholderText}
 			</div>
-			<div className="grid grid-cols-4 pb-2 ">
+			<div className="grid grid-cols-4 pb-2 fixed bottom-0 w-full">
 				<button
 					onClick={handleLastValue}
-					className="border-2 border-white h-10 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h700:h-16 h-10 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{lastValue || "LV"}</button>
 				</button>
 				<button
 					onClick={handleSecondLastValue}
-					className="border-2 border-white h-10 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h700:h-16 h-10 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {secondLastValue || "SV"}</button>
 				</button>
 				<button
 					onClick={handleThirdLastValue}
-					className="border-2 border-white h-10  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+					className="border-2 border-white h700:h-16 h-10  bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button> {thirdLastValue || "TV"}</button>
 				</button>
 				<button
 					onClick={handleClear}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> AC</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("1")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 1</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("2")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 2</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("3")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 3</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("X")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> X</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("4")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 4</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("5")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 5</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("6")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 6</button>
 				</div>
 				<button
 					onClick={handleCorrect}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button>
 						<FaAngleLeft />
 					</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("7")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 7</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("8")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 8</button>
 				</div>
 				<div
 					onClick={() => handleButtonClick("9")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 9</button>
 				</div>
 				<button
 					onClick={handleNext}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> NEXT</button>
 				</button>
 				<div
 					onClick={() => handleButtonClick("0")}
-					className="border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button> 0</button>
 				</div>
 
 				<button
 					disabled={isMinusClicked}
 					onClick={() => handleButtonClick(".")}
-					className="col-span-2  border-2 border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					className="col-span-2  border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
 					<button>.</button>
 				</button>
 
 				<button
 					onClick={handleFinalize}
-					className="border-2  border-white h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2  border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> FINAL</button>
 				</button>
 			</div>
