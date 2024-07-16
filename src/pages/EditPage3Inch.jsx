@@ -230,7 +230,7 @@ const EditPage3Inch = () => {
 			<div className=" rounded-md my-3 mx-1 h-28 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
-			<div className="grid grid-cols-4  ">
+			<div className="grid grid-cols-4  fixed bottom-20 w-full">
 				<div className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button >{lastValue || "LV"}</button>
 				</div>

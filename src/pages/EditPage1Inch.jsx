@@ -230,7 +230,7 @@ const EditPage3Inch = () => {
 			<div className=" rounded-md my-3 mx-1 h-28 text-4xl uppercase text-end flex justify-center items-center pr-3">
 				{displayValue || placeholderText}
 			</div>
-			<div className="grid grid-cols-4  ">
+			<div className="grid grid-cols-4 fixed bottom-20 w-full ">
 				
 				<button   onClick={() => handleButtonClick("1")} className={`border-2 border-white h-14 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-800" : "bg-gray-800"}`} >
 					<button > 1</button>
