@@ -440,14 +440,9 @@ const Step3Inch = () => {
                 paddingTop:"1rem"
             }}>
 						
-						<div  onClick={()=>{
-							localStorage.setItem("sqft", total)
-							localStorage.setItem("length", JSON.stringify(mostUsedLength))
-							localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
-							navigate("/view-records3")
-				}}>
-					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
-						View Records
+						<div onClick={handleFinalize} >
+					<button  className="text-white px-8 py-2 bg-blue-600 rounded-md font-bold tracking-wider">
+						FINAL
 					</button>
 				</div>
 			<div className=" w-12 ml-2 rounded-md p-2 bg-blue-600">
@@ -470,7 +465,12 @@ const Step3Inch = () => {
 				</div>
 				<div className="text-center px-3 border-2 rounded-md  border-white" style={{
                     width:"30%"
-                }}>
+                }}  onClick={()=>{
+					localStorage.setItem("sqft", total)
+					localStorage.setItem("length", JSON.stringify(mostUsedLength))
+					localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
+					navigate("/view-records3")
+		}}>
 					Piece <br /> { pieceNumber + 1}
 				</div>
 			</div>
@@ -551,7 +551,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 					color:"red"
 				}}> {displayValue}</span> ||  placeholderText}
 			</div>
-			<div className="grid grid-cols-4  ">
+			<div className="grid grid-cols-4 pb-2 fixed bottom-0 w-full ">
 				<div className="border-2 border-white h700:h-16 h-10 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button onClick={handleLastValue} className="overflow-hidden">{lastValue || "LV"}</button>
 				</div>
@@ -605,7 +605,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h700:h-16 h-10 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+				<div onClick={handleNext} className="border-2 border-white row-span-2 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button > NEXT</button>
 				</div>
 				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
@@ -616,9 +616,6 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 					<button >.</button>
 				</button>
 
-				<div onClick={handleFinalize} className="border-2  border-white h700:h-16 h-10 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button > FINAL</button>
-				</div>
 			</div>
 			{showModal && (
 				<div className="fixed text-black  inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
