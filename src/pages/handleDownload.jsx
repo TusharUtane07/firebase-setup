@@ -18,9 +18,8 @@ export const downloadExcel = async (data, groupedData, filename, measurementUnit
     new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
   );
 
-  const filePath = `${filename}.xlsx`; // Ensure the file has the correct extension
   await Filesystem.writeFile({
-    path: filePath,
+    path: filename,
     data: base64Data,
     directory: Directory.Documents,
     encoding: Encoding.Base64,
@@ -32,16 +31,32 @@ export const downloadExcel = async (data, groupedData, filename, measurementUnit
     duration: 'short',
   });
 
-  // Option to share the file
-  const shareOptions = {
-    title: 'Share Excel File',
-    text: 'Here is the Excel file you downloaded.',
-    url: `file://${filePath}`,
-    dialogTitle: 'Share the file'
+  const getFileUri = async () => {
+    try {
+      const result = await Filesystem.getUri({
+        path: filename,
+        directory: Directory.Documents,
+      });
+      console.log(result.uri)
+      const shareOptions = {
+        title: 'Share Excel File',
+        text: 'Here is the Excel file you downloaded.',
+        url: result.uri,
+        dialogTitle: 'Share the file'
+      };
+      await Share.share(shareOptions);
+
+    } catch (e) {
+      console.error('Unable to get file URI', e);
+      return null;
+    }
   };
+  
+  // Option to share the file
+
 
   // Show share dialog after a short delay
   setTimeout(async () => {
-    await Share.share(shareOptions);
+    await getFileUri();
   }, 500);
 };
