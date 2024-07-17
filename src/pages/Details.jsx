@@ -410,7 +410,7 @@ const [handleLoader, setLoader] = useState(false)
        }}>Add new field</button>
 
           <button className="btn btn-primary w-100" onClick={handleSubmit}>
-            {handleLoader ? <Spin /> :"Start"} 
+          Start
           </button>
         </div>
 				<Toaster />
