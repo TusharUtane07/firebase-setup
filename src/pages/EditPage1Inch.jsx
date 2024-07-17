@@ -45,6 +45,8 @@ const EditPage3Inch = () => {
 				setVehicleNumber(docSnapshot?.data()?.vehicleNumber);
 				setQuantityNumber(docSnapshot?.data()?.['Quantity Number']);
 				setValuesArray(docSnapshot?.data()?.results);
+				setMesurementType(docSnapshot?.data()?.["Measurement Type"] || "");
+
 				const index = parseInt(id);
 		if (!isNaN(index) && index >= 0 && index < docSnapshot?.data()?.results?.length) {
 			const valueToSave = docSnapshot?.data()?.results[index];
@@ -113,18 +115,32 @@ const EditPage3Inch = () => {
             return;
         }
 		if(oldValue != displayValue){
+			console.log(oldValue)
 			let oldSqft = localStorage.getItem("sqft")
+			console.log(oldSqft)
+
 			const num1 = parseValue(oldValue.split("X")[0]);
 			const num2 = parseValue(oldValue.split("X")[1]);
 			const newnum1 = parseValue(displayValue.split("X")[0]);
 			const newnum2 = parseValue(displayValue.split("X")[1]);
-
-			let sqfttoDelete = ((parseFloat(num1) * parseFloat(num2))/144).toFixed(2);
-			let sqfttoAdd = ((parseFloat(newnum1) * parseFloat(newnum2))/144).toFixed(2);
+			let sqfttoDelete ;
+			let sqfttoAdd ;
+			if(measurementType == "feet"){
+				sqfttoDelete = ((parseFloat(num1) * parseFloat(num2))/144).toFixed(2);
+				 sqfttoAdd = ((parseFloat(newnum1) * parseFloat(newnum2))/144).toFixed(2);
+			}
+			else{
+				sqfttoDelete = (parseFloat(num1) * parseFloat(num2)).toFixed(2);
+				 sqfttoAdd = (parseFloat(newnum1) * parseFloat(newnum2)).toFixed(2);
+			}
+			console.log(sqfttoDelete)
+			console.log(sqfttoAdd)
 
 			let newToAddSqft = parseFloat(oldSqft - sqfttoDelete).toFixed(2);
+			console.log(newToAddSqft)
 
 			newToAddSqft = parseFloat(newToAddSqft) + parseFloat(sqfttoAdd)
+			console.log(newToAddSqft)
 			localStorage.setItem("sqft", newToAddSqft)
 
 
@@ -228,7 +244,13 @@ const EditPage3Inch = () => {
 			</div>
 
 			<div className=" rounded-md my-3 mx-1 h-28 text-4xl uppercase text-end flex justify-center items-center pr-3">
-				{displayValue || placeholderText}
+			{displayValue?.includes("X") ? <><span style={{
+					color:"red"
+				}}> {displayValue.split("X")[0]}</span> <>&nbsp; X &nbsp;</> <span style={{
+					color:"green"
+				}}>{displayValue.split("X")[1]}</span> </> : <span style={{
+					color:"red"
+				}}> {displayValue}</span> ||  placeholderText}
 			</div>
 			<div className="grid grid-cols-4 fixed bottom-20 w-full ">
 				
