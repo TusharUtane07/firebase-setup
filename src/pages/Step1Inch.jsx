@@ -12,7 +12,7 @@ import { database } from "../firebase/firebase";
 import loader from "../assests/loader.png";
 import "../style/cal.css";
 import { json, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaAngleLeft, FaHome } from "react-icons/fa";
+import { FaAngleLeft, FaHome, FaLandmark } from "react-icons/fa";
 
 const Step1Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
@@ -432,13 +432,27 @@ const Step1Inch = () => {
 				}} >
 				
 				<div onClick={handleFinalize} >
-					<button className="text-white px-8 py-2 bg-blue-600 rounded-md font-bold tracking-wider">
-						FINAL
+					<button className="text-white px-8 py-2 bg-blue-600 rounded-md font-bold tracking-wider"
+					style={{
+						display:"flex",
+						alignItems:"center"
+					}}
+					>
+					<FaLandmark size={30} /> <span style={{
+							marginLeft:"1rem"
+						}}>FINAL</span>
 					</button>
 				</div>
 				<div className="  ml-2 rounded-md p-2 bg-blue-600">
-					<NavLink to={"/"} className="text-white" >
-						<FaHome size={30} />
+					<NavLink to={"/"} className="text-white" style={{
+						display:"flex",
+						alignItems:"center"
+					}} >
+						
+						
+						<FaHome size={30} /> <span style={{
+							marginLeft:"1rem"
+						}}>HOME</span>
 					</NavLink>
 				</div>
 			</div>
@@ -457,10 +471,12 @@ const Step1Inch = () => {
 					}}>
 					{data.quantityId} <br /> {quantityNumber ? quantityNumber : "N/A"}
 				</div>
-				<div
-					className="text-center px-3 border-2 rounded-md  border-white"
+				<button
+					className="btn btn-primary text-center px-3 border-2 rounded-md  "
 					style={{
 						width: "30%",
+						background:"",
+						color:"white"
 					}}  onClick={()=>{
 						localStorage.setItem("sqft", total)
 						localStorage.setItem("length", JSON.stringify(mostUsedLength))
@@ -468,7 +484,7 @@ const Step1Inch = () => {
 						navigate("/view-records")
 			}}>
 					Piece <br /> {pieceNumber}
-				</div>
+				</button>
 			</div>
 			<div className=" px-2 my-2 flex justify-around items-center gap-4">
 				
