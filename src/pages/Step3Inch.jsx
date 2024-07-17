@@ -128,7 +128,7 @@ const Step3Inch = () => {
 				setMesurementType(data?.["Measurement Type"] || "");
 				setQuantityNumber(data?.quantityNumber)
 				setValuesArray(data?.results || []);
-				setPieceNumber((data?.results?.length || 0));
+				setPieceNumber((data?.results?.length - 1|| 0));
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
@@ -265,7 +265,7 @@ const Step3Inch = () => {
 		
 		localStorage.setItem("length", JSON.stringify(mostUsedLength))
 		localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
-		if (quantityNumber &&!displayValue && quantityNumber !== pieceNumber) {
+		if (quantityNumber &&!displayValue && quantityNumber != pieceNumber + 1) {
 			setShowMismatchModal(true);
 			return;
 		}
@@ -389,7 +389,7 @@ const Step3Inch = () => {
 	};
 
 	const updateLastData = (value) => {
-		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
+		if (pieceNumber < quantityNumber || quantityNumber === "") {
 			const newResult = {
 				multiplication: value,
 				measurement: "1 Inch Measurements Data",
@@ -470,7 +470,7 @@ const Step3Inch = () => {
 				<div className="text-center px-3 border-2 rounded-md  border-white" style={{
                     width:"30%"
                 }}>
-					Piece <br /> {pieceNumber ? pieceNumber + 1 : 1}
+					Piece <br /> { pieceNumber + 1}
 				</div>
 			</div>
 			<div className=" px-2 my-2 flex justify-around items-center gap-4">
