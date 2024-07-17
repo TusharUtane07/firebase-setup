@@ -22,7 +22,7 @@ const FinalResult = () => {
 	const [exportModal, setExportModal] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
-	const [measurements, setMeasurements] = useState([]);
+	const [measurements, setMeasurements] = useState("");
 	const [measurementUnit, setMeasurementUnit] = useState("feet");
 
 	const [selectedValue, setSelectedValue] = useState('1');
@@ -66,7 +66,7 @@ const FinalResult = () => {
 	];
 
 	const handleDownload = () => {
-		downloadExcel(data, "measurements.xlsx", measurementUnit);
+		downloadExcel(data, groupedData , "measurements.xlsx", measurementUnit, selectedValue);
 	};
 	const getData = async () => {
 		try {
@@ -77,7 +77,8 @@ const FinalResult = () => {
 				const fields = Object?.keys(docSnapshot?.data())?.filter(key => !excludedFields.includes(key));
 				const selectOptions = fields?.map(field => ({ label: camelCaseToReadable(field), value: field }));
 				setOptions(selectOptions);
-				setMeasurements(docSnapshot?.data()?.Measurement)
+				console.log(docSnapshot?.data()?.["Measurement Type"] || "")
+				setMeasurements(docSnapshot?.data()?.["Measurement Type"] || "");
 			} else {
 			}
 		} catch (error) {
@@ -87,7 +88,7 @@ const FinalResult = () => {
 		}
 	};
 	const handleDownloadPDF = () => {
-		downloadPDF(data, "measurements.pdf", measurementUnit);
+		downloadPDF(data, groupedData , "measurements.pdf", measurementUnit, selectedValue);
 	};
 
 	useEffect(() => {
@@ -108,19 +109,30 @@ const FinalResult = () => {
 		return parseFloat(value);
 	};
 
-	const convertValue = (value, unit) => {
-		switch (unit) {
-			case "cm":
-				return value * 30.48; // 1 cm = 0.0328084 feet
-			case "meter":
-				return value * 0.3048; // 1 meter = 3.28084 feet
-			case "inch":
-				return value * 12; // 1 inch = 0.0833333 feet
-			case "feet":
-				return value; // 1 feet = 1 feet
-			case "mm":
-				return value * 304.8; // 1 mm = 0.00328084 feet
-		}
+	const convertValue = (value, fromUnit, toUnit) => {
+		// Conversion factors to feet
+		const conversionToFeet = {
+			cm: value => value * 0.0328084,
+			meter: value => value * 3.28084,
+			inches: value => value * 0.0833333,
+			feet: value => value, // 1 feet = 1 feet
+			mm: value => value * 0.00328084
+		};
+	
+		// Conversion factors from feet to other units
+		const conversionFromFeet = {
+			cm: value => value / 0.0328084,
+			meter: value => value / 3.28084,
+			inch: value => value / 0.0833333,
+			feet: value => value, // 1 feet = 1 feet
+			mm: value => value / 0.00328084
+		};
+	
+		// First convert from the source unit to feet
+		const valueInFeet = conversionToFeet[fromUnit](value);
+	
+		// Then convert from feet to the target unit
+		return conversionFromFeet[toUnit](valueInFeet);
 	};
 
 	if (loading) {
@@ -155,8 +167,8 @@ const FinalResult = () => {
 				return;
 			}
 
-			const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
-			const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
+			const convertedValue1 = convertValue(value1, measurements,measurementUnit).toFixed(2);
+			const convertedValue2 = convertValue(value2, measurements,measurementUnit).toFixed(2);
 			let result = ""
 
 			if(measurementUnit == "feet"){
@@ -171,7 +183,7 @@ const FinalResult = () => {
 				grouped[key] = {
 					length: convertedValue1,
 					breadth: convertedValue2,
-					sqft: result,
+					sqft: parseFloat(result),
 					pieceNumbers: [],
 				};
 			}
@@ -286,8 +298,8 @@ const FinalResult = () => {
 										}
 
 
-										const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
-										const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
+										const convertedValue1 = convertValue(value1,measurements, measurementUnit).toFixed(2);
+										const convertedValue2 = convertValue(value2,measurements, measurementUnit).toFixed(2);
 										let result = ""
 
 										if(measurementUnit == "feet"){
@@ -338,7 +350,7 @@ const FinalResult = () => {
 									{groupedData.map((group, index) => 
 									{
 
-										sumOfSqft += Number(group.sqft);
+										sumOfSqft += parseFloat(group.sqft) * group.pieceNumbers.length;
  peiceNumberTotal += group.pieceNumbers.length;
 
 									return(
@@ -347,7 +359,7 @@ const FinalResult = () => {
 											<td className="py-2 px-4">{group.length}</td>
 											<td className="py-2 px-4">{group.breadth}</td>
 											<td className="py-2 px-4">{group.pieceNumbers.join(", ")}</td>
-											<td className="py-2 px-4">{group.sqft}</td>
+											<td className="py-2 px-4">{parseFloat(group.sqft) * group.pieceNumbers.length}</td>
 										</tr>
 									)})}
 								
@@ -382,7 +394,7 @@ const FinalResult = () => {
       />
 					
 					
-					<Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} cancelButtonProps={{ style: { display: 'none' } }}>
+					<Modal open={isModalOpen} okText={"NEXT"} onOk={handleOk} onCancel={handleCancel} cancelButtonProps={{ style: { display: 'none' } }}>
 						<div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
 							<Progress type="circle" percent={percentageDownload} />
 							<p style={{ marginTop: "1rem" }}>{percentageDownload === 100 && "File has been saved in your device"}</p>
@@ -405,7 +417,7 @@ const FinalResult = () => {
 						}}
 						style={{ background: "#4E97F3", color: "white", width: "80%", alignSelf: "center", height:"3rem" }}
 					>
-						Export
+						Download
 					</button>
 				</div>
 				{exportModal && (
