@@ -108,6 +108,8 @@ const Step3Inch = () => {
 		}
 		if (check_local_data){
 			setData(check_local_data)
+			setQuantityNumber(check_local_data.quantity)
+
 		}
 		if (check_local_data_quantity){
 			setQData(check_local_data_quantity)
@@ -126,7 +128,6 @@ const Step3Inch = () => {
 				setClientName(data?.["Client Name"] || "");
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
-				setQuantityNumber(data?.quantityNumber)
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length - 1|| 0));
 				setLastValue(data?.lastValue || "");

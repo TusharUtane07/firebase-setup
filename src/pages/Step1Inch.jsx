@@ -29,7 +29,7 @@ const Step1Inch = () => {
 	const [vehicleNumber, setVehicleNumber] = useState("");
 	const [clientName, setClientName] = useState("");
 	const [quantityNumber, setQuantityNumber] = useState("");
-	const [pieceNumber, setPieceNumber] = useState();
+	const [pieceNumber, setPieceNumber] = useState(0);
 	const [lastValue, setLastValue] = useState("");
 	const [secondLastValue, setSecondLastValue] = useState("");
 	const [thirdLastValue, setThirdLastValue] = useState("");
@@ -117,6 +117,7 @@ const Step1Inch = () => {
 		}
 		if (check_local_data){
 			setData(check_local_data)
+			setQuantityNumber(check_local_data.quantity)
 		}
 		if (check_local_data_quantity){
 			setQData(check_local_data_quantity)
@@ -124,6 +125,7 @@ const Step1Inch = () => {
 
 	},[])
 
+	console.log(data)
 	const navigate = useNavigate();
 
 	const getDocument = async () => {
@@ -137,8 +139,7 @@ const Step1Inch = () => {
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
 				setValuesArray(data?.results || []);
-				setQuantityNumber(data?.quantityNumber)
-				setPieceNumber((data?.results?.length - 1 || 0));
+				setPieceNumber((data?.results?.length  || 0));
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
@@ -208,7 +209,7 @@ const Step1Inch = () => {
 			return;
 		}
 		setIsMinusClicked(false)
-		if (pieceNumber + 1 < quantityNumber || quantityNumber === "") {
+		if (pieceNumber < quantityNumber || quantityNumber === "") {
 			const [firstNumber, secondNumber] = displayValue
 				.split("X")
 				.map((num) => parseFloat(num.trim()));
@@ -281,12 +282,13 @@ const Step1Inch = () => {
 		localStorage.setItem("length", JSON.stringify(mostUsedLength))
 		localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
 
-		if (quantityNumber &&!displayValue && quantityNumber != pieceNumber + 1 ) {
+		if (quantityNumber &&!displayValue && quantityNumber != pieceNumber  ) {
 			setShowMismatchModal(true);
 			return;
 		}
-	
-		if (displayValue && quantityNumber && quantityNumber < pieceNumber + 2) {
+
+	console.log(pieceNumber, quantityNumber)
+		if (displayValue && quantityNumber && quantityNumber <= pieceNumber ) {
 			setShowModal(true);
 		} else {
 			if (displayValue) {
@@ -465,7 +467,7 @@ const Step1Inch = () => {
 					style={{
 						width: "30%",
 					}}>
-					Piece <br /> {pieceNumber + 1}
+					Piece <br /> {pieceNumber}
 				</div>
 			</div>
 			<div className=" px-2 my-2 flex justify-around items-center gap-4">
