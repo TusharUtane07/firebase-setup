@@ -74,8 +74,8 @@ const resultsArray = [];
     
       const resultObject = {
         Peice: index + 1,
-        Length: convertedValue1,
-        Breadth: convertedValue2,
+        Length: convertedValue1.toFixed(2),
+        Breadth: convertedValue2.toFixed(2),
         SQFT: result
       };
     
@@ -183,7 +183,7 @@ export const generatePDF = (data, groupedData, measurementUnit, selectedValue) =
       const convertedValue1 = convertValue(value1,messaurement, measurementUnit);
       const convertedValue2 = convertValue(value2,messaurement, measurementUnit);
       let result ="";
-      if(messaurement == "feet"){
+      if(measurementUnit == "feet"){
         result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
       }
       else{
@@ -193,8 +193,8 @@ export const generatePDF = (data, groupedData, measurementUnit, selectedValue) =
       peiceNumberTotal += 1;
       const resultObject = {
         Piece: index + 1,
-        Length: convertedValue1,
-        Breadth: convertedValue2,
+        Length: convertedValue1.toFixed(2),
+        Breadth: convertedValue2.toFixed(2),
         SQFT: result
       };
   
