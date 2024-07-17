@@ -16,22 +16,36 @@ const parseValue = (value) => {
     return parseFloat(value);
 };
 
-const convertValue = (value, unit) => {
-  switch (unit) {
-    case "cm":
-      return value * 30.48; // 1 cm = 0.0328084 feet
-    case "meter":
-      return value * 0.3048; // 1 meter = 3.28084 feet
-    case "inch":
-      return value * 12; // 1 inch = 0.0833333 feet
-    case "feet":
-      return value; // 1 feet = 1 feet
-    case "mm":
-      return value * 304.8; // 1 mm = 0.00328084 feet
-  }
+
+const convertValue = (value, fromUnit, toUnit) => {
+  // Conversion factors to feet
+  const conversionToFeet = {
+    cm: value => value * 0.0328084,
+    meter: value => value * 3.28084,
+    inches: value => value * 0.0833333,
+    feet: value => value, // 1 feet = 1 feet
+    mm: value => value * 0.00328084
+  };
+
+  // Conversion factors from feet to other units
+  const conversionFromFeet = {
+    cm: value => value / 0.0328084,
+    meter: value => value / 3.28084,
+    inch: value => value / 0.0833333,
+    feet: value => value, // 1 feet = 1 feet
+    mm: value => value / 0.00328084
+  };
+
+  // First convert from the source unit to feet
+  const valueInFeet = conversionToFeet[fromUnit](value);
+
+  // Then convert from feet to the target unit
+  return conversionFromFeet[toUnit](valueInFeet);
 };
 
 export const generateExcel = (data, groupedData, measurementUnit, selectedValue) => {
+  console.log(data)
+let messaurement = data?.["Measurement Type"];
 let  sumOfSqft = 0;
 let peiceNumberTotal = 0;
 const resultsArray = [];
@@ -45,8 +59,8 @@ const resultsArray = [];
         console.error("Invalid values:", value1, value2);
         return null;
       }
-      const convertedValue1 = convertValue(value1, measurementUnit).toFixed(2);
-      const convertedValue2 = convertValue(value2, measurementUnit).toFixed(2);
+      const convertedValue1 = convertValue(value1,messaurement ,measurementUnit).toFixed(2);
+      const convertedValue2 = convertValue(value2,messaurement ,measurementUnit).toFixed(2);
       let result = ""
     
       if(measurementUnit == "feet"){
@@ -144,6 +158,9 @@ for (let col = range.s.c; col <= range.e.c; col++) {
 
 
 export const generatePDF = (data, groupedData, measurementUnit, selectedValue) => {
+  console.log(data)
+  let messaurement = data?.["Measurement Type"];
+
   const doc = new jsPDF();
   const resultsArray = [];
 	let totalResult = 0;
@@ -163,9 +180,15 @@ export const generatePDF = (data, groupedData, measurementUnit, selectedValue) =
         return null;
       }
   
-      const convertedValue1 = convertValue(value1, measurementUnit);
-      const convertedValue2 = convertValue(value2, measurementUnit);
-      const result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+      const convertedValue1 = convertValue(value1,messaurement, measurementUnit);
+      const convertedValue2 = convertValue(value2,messaurement, measurementUnit);
+      let result ="";
+      if(messaurement == "feet"){
+        result = ((convertedValue1 * convertedValue2) / 144).toFixed(2);
+      }
+      else{
+        result = (convertedValue1 * convertedValue2).toFixed(2);
+      } 
       sumOfSqft += Number(result);
       peiceNumberTotal += 1;
       const resultObject = {
