@@ -479,7 +479,7 @@ const Step3Inch = () => {
 					{data.quantityId} <br /> {data.quantity ? data.quantity : "N/A"}
 				</div>
 				<button
-					className="btn btn-primary text-center px-3 border-2 rounded-md  "
+					className="btn btn-primary text-center px-3 border-2 rounded-md"
 					style={{
 						width: "30%",
 						background:"",
