@@ -114,7 +114,7 @@ const [handleLoader, setLoader] = useState(false)
       [labels.clientName]: clientName,
     [labels.vehicleNumber]: vehicleNumber,
     [labels.lotNumber]: lotNumberValue,
-    quantityNumber: quantityNumber,
+    [labels.quantityNumber]: quantityNumber,
     [labels.measurement]: measurementType,
     };
 
