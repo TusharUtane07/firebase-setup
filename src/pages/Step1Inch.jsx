@@ -24,6 +24,7 @@ const Step1Inch = () => {
 	const placeholderText = "Enter your size";
 	const location = useLocation();
 	const { sqft } = location.state || {};
+	const [unit, setUnit] = useState("");
 
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
 	const [vehicleNumber, setVehicleNumber] = useState("");
@@ -138,6 +139,21 @@ const Step1Inch = () => {
 				setClientName(data?.["Client Name"] || "");
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
+
+				
+					if(data?.["Measurement Type"] === 'mm'){
+						setUnit("SQ.MM")
+					}else if(data?.["Measurement Type"] === 'cm'){
+						setUnit("SQ.CM")
+					}else if( data?.["Measurement Type"] === "inches"){
+						setUnit("SQ.IN")
+					}else if(data?.["Measurement Type"] === 'meter'){
+						setUnit("SQ.M")
+					}else if (data?.["Measurement Type"] === "feet"){
+						setUnit("SQ.FT")
+					}
+				
+
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length  || 0));
 				setLastValue(data?.lastValue || "");
@@ -163,6 +179,7 @@ const Step1Inch = () => {
 			getDocument();
 		}
 	}, [lotNumberValue]);
+
 
 	const handleButtonClick = (value) => {
 		if (value === ".") {
@@ -375,6 +392,8 @@ const Step1Inch = () => {
 		setDisplayValue("");
 	};
 
+	
+
 	const handleIncreaseQuantity = async () => {
 		const newQty = parseInt(newQuantity, 10);
 		if (!isNaN(newQty) && newQty > 0) {
@@ -493,7 +512,7 @@ const Step1Inch = () => {
 				}}>Type	: {measurementType}</div>
 				<div className="" style={{
 					fontSize:"1.3rem"
-				}}>	SQFT : {total.toFixed(2)}</div>
+				}}>	{unit} : {total.toFixed(2)}</div>
 
 			</div>
 			<div style={{

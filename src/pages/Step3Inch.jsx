@@ -27,6 +27,7 @@ const Step3Inch = () => {
 	const [thirdLastValue, setThirdLastValue] = useState("");
 	const [valuesArray, setValuesArray] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [unit, setUnit] = useState("");
 	const [data, setData] = useState();
 	const [measurementType, setMesurementType] = useState("");
 	const [isMinusClicked, setIsMinusClicked] = useState(false);
@@ -67,6 +68,7 @@ const Step3Inch = () => {
 		setMostUsedLengthArray(most_user)
 	},[mostUsedLength])
 	useEffect(()=>{
+
 		const frequencyMap = mostUsedBreadth.reduce((acc, val) => {
 			acc[val] = (acc[val] || 0) + 1;
 			return acc;
@@ -92,7 +94,6 @@ const Step3Inch = () => {
 		  setMostUsedbreadthArray(most_user)
 	},[mostUsedBreadth])
 	useEffect(()=>{
-		
 		const check_local = localStorage.getItem("sqft")
 		const check_local_length = JSON.parse(localStorage.getItem("length"));
 		const check_local_breadth = JSON.parse(localStorage.getItem("breadth"));
@@ -129,6 +130,18 @@ const Step3Inch = () => {
 				setClientName(data?.["Client Name"] || "");
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
+
+				if(data?.["Measurement Type"] === 'mm'){
+					setUnit("SQ.MM")
+				}else if(data?.["Measurement Type"] === 'cm'){
+					setUnit("SQ.CM")
+				}else if( data?.["Measurement Type"] === "inches"){
+					setUnit("SQ.IN")
+				}else if(data?.["Measurement Type"] === 'meter'){
+					setUnit("SQ.M")
+				}else if (data?.["Measurement Type"] === "feet"){
+					setUnit("SQ.FT")
+				}
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length - 1|| 0));
 				setLastValue(data?.lastValue || "");
@@ -425,6 +438,7 @@ const Step3Inch = () => {
 		
 	};
 
+
     if (loading) {
         return <div className="flex items-center justify-center h-screen animate-spin">
             <img src={loader} alt="Loading..." className="w-40 h-40" />
@@ -500,7 +514,7 @@ const Step3Inch = () => {
 				}}>Type	: {measurementType}</div>
 				<div className="" style={{
 					fontSize:"1.3rem"
-				}}>	SQFT : {total.toFixed(2)}</div>
+				}}>	{unit} : {total.toFixed(2)}</div>
 
 			</div>
 			<div style={{

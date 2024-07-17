@@ -20,6 +20,7 @@ const FinalResult = () => {
 	const [selectedFields, setSelectedFields] = useState([]);
 	const [options, setOptions] = useState([]);
 	const [exportModal, setExportModal] = useState(false);
+	const [unit, setUnit] = useState("FT");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const [measurements, setMeasurements] = useState("");
@@ -147,8 +148,22 @@ const FinalResult = () => {
 		setExportModal(true);
 	};
 
+	
 	const handleMeasurementChange = (e) => {
-		setMeasurementUnit(e.target.value);
+		const newMeasurementUnit = e.target.value;
+		setMeasurementUnit(newMeasurementUnit);
+	
+		if(newMeasurementUnit === 'mm'){
+			setUnit("SQ.MM")
+		}else if(newMeasurementUnit === 'cm'){
+			setUnit("SQ.CM")
+		}else if(newMeasurementUnit === "inch"){
+			setUnit("SQ.IN")
+		}else if(newMeasurementUnit === 'meter'){
+			setUnit("SQ.M")
+		}else if (newMeasurementUnit === "feet"){
+			setUnit("SQ.FT")
+		}
 	};
 
 	const handleChange = (value) => {
@@ -284,7 +299,7 @@ const FinalResult = () => {
 										<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
-										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQFT)</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQ. {unit})</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -343,7 +358,7 @@ const FinalResult = () => {
 										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
-										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQFT)</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQ. {unit})</th>
 									</tr>
 								</thead>
 								<tbody>
