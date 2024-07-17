@@ -431,14 +431,9 @@ const Step1Inch = () => {
 					paddingTop: "1rem",
 				}} >
 				
-				<div  onClick={()=>{
-							localStorage.setItem("sqft", total)
-							localStorage.setItem("length", JSON.stringify(mostUsedLength))
-							localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
-							navigate("/view-records")
-				}}>
-					<button className="text-white px-3 py-1 bg-blue-600 rounded-md font-bold tracking-wider">
-						View Records
+				<div onClick={handleFinalize} >
+					<button className="text-white px-8 py-2 bg-blue-600 rounded-md font-bold tracking-wider">
+						FINAL
 					</button>
 				</div>
 				<div className="  ml-2 rounded-md p-2 bg-blue-600">
@@ -466,7 +461,12 @@ const Step1Inch = () => {
 					className="text-center px-3 border-2 rounded-md  border-white"
 					style={{
 						width: "30%",
-					}}>
+					}}  onClick={()=>{
+						localStorage.setItem("sqft", total)
+						localStorage.setItem("length", JSON.stringify(mostUsedLength))
+						localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
+						navigate("/view-records")
+			}}>
 					Piece <br /> {pieceNumber}
 				</div>
 			</div>
@@ -629,7 +629,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 				</div>
 				<button
 					onClick={handleNext}
-					className="border-2 border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
+					className="border-2 border-white  row-span-2 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
 					<button> NEXT</button>
 				</button>
 				<div
@@ -645,11 +645,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 					<button>.</button>
 				</button>
 
-				<button
-					onClick={handleFinalize}
-					className="border-2  border-white h700:h-16 h-10 rounded-md mx-2 my-2 flex items-center justify-center bg-blue-500">
-					<button> FINAL</button>
-				</button>
+				
 			</div>
 			{showModal && (
 				<div className="fixed text-black  inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
