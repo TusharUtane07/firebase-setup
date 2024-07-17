@@ -9,6 +9,9 @@ import img from "../img/bg-img/36.png";
 import loader from '../assests/loader.png';
 
 const DetailsLot = () => {
+  useEffect(()=>{
+    window.localStorage.clear() 
+   },[])
   const [clientName, setClientName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [lotNumberValue, setLotNumberValue] = useState("");
