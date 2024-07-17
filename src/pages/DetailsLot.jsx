@@ -23,7 +23,7 @@ const DetailsLot = () => {
     vehicleNumber: "Vehicle Number",
     lotNumber: "Lot Number",
     quantityNumber: "Quantity Number",
-    measurement: "Measurement",
+    measurement: "Measurement Type",
   });
   const [dynamicFields, setDynamicFields] = useState([]);
   const [lotNumberError, setLotNumberError] = useState(false);
@@ -43,7 +43,6 @@ const DetailsLot = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-
     let isValid = true;
 
     if (!lotNumberValue) {
@@ -54,7 +53,7 @@ const DetailsLot = () => {
     }
 
     if (!isValid) return;
-    
+
     const data = {
       [labels.clientName]: clientName,
     [labels.vehicleNumber]: vehicleNumber,
@@ -63,14 +62,20 @@ const DetailsLot = () => {
     [labels.measurement]: measurementType,
     };
 
+    const lotQuant = {
+      "lotId": labels.lotNumber,
+      "quantityId": labels.quantityNumber,
+      "quantity": quantityNumber
+    }
+
     dynamicFields.forEach((field) => {
       data[field.label] = field.value;
     });
 
     const docRef = doc(database, "Data", "lot: " + lotNumberValue);
     await setDoc(docRef, data);
-
     localStorage.setItem("data", JSON.stringify(data));
+    localStorage.setItem("lotQuant", JSON.stringify(lotQuant));
     dispatch(setLotNumber(lotNumberValue));
     navigate("/measurement-type/"+measurementType);
   };
@@ -245,7 +250,7 @@ const DetailsLot = () => {
                     Quantity Number 
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     placeholder={`Enter the Quantity Number `}
                     value={quantityNumber}
@@ -255,7 +260,27 @@ const DetailsLot = () => {
                     <i className="bi bi-eye-slash" />
                   </div>
                 </div>
- 
+                <div className="form-group text-start mb-3 position-relative">
+
+<label
+          className="cursor-pointer"
+          style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"0.5rem"  }}
+        >
+        {labels.measurement}
+        </label>
+        <select
+name="measurement"
+id="measurement"
+value={measurementType}
+onChange={(e) => setMesurementType(e.target.value)}
+className="form-control">
+<option value="mm">MM</option>
+<option value="cm">CM</option>
+<option value="meter">METER</option>
+<option value="inches">INCHES</option>
+<option value="feet">FEET</option>
+</select>  
+</div>
               </div>
             ))}
             {dynamicFields.map((field, index) => (
