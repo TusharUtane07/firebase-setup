@@ -180,15 +180,14 @@ const [handleLoader, setLoader] = useState(false)
     };
     
     // Assuming dynamicFields is an array of objects with a 'label' property
-    dynamicFields.forEach((field, index) => {
-      data[6 + index] = field.label;
+    dynamicFields?.forEach((field, index) => {
+      data[6 + index] = field?.label;
     });
-    
-
     const docRef = doc(database, "Templates", tempalteName);
     await setDoc(docRef, data);
 
     setTemplateModal(false);
+    setDefaultButton(true)
     setTemplateName("");
     getData();
   }
@@ -202,12 +201,12 @@ const [handleLoader, setLoader] = useState(false)
       console.error("Error fetching templates:", error);
     }
   }
+  console.log("tmeplates data: ", templatesData)
   const getDefaultTemplate = async() => {
     try {
       const querySnapshot = await getDocs(collection(database, 'DefaultTemplate'));
       const templateData = querySnapshot?.docs?.map(doc => doc.data());
-      setTheLabels(templateData[0]);
-      console.log("lbales", labels)
+      setTheLabelsOne(templateData[0]);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }
@@ -218,6 +217,26 @@ const [handleLoader, setLoader] = useState(false)
     getData();
   }, [])
 
+  const setTheLabelsOne = (item) => {
+    // First, set the static labels
+    const updatedLabels = {
+      clientName: item[1],
+      vehicleNumber: item[2],
+      lotNumber: item[3],
+      quantityNumber: item[4],
+      measurement:item[5]
+    };
+  
+    const updatedDynamicFields = [];
+    for (let i = 6; i <= Object.keys(item).length; i++) {
+      updatedDynamicFields.push({ label: item[i], value: "" });
+    }
+  
+    // Update labels and dynamicFields state together
+    setLabels(updatedLabels);
+    setDynamicFields(updatedDynamicFields);
+    setTemplateShowCase(false);
+  };
   const setTheLabels = (item) => {
     // First, set the static labels
     const updatedLabels = {
@@ -251,6 +270,7 @@ const [handleLoader, setLoader] = useState(false)
     dynamicFields.forEach((field, index) => {
       data[6 + index] = field.label;
     });
+    console.log(data + "data")
     const docRef = doc(database, "DefaultTemplate", "tempalteName");
     await setDoc(docRef, data);
     toast.success("This template is now Default")
@@ -269,13 +289,7 @@ const [handleLoader, setLoader] = useState(false)
   {/* Internet Connection Status */}
   <div className="internet-connection-status" id="internetStatus" />
   {/* Back Button */}
-  <div className="login-back-button">
-    <a onClick={()=>{
-      window.history.back()
-    }}>
-      <i className="bi bi-arrow-left-short" />
-    </a>
-  </div>
+  
   {/* Login Wrapper Area */}
   <div className="login-wrapper d-flex align-items-center justify-content-center">
     <div className="custom-container">
@@ -395,6 +409,7 @@ const [handleLoader, setLoader] = useState(false)
       placeholder={`Enter the ${field.label}`}
       className="form-control"
       value={field.value}
+      style={{ display: 'flex', alignItems: 'center', gap: "10px", marginBottom:"1rem"  }}
       onChange={(e) => handleDynamicFieldChange(index, e.target.value)}
     />
   </div>
