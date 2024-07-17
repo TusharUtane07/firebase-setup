@@ -228,27 +228,15 @@ const EditPage3Inch = () => {
 			</div>
 		
 			<div className=" rounded-md my-3 mx-1 h-28 text-4xl uppercase text-end flex justify-center items-center pr-3">
-				{displayValue || placeholderText}
-			</div>
+			{displayValue?.includes("X") ? <><span style={{
+					color:"red"
+				}}> {displayValue.split("X")[0]}</span> <>&nbsp; X &nbsp;</> <span style={{
+					color:"green"
+				}}>{displayValue.split("X")[1]}</span> </> : <span style={{
+					color:"red"
+				}}> {displayValue}</span> ||  placeholderText}			</div>
 			<div className="grid grid-cols-4  fixed bottom-20 w-full">
-				<div className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >{lastValue || "LV"}</button>
-				</div>
-				<div className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						{" "}
-						{secondLastValue || "SV"}
-					</button>
-				</div>
-				<div className="border-2 border-white h-14 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						{" "}
-						{thirdLastValue || "TV"}
-					</button>
-				</div>
-				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-14 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button  > AC</button>
-				</div>
+			
 				<button disabled={isMinusClicked}  onClick={() => handleButtonClick("1")} className={`border-2 border-white h-14 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 1</button>
 				</button>
@@ -258,8 +246,8 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("3")} className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 3</button>
 				</div>
-				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-14 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button> X</button>
+				<div onClick={handleClear} className="border-2 border-white bg-blue-500 h-14 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button  > AC</button>
 				</div>
 				<button disabled={isMinusClicked}  onClick={() => handleButtonClick("4")} className={`border-2 border-white h-14 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 4</button>
@@ -270,10 +258,8 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("6")} className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 6</button>
 				</div>
-				<div onClick={handleCorrect} className="border-2 border-white h-14 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
-					<button >
-						<FaAngleLeft />
-					</button>
+				<div  onClick={() => handleButtonClick("X")} className="border-2 border-white h-14 rounded-md   bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button> X</button>
 				</div>
 				<button disabled={isMinusClicked}  onClick={() => handleButtonClick("7")} className={`border-2 border-white h-14 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button > 7</button>
@@ -284,8 +270,10 @@ const EditPage3Inch = () => {
 				<div  onClick={() => handleButtonClick("9")} className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 9</button>
 				</div>
-				<div onClick={handleNext} className="border-2 border-white h-14 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button > NEXT</button>
+				<div onClick={handleCorrect} className="border-2 border-white h-14 bg-blue-500 rounded-md mx-2 my-2 flex items-center justify-center">
+					<button >
+						<FaAngleLeft />
+					</button>
 				</div>
 				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h-14 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 0</button>
@@ -296,8 +284,8 @@ const EditPage3Inch = () => {
 				</button>
 				
 
-				<div onClick={handleFinalize} className="border-2  border-white h-14 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
-					<button > FINAL</button>
+				<div onClick={handleNext} className="border-2 border-white h-14 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
+					<button > NEXT</button>
 				</div>
 			</div>
 			{showModal && (

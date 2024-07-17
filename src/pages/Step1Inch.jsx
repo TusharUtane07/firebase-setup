@@ -217,8 +217,15 @@ const Step1Inch = () => {
 			const newLastValue = displayValue;
 			const newSecondLastValue = lastValue;
 			const newThirdLastValue = secondLastValue;
+			let result ;
+			if(measurementType == "feet"){
+				 result = ((firstNumber * secondNumber) / 144).toFixed(2);
 
-			const result = ((firstNumber * secondNumber) / 144).toFixed(2);
+			}
+			else{
+				 result = ((firstNumber * secondNumber)).toFixed(2);
+
+			}
 	
 			const newResult = {
 				multiplication: displayValue,
@@ -298,7 +305,15 @@ const Step1Inch = () => {
 				const newSecondLastValue = lastValue;
 				const newThirdLastValue = secondLastValue;
 	
-				const result = ((firstNumber * secondNumber) / 144).toFixed(2);
+				let result ;
+				if(measurementType == "feet"){
+					 result = ((firstNumber * secondNumber) / 144).toFixed(2);
+	
+				}
+				else{
+					 result = ((firstNumber * secondNumber)).toFixed(2);
+	
+				}				
 				const newResult = {
 					multiplication: displayValue,
 					measurement: measurementType,

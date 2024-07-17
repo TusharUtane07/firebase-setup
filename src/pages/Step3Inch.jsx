@@ -490,6 +490,8 @@ const Step3Inch = () => {
 				justifyContent:"space-around"
 			}}>
 <button
+disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
+
 					onClick={()=>{
 						if(!displayValue?.includes("X")){
 							handleMostUsed(mostUsedLengthArray?.[0])
@@ -502,7 +504,10 @@ const Step3Inch = () => {
 					}
 					}
 					style={{
-						width:"40%"
+						width:"40%",
+						background:displayValue?.includes("X")?"green":"red",
+						border:"0"
+
 					}}
 					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
 					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "2nd Most Used" : mostUsedbreadthArray?.[0] || "2nd Most Used" }</button>
@@ -510,8 +515,12 @@ const Step3Inch = () => {
 				</button>				
 				<button
 				style={{
-					width:"40%"
+					width:"40%",
+					background:displayValue?.includes("X")?"green":"red",
+					border:"0"
 				}}
+				disabled={!(mostUsedbreadthArray?.[1] || mostUsedLengthArray?.[1])}
+
 				onClick={()=>{
 					if(!displayValue?.includes("X")){
 						handleMostUsed(mostUsedLengthArray?.[1])
@@ -534,7 +543,13 @@ const Step3Inch = () => {
 				border: "0rem",
 					height:"5rem"
 			}}>
-				{displayValue || placeholderText}
+			{displayValue?.includes("X") ? <><span style={{
+					color:"red"
+				}}> {displayValue.split("X")[0]}</span> <>&nbsp; X &nbsp;</> <span style={{
+					color:"green"
+				}}>{displayValue.split("X")[1]}</span> </> : <span style={{
+					color:"red"
+				}}> {displayValue}</span> ||  placeholderText}
 			</div>
 			<div className="grid grid-cols-4  ">
 				<div className="border-2 border-white h700:h-16 h-10 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">

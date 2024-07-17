@@ -88,14 +88,14 @@ else if(selectedValue == "2"){
   groupedData.map((group, index) => 
     {
 
-sumOfSqft += Number(group.sqft);
+sumOfSqft += parseFloat(group.sqft)*group.pieceNumbers.length;
 peiceNumberTotal += group.pieceNumbers.length;
 const resultObject = {
   Peice: group.pieceNumbers.length,
   Length: group.length,
   Breadth:group.breadth,
   Peice_Number: group.pieceNumbers.join(", "),
-  Area: group.sqft,
+  Area: parseFloat(group.sqft)*group.pieceNumbers.length,
 };
 resultsArray.push(resultObject);
 
@@ -182,14 +182,14 @@ export const generatePDF = (data, groupedData, measurementUnit, selectedValue) =
     groupedData.map((group, index) => 
       {
   
-  sumOfSqft += Number(group.sqft);
+  sumOfSqft += parseFloat(group.sqft)*group.pieceNumbers.length;
   peiceNumberTotal += group.pieceNumbers.length;
   const resultObject = {
     Piece: group.pieceNumbers.length,
     Length: group.length,
     Breadth:group.breadth,
     Peice_Number: group.pieceNumbers.join(", "),
-    SQFT: group.sqft,
+    SQFT: parseFloat(group.sqft)*group.pieceNumbers.length,
   };
   resultsArray.push(resultObject);
   
