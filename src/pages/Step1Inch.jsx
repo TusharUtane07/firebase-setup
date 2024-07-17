@@ -138,7 +138,7 @@ const Step1Inch = () => {
 				setMesurementType(data?.["Measurement Type"] || "");
 				setValuesArray(data?.results || []);
 				setQuantityNumber(data?.quantityNumber)
-				setPieceNumber((data?.results?.length || 0));
+				setPieceNumber((data?.results?.length - 1 || 0));
 				setLastValue(data?.lastValue || "");
 				setSecondLastValue(data?.secondLastValue || "");
 				setThirdLastValue(data?.thirdLastValue || "");
@@ -273,7 +273,8 @@ const Step1Inch = () => {
 		
 		localStorage.setItem("length", JSON.stringify(mostUsedLength))
 		localStorage.setItem("breadth", JSON.stringify(mostUsedBreadth))
-		if (quantityNumber &&!displayValue && quantityNumber !== pieceNumber +1 ) {
+
+		if (quantityNumber &&!displayValue && quantityNumber != pieceNumber + 1 ) {
 			setShowMismatchModal(true);
 			return;
 		}
