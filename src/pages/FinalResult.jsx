@@ -297,9 +297,15 @@ const FinalResult = () => {
 									<tr>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">SR NO</th>
 										<th className="py-2 px-4 text-left uppercase tracking-wider">PIECE NO</th>
-										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH ({measurementUnit})</th>
-										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH ({measurementUnit})</th>
-										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA (SQ. {unit})</th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">LENGTH <span style={{
+											textWrap:"nowrap"
+										}}>({measurementUnit})</span></th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">BREADTH <span style={{
+											textWrap:"nowrap"
+										}}>({measurementUnit})</span></th>
+										<th className="py-2 px-4 text-left uppercase tracking-wider">AREA <span style={{
+											textWrap:"nowrap"
+										}}>(SQ. {unit})</span></th>
 									</tr>
 								</thead>
 								<tbody>
