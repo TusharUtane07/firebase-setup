@@ -36,7 +36,7 @@ const Step1Inch = () => {
 	const [thirdLastValue, setThirdLastValue] = useState("");
 	const [valuesArray, setValuesArray] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [data, setData] = useState();
+	const [data, setSData] = useState();
 	const [measurementType, setMesurementType] = useState("");
 	const [isMinusClicked, setIsMinusClicked] = useState(false);
 	const [lengthUsed, setLengthUsed] = useState([]);
@@ -48,6 +48,7 @@ const Step1Inch = () => {
 	const [mostUsedLengthArray, setMostUsedLengthArray] = useState([]);
 	const [mostUsedbreadthArray, setMostUsedbreadthArray] = useState([]);
 	const [qData, setQData] = useState();
+	const [qId, setQId] = useState("");
 
 	useEffect(() => {
 		const frequencyMap = mostUsedLength.reduce((acc, val) => {
@@ -125,8 +126,11 @@ const Step1Inch = () => {
 			setLastBreadth(check_local_breadth)
 		}
 		if (check_local_data){
-			setData(check_local_data)
-			setQuantityNumber(check_local_data.quantity)
+			setSData(check_local_data)
+			console.log(check_local_data)
+			setQId(check_local_data?.quantityId)
+			
+			// setQuantityNumber(check_local_data.quantityId)
 		}
 		if (check_local_data_quantity){
 			setQData(check_local_data_quantity)
@@ -134,7 +138,6 @@ const Step1Inch = () => {
 
 	},[])
 
-	console.log(data)
 	const navigate = useNavigate();
 
 	const getDocument = async () => {
@@ -147,7 +150,7 @@ const Step1Inch = () => {
 				setClientName(data?.["Client Name"] || "");
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
-
+setQuantityNumber(data?.["quantityNumber"])
 				
 					if(data?.["Measurement Type"] === 'mm'){
 						setUnit("SQ.MM")
@@ -160,8 +163,6 @@ const Step1Inch = () => {
 					}else if (data?.["Measurement Type"] === "feet"){
 						setUnit("SQ.FT")
 					}
-				
-
 				setValuesArray(data?.results || []);
 				setPieceNumber((data?.results?.length  || 0));
 				setLastValue(data?.lastValue || "");
@@ -183,9 +184,9 @@ const Step1Inch = () => {
 		}
 	};
 	useEffect(() => {
-		if (lotNumberValue) {
+		
 			getDocument();
-		}
+		
 	}, [lotNumberValue]);
 
 	const [changeValuesTab, setChangeValue] = useState(true)
