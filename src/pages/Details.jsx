@@ -116,6 +116,7 @@ const [handleLoader, setLoader] = useState(false)
     [labels.lotNumber]: lotNumberValue,
     [labels.quantityNumber]: quantityNumber,
     [labels.measurement]: measurementType,
+    ["quantityNumber"]: quantityNumber
     };
 
     const lotQuant = {
