@@ -130,6 +130,7 @@ const Step3Inch = () => {
 				setClientName(data?.["Client Name"] || "");
 				setVehicleNumber(data?.["Vehicle Number"] || "");
 				setMesurementType(data?.["Measurement Type"] || "");
+				setQuantityNumber(data?.["quantityNumber"])
 
 				if(data?.["Measurement Type"] === 'mm'){
 					setUnit("SQ.MM")
