@@ -6,11 +6,14 @@ import "../style/cal.css";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import loader from "../assests/loader.png";
 import { FaAngleLeft, FaHome, FaLandmark } from "react-icons/fa";
+import { Tooltip } from "antd";
 
 const Step3Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
 	const [showModal, setShowModal] = useState(false);
 	const [showMismatchModal, setShowMismatchModal] = useState(false);
+	const [changeValuesTab, setChangeValue] = useState(true)
+
 	const [mostUsedLength, setLastlength] = useState([])
 	const [mostUsedBreadth, setLastBreadth] = useState([])
 	const [newQuantity, setNewQuantity] = useState("");
@@ -42,57 +45,64 @@ const Step3Inch = () => {
 	const [qData, setQData] = useState();
 
 
-	useEffect(()=>{
+	useEffect(() => {
 		const frequencyMap = mostUsedLength.reduce((acc, val) => {
-			acc[val] = (acc[val] || 0) + 1;
-			return acc;
-		  }, {});
-		  const frequencyArray = Object.entries(frequencyMap);
-		  frequencyArray.sort((a, b) => a[1] - b[1]);
-
-		  let most_user = []
-		  try{
-			most_user.push(frequencyArray[frequencyArray.length-1][0])
-
-		  }
-		  catch{
-
-		  }
-		  try{
-			most_user.push(frequencyArray[frequencyArray.length-2][0])
-
-		  }
-		  catch{
-			
-		  }
-		setMostUsedLengthArray(most_user)
-	},[mostUsedLength])
-	useEffect(()=>{
-
+		  acc[val] = (acc[val] || 0) + 1;
+		  return acc;
+		}, {});
+		
+		const frequencyArray = Object.entries(frequencyMap);
+		frequencyArray.sort((a, b) => b[1] - a[1]); // Sort in descending order of frequency
+	  
+		let most_user = [];
+		try {
+		  most_user.push(frequencyArray[0][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[1][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[2][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[3][0]);
+		} catch {}
+	  
+		setMostUsedLengthArray(most_user);
+	  }, [mostUsedLength]);
+	  
+	  useEffect(() => {
 		const frequencyMap = mostUsedBreadth.reduce((acc, val) => {
-			acc[val] = (acc[val] || 0) + 1;
-			return acc;
-		  }, {});
-		  const frequencyArray = Object.entries(frequencyMap);
-		  frequencyArray.sort((a, b) => a[1] - b[1]);
-
-		  let most_user = []
-		  try{
-			most_user.push(frequencyArray[frequencyArray.length-1][0])
-
-		  }
-		  catch{
-
-		  }
-		  try{
-			most_user.push(frequencyArray[frequencyArray.length-2][0])
-
-		  }
-		  catch{
-			
-		  }
-		  setMostUsedbreadthArray(most_user)
-	},[mostUsedBreadth])
+		  acc[val] = (acc[val] || 0) + 1;
+		  return acc;
+		}, {});
+		
+		const frequencyArray = Object.entries(frequencyMap);
+		frequencyArray.sort((a, b) => b[1] - a[1]); // Sort in descending order of frequency
+	  
+		let most_user = [];
+		try {
+		  most_user.push(frequencyArray[0][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[1][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[2][0]);
+		} catch {}
+	  
+		try {
+		  most_user.push(frequencyArray[3][0]);
+		} catch {}
+	  
+		setMostUsedbreadthArray(most_user);
+	  }, [mostUsedBreadth]);
+	  
 	useEffect(()=>{
 		const check_local = localStorage.getItem("sqft")
 		const check_local_length = JSON.parse(localStorage.getItem("length"));
@@ -470,8 +480,10 @@ const Step3Inch = () => {
 				</div>
 				<div className="  ml-2 rounded-md p-2 bg-blue-600">
 					<NavLink to={"/"} className="text-white" style={{
-						display:"flex",
-						alignItems:"center"
+						width:" 9rem",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center"
 					}} >
 						
 						
@@ -484,12 +496,16 @@ const Step3Inch = () => {
             </div>
 			<div className=" my-2 p-2 flex justify-between ">
 				<div className="text-center px-3 border-2  rounded-md border-white" style={{
-                    width:"30%"
+                    width:"30%",
+					background:'rgb(92,97,101)',
+						border:"0"
                 }}>
 					{data.lotId}  <br /> {lotNumberValue ? lotNumberValue : "Lot Number"}
 				</div>
 				<div className="px-2 mx-2 text-center border-2 rounded-md  border-white" style={{
-                    width:"30%"
+                    width:"30%",
+					background:'rgb(92,97,101)',
+						border:"0",
                 }}>
 					{data.quantityId} <br /> {data.quantity ? data.quantity : "N/A"}
 				</div>
@@ -498,7 +514,8 @@ const Step3Inch = () => {
 					style={{
 						width: "30%",
 						background:"",
-						color:"white"
+						color:"white",
+						padding:"0rem"
 					}}  onClick={()=>{
 					localStorage.setItem("sqft", total)
 					localStorage.setItem("length", JSON.stringify(mostUsedLength))
@@ -518,58 +535,7 @@ const Step3Inch = () => {
 				}}>	{unit} : {total.toFixed(2)}</div>
 
 			</div>
-			<div style={{
-				display:"flex",
-				alignItems:"center",
-				justifyContent:"space-around"
-			}}>
-<button
-disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
-
-					onClick={()=>{
-						if(!displayValue?.includes("X")){
-							handleMostUsed(mostUsedLengthArray?.[0])
-
-						}
-						else{
-							handleMostUsed(mostUsedbreadthArray?.[0])
-
-						}
-					}
-					}
-					style={{
-						width:"40%",
-						background:displayValue?.includes("X")?"green":"red",
-						border:"0"
-
-					}}
-					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
-					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "2nd Most Used" : mostUsedbreadthArray?.[0] || "2nd Most Used" }</button>
-
-				</button>				
-				<button
-				style={{
-					width:"40%",
-					background:displayValue?.includes("X")?"green":"red",
-					border:"0"
-				}}
-				disabled={!(mostUsedbreadthArray?.[1] || mostUsedLengthArray?.[1])}
-
-				onClick={()=>{
-					if(!displayValue?.includes("X")){
-						handleMostUsed(mostUsedLengthArray?.[1])
-
-					}
-					else{
-						handleMostUsed(mostUsedbreadthArray?.[1])
-
-					}
-				}
-				}
-					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
-					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[1] || "2nd Most Used" : mostUsedbreadthArray?.[1] || "2nd Most Used" }</button>
-				</button>
-			</div>
+			
 
 			<div className=" rounded-md my-3 mx-1 h-[85px] h700:h-[100px] h700:my-6 text-4xl uppercase text-end flex justify-center items-center pr-3"
 			
@@ -585,6 +551,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 					color:"red"
 				}}> {displayValue}</span> ||  placeholderText}
 			</div>
+			{changeValuesTab ?
 			<div className="grid grid-cols-4 pb-2 fixed bottom-0 w-full ">
 				<div className="border-2 border-white h700:h-16 h-10 h500:h-8 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center">
 					<button onClick={handleLastValue} className="overflow-hidden">{lastValue || "LV"}</button>
@@ -642,15 +609,182 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 				<div onClick={handleNext} className="border-2 border-white row-span-2 rounded-md bg-blue-500 mx-2 my-2 flex items-center justify-center">
 					<button > NEXT</button>
 				</div>
+				<div
+					onClick={() => {
+						setChangeValue(!changeValuesTab)
+					}}
+					style={{
+						background:"rgb(12,109,253)"
+					}}
+					
+					className="border-2 border-white h700:h-16 h-10 h500:h-8 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+					<button>Values</button>
+				</div>
 				<div  onClick={() => handleButtonClick("0")} className="border-2 border-white h700:h-16 h-10 h500:h-8 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800">
 					<button> 0</button>
 				</div>
 
-				<button disabled={isMinusClicked} onClick={() => handleButtonClick(".")} className={`border-2 col-span-2 border-white h700:h-16 h-10 h500:h-8 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
+				<button disabled={isMinusClicked} onClick={() => handleButtonClick(".")} className={`border-2  border-white h700:h-16 h-10 h500:h-8 rounded-md   mx-2 my-2 flex items-center justify-center ${isMinusClicked ? "bg-gray-200 text-gray-200" : "bg-gray-800"}`} >
 					<button >.</button>
 				</button>
 
+			</div> :
+			<>
+			<div
+			onClick={() => {
+				setChangeValue(!changeValuesTab)
+			}}
+			style={{
+				background:"rgb(12,109,253)"
+			}}
+			
+			className="border btn-primary border-white h700:h-16 h-10 h500:h-8 rounded-md mx-2 my-2 flex items-center justify-center bg-gray-800 ">
+			<button>Keypad</button>
 			</div>
+			<div style={{
+							display:"flex",
+							alignItems:"center",
+							justifyContent:"space-around"
+						}}>
+			<button
+			disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
+								onClick={()=>{
+									if(!displayValue?.includes("X")){
+										handleMostUsed(mostUsedLengthArray?.[0])
+			
+									}
+									else{
+										handleMostUsed(mostUsedbreadthArray?.[0])
+			
+									}
+								}
+								}
+								style={{
+									width:"40%",
+									background:displayValue?.includes("X")?"green":"red",
+									border:"0",
+									height:"7rem",
+			
+			
+								}}
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "1st Most Used" : mostUsedbreadthArray?.[0] || "1st Most Used" }</button>
+			
+							</button>				
+							<button
+							style={{
+								width:"40%",
+								background:displayValue?.includes("X")?"green":"red",
+								border:"0",
+								height:"7rem",
+			
+			
+							}}
+							disabled={!(mostUsedbreadthArray?.[1] || mostUsedLengthArray?.[1])}
+			
+			
+							onClick={()=>{
+								if(!displayValue?.includes("X")){
+									handleMostUsed(mostUsedLengthArray?.[1])
+			
+								}
+								else{
+									handleMostUsed(mostUsedbreadthArray?.[1])
+			
+								}
+							}
+							}
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[1] || "2nd Most Used" : mostUsedbreadthArray?.[1] || "2nd Most Used" }</button>
+							</button>
+							<button
+							style={{
+								width:"40%",
+								background:displayValue?.includes("X")?"green":"red",
+								border:"0",
+								height:"7rem",
+			
+			
+							}}
+							disabled={!(mostUsedbreadthArray?.[2] || mostUsedLengthArray?.[2])}
+			
+			
+							onClick={()=>{
+								if(!displayValue?.includes("X")){
+									handleMostUsed(mostUsedLengthArray?.[2])
+			
+								}
+								else{
+									handleMostUsed(mostUsedbreadthArray?.[2])
+			
+								}
+							}
+							}
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[2] || "3rd Most Used" : mostUsedbreadthArray?.[2] || "3rd Most Used" }</button>
+							</button>
+							<button
+							style={{
+								width:"40%",
+								background:displayValue?.includes("X")?"green":"red",
+								border:"0",
+								height:"7rem",
+			
+			
+							}}
+							disabled={!(mostUsedbreadthArray?.[3] || mostUsedLengthArray?.[3])}
+			
+			
+							onClick={()=>{
+								if(!displayValue?.includes("X")){
+									handleMostUsed(mostUsedLengthArray?.[3])
+			
+								}
+								else{
+									handleMostUsed(mostUsedbreadthArray?.[3])
+			
+								}
+							}
+							}
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[3] || "4th Most Used" : mostUsedbreadthArray?.[3] || "4th Most Used" }</button>
+							</button>
+						</div>
+			<div style={{
+							display:"flex",
+							alignItems:"center",
+							justifyContent:"space-between"
+						}}>
+			<button
+								onClick={() => handleButtonClick("X")}
+								style={{
+									width:"40%",
+									background:"rgb(12,109,253)",
+									height:"7rem",
+			
+									border:"0"
+			
+								}}
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>X</button>
+			
+							</button>				
+							<button
+							style={{
+								width:"40%",
+								background:"rgb(12,109,253)",
+								height:"7rem",
+								border:"0"
+			
+							}}
+							onClick={handleNext}
+			
+								className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
+								<button>Next</button>
+							</button>
+						</div>
+			</>
+			}
 			{showModal && (
 				<div className="fixed text-black  inset-0 bg-gray-600 w-full bg-opacity-50 flex justify-center items-center">
 					<div className="bg-white p-5 rounded mx-5">

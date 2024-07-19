@@ -13,6 +13,7 @@ import loader from "../assests/loader.png";
 import "../style/cal.css";
 import { json, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaAngleLeft, FaHome, FaLandmark } from "react-icons/fa";
+import { Tooltip } from "antd";
 
 const Step1Inch = () => {
 	const [displayValue, setDisplayValue] = useState("");
@@ -25,7 +26,9 @@ const Step1Inch = () => {
 	const location = useLocation();
 	const { sqft } = location.state || {};
 	const [unit, setUnit] = useState("");
-
+	const truncate = (str, maxLength) => {
+		return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+	  };
 	const lotNumberValue = useSelector((state) => state.lotReducer.lotNumber);
 	const [vehicleNumber, setVehicleNumber] = useState("");
 	const [clientName, setClientName] = useState("");
@@ -423,22 +426,37 @@ setQuantityNumber(data?.["quantityNumber"])
 					className="text-center px-3 border-2  rounded-md border-white"
 					style={{
 						width: "30%",
+						background:'rgb(92,97,101)',
+						border:"0"
 					}}>
-					{data.lotId} <br /> {lotNumberValue ? lotNumberValue : "Lot Number"}
+						<Tooltip placement="bottom" title={data.lotId} >
+					<span style={{
+						textWrap:"nowrap"
+					}}>{truncate(data.lotId, 6)}</span> <br /> {lotNumberValue ? lotNumberValue : "Lot Number"}
+					</Tooltip>
 				</div>
 				<div
 					className="px-2 mx-2 text-center border-2 rounded-md  border-white"
 					style={{
 						width: "30%",
+						background:'rgb(92,97,101)',
+						border:"0",
+						
 					}}>
-					{data.quantityId} <br /> {quantityNumber ? quantityNumber : "N/A"}
+												<Tooltip placement="bottom" title={data.quantityId} >
+
+					<span style={{
+						textWrap:"nowrap"
+					}}>{truncate(data.quantityId, 6)}</span> <br /> {quantityNumber ? quantityNumber : "N/A"}
+					</Tooltip>
 				</div>
 				<button
 					className="btn btn-primary text-center px-3 border-2 rounded-md  "
 					style={{
 						width: "30%",
 						background:"",
-						color:"white"
+						color:"white",
+						padding:"0rem"
 					}}  onClick={()=>{
 						localStorage.setItem("sqft", total)
 						localStorage.setItem("length", JSON.stringify(mostUsedLength))
@@ -625,7 +643,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 
 					}}
 					className="border-2 border-white h-14 h700:h-16 bg-gray-700  rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
-					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "2nd Most Used" : mostUsedbreadthArray?.[0] || "2nd Most Used" }</button>
+					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[0] || "1st Most Used" : mostUsedbreadthArray?.[0] || "1st Most Used" }</button>
 
 				</button>				
 				<button
@@ -678,7 +696,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 				}
 				}
 					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
-					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[2] || "2nd Most Used" : mostUsedbreadthArray?.[2] || "3rd Most Used" }</button>
+					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[2] || "3rd Most Used" : mostUsedbreadthArray?.[2] || "3rd Most Used" }</button>
 				</button>
 				<button
 				style={{
@@ -704,7 +722,7 @@ disabled={!(mostUsedbreadthArray?.[0] || mostUsedLengthArray?.[0])}
 				}
 				}
 					className="border-2 border-white h-14 h700:h-16 bg-gray-700 rounded-md mx-2 my-2 flex items-center justify-center overflow-hidden">
-					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[3] || "2nd Most Used" : mostUsedbreadthArray?.[3] || "4th Most Used" }</button>
+					<button>{!displayValue?.includes("X")?"Length":"Breadth"}<br/>{!displayValue?.includes("X") ? mostUsedLengthArray?.[3] || "4th Most Used" : mostUsedbreadthArray?.[3] || "4th Most Used" }</button>
 				</button>
 			</div>
 <div style={{
